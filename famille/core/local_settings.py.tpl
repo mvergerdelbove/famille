@@ -1,4 +1,4 @@
-SECRET_KEY = ""
-NEVERCACHE_KEY = ""
-
 DEBUG = True
+TEMPLATE_DEBUG = True
+
+SECRET_KEY = ""
