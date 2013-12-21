@@ -1,0 +1,6 @@
+dependencies:
+    override:
+	- make install
+test:
+    override:
+	- make test
