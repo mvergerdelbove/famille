@@ -3,7 +3,7 @@ PYTHONHOME = ${ROOTDIR}/venv/
 LOCAL_SETTINGS = ${ROOTDIR}/famille/core/local_settings.py
 LOCAL_SETTINGS_TPL = ${LOCAL_SETTINGS}.tpl
 
-.SILENT: install venv settings
+.SILENT: install venv settings test
 
 # function to copy settings templates
 cp-settings = ([ ! -f $(1) ]) || ([ -f $(2) ] && echo "File already exists.") || (cp -n $(1) $(2))
@@ -18,3 +18,6 @@ venv:
 settings:
 	echo 'Copying settings...'
 	$(call cp-settings, ${LOCAL_SETTINGS_TPL}, ${LOCAL_SETTINGS})
+
+test:
+	./manage.py test famille.tests
