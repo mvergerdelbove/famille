@@ -1,4 +1,4 @@
-DEBUG = True
-TEMPLATE_DEBUG = True
+SECRET_KEY = "--to fill--"
+NEVERCACHE_KEY = "--to fill--"
 
-SECRET_KEY = ""
+DEBUG = True
