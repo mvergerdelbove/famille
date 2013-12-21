@@ -3,12 +3,15 @@ PYTHONHOME = ${ROOTDIR}/venv/
 LOCAL_SETTINGS = ${ROOTDIR}/famille/core/local_settings.py
 LOCAL_SETTINGS_TPL = ${LOCAL_SETTINGS}.tpl
 
-.SILENT: install venv settings test
+.SILENT: install venv settings test dependencies
 
 # function to copy settings templates
 cp-settings = ([ ! -f $(1) ]) || ([ -f $(2) ] && echo "File already exists.") || (cp -n $(1) $(2))
 
-install: venv settings
+install: venv settings dependencies
+
+dependencies:
+	git submodule update --init
 	${PYTHONHOME}bin/pip install -r requirements.txt
 
 venv:

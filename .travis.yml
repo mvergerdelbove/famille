@@ -2,4 +2,4 @@ language: python
 python:
     - "2.7"
 install: "make install"
-scripts: "make test"
+script: "make test"
