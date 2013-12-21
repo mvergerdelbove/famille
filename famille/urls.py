@@ -1,11 +1,13 @@
 from django.conf.urls import patterns, include, url
-
 from django.contrib import admin
+from django.views.generic import TemplateView
+
+
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    # Examples:
+
+urlpatterns = patterns('',
+    url(r'^$', "famille.views.home", name="home"),
     url(r'^in/$', 'django.contrib.auth.views.login', name='auth_login'),
     url(r'^out/$', 'django.contrib.auth.views.logout', {
         'next_page': '/',

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+{% url 'auth_login' as login_url %}
+<form action="{{ login_url }}" method="post">{% csrf_token %}
+    <div class="login-form">
+        <div class="row">
+            <div class="offset4 span4">
+                <h1>Connexion</h1>
+                <table class="login-table">
+                    {{ form.as_table }}
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset6 span2">
+                <input type="submit" class="btn btn-success" value="Connexion"/>
+            </div>
+        </div>
+            {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            {% else %}
+            <input type="hidden" name="next" value="/" />
+            {% endif %}
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block content %}
+<main class="row">
+  <section class="col-md-7"></section>
+  <section class="col-md-5">
+    <article class="row margin-top-1">
+      <header>
+	<h4>je commence mes recherches</h4>
+      </header>
+      <div class="col-md-12">
+	<p>Consultez gratuitement toutes les propositions près de chez vous</p>
+	<form class="form-inline" role="search" method="post" action="TODO">{% csrf_token %}
+	  {% for field in form %}
+	  {% bootstrap_field field label_class="sr-only" %}
+	  {% endfor %}
+	  {% buttons %}
+	  <button type="submit" class="btn btn-warning">Rechercher</button>
+	  {% endbuttons %}
+	</form>
+	
+      </div>
+    </article>
+    <article class="row margin-top-0">
+      <header>
+	<h4>je crée mon compte</h4>
+      </header>
+      <div class="col-md-6">
+	<p>Je recherche une personne de confiance pour garder mes enfants</p>
+	<a href="#" class="btn btn-success">Familles</a>
+      </div>
+      <div class="col-md-6">
+	<p>J'améliore ma visibilité auprès des familles</p>
+	<a href="#" class="btn btn-primary">Prestataires</a>
+      </div>
+    </article>
+  </section>
+</main>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

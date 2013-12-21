@@ -1,0 +1,87 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="{% static "lib/bootstrap/dist/css/bootstrap.min.css" %}"/>
+  <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="all" />
+  <link rel="icon" type="image/gif" href="{% static "img/interface/favicon.ico" %}"/>
+  <meta charset="utf-8"></meta>
+  <meta><!-- TODO keywords --></meta>
+  {% block extrahead %}{% endblock %}
+  <title>{% block title %}{% endblock %}{{ site_title }}</title>
+</head>
+
+<body class="{% block body-class %}{% endblock %}">
+  {% block navigation %}
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	<span class="sr-only">Toggle navigation</span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">{{ site_title }}</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+	<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	    Espace Famille <b class="caret"></b>
+	  </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Présentaiton</a></li>
+            <li><a href="#">Créer un compte</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Avantages offerts</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Témoignages</a></li>
+          </ul>
+	</li>
+	<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	    Espace Prestataire<b class="caret"></b>
+	  </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Présentaiton</a></li>
+            <li><a href="#">Créer un compte</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Avantages offerts</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Témoignages</a></li>
+          </ul>
+	</li>
+	<li><a href="#">A propos</a></li>
+	<li><a href="#">Nous contacter</a></li>
+      </ul>
+      {% if user.is_authenticated %}
+      <ul class="nav navbar-nav navbar-right">
+	<li><a href="#">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
+	<li><a href="#">Déconnexion</a></li>
+      </ul>
+      {% else %}
+      {% url 'auth_login' as login_url %}
+      <form class="navbar-form navbar-right" role="login"
+	    action="{{ login_url }}" method="post">{% csrf_token %}
+	<div class="form-group">
+          <input type="text" class="form-control" name="username" placeholder="Identifiant">
+	  <input type="text" class="form-control" name="password" placeholder="Mot de passe">
+	  <input type="hidden" name="next" value="/" />
+	</div>
+	<button type="submit" class="btn btn-primary">Connexion</button>
+      </form>
+      {% endif %}
+    </div><!-- /.navbar-collapse -->
+  </nav>
+  {% endblock %}
+  {% block content %}{% endblock %}
+  {% block script %}
+  <script src="{% static "lib/jquery.min.js" %}"></script>
+  <script src="{% static "lib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+
+  {% endblock %}
+</body>
+</html>
