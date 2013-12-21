@@ -23,4 +23,4 @@ settings:
 	$(call cp-settings, ${LOCAL_SETTINGS_TPL}, ${LOCAL_SETTINGS})
 
 test:
-	./manage.py test famille.tests
+	./manage.py test
