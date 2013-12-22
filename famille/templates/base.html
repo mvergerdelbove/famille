@@ -67,8 +67,12 @@
       <form class="navbar-form navbar-right" role="login"
 	    action="{{ login_url }}" method="post">{% csrf_token %}
 	<div class="form-group">
-          <input type="text" class="form-control" name="username" placeholder="Identifiant">
-	  <input type="text" class="form-control" name="password" placeholder="Mot de passe">
+	  <div class="col-md-6">
+            <input type="text" class="form-control" name="username" placeholder="Identifiant">
+	  </div>
+	  <div class="col-md-6">
+	    <input type="text" class="form-control" name="password" placeholder="Mot de passe">
+	  </div>
 	  <input type="hidden" name="next" value="/" />
 	</div>
 	<button type="submit" class="btn btn-primary">Connexion</button>
