@@ -90,5 +90,5 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, 'templates'),
 )
 
-
-from famille.core.local_settings import *
+for key in os.environ:
+    globals()[key] = os.environ[key]
