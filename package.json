@@ -2,7 +2,7 @@
     "name": "famille",
     "version": "0.0.1",
     "dependencies": {
-        "bower": "1.x.x"
+        "bower": "1.2.x"
     },
     "scripts": {
         "postinstall": "./node_modules/bower/bin/bower install"
