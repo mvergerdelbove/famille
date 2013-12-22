@@ -1,8 +1,10 @@
 *.log
 *.pot
 *.pyc
-staticfiles
-local_settings.py
-venv/*
 *~
 db.sqlite3
+famille/static/lib/*
+local_settings.py
+node_modules/
+staticfiles
+venv/*

@@ -11,7 +11,7 @@ cp-settings = ([ ! -f $(1) ]) || ([ -f $(2) ] && echo "File already exists.") ||
 install: venv settings dependencies
 
 dependencies:
-	git submodule update --init
+	npm install
 	${PYTHONHOME}bin/pip install -r requirements.txt
 
 venv:
