@@ -1,6 +1,6 @@
 famille
 =======
 
-![Build Status](https://circleci.com/gh/m-vdb/famille.png?circle-token=b97436c65814924e9ccfb23be5df873c537f8f52)
+[![Build Status](https://travis-ci.org/m-vdb/famille.png)](https://travis-ci.org/m-vdb/famille)
 
 A Django-based website.
