@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required as django_login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
 
 from famille import forms
 from famille.models import Famille
@@ -13,8 +14,30 @@ login_required = django_login_required(
 
 
 def home(request):
-    form = forms.SimpleSearchForm()
-    return render(request, "home.html", get_context(form=form))
+    """
+    Home view. Rendering first forms.
+    """
+    search_form = forms.SimpleSearchForm()
+    registration_form = forms.RegistrationForm()
+    return render(
+        request, "home.html",
+        get_context(search_form=search_form, registration_form=registration_form)
+    )
+
+
+@require_POST
+def register(request):
+    """
+    Register view. Allow user creation.
+    """
+    form = forms.RegistrationForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('/confirmation/')
+
+    # TODO: error
+    pass
+
 
 @login_required
 def account(request):

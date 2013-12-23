@@ -4,7 +4,7 @@
 
 {% block content %}
 <main class="row">
-  <section class="col-md-7"></section>
+  <section class="col-md-7"><!-- TODO: video --></section>
   <section class="col-md-5">
     <article class="row margin-top-1">
       <header>
@@ -13,7 +13,7 @@
       <div class="col-md-12">
 	<p>Consultez gratuitement toutes les propositions près de chez vous</p>
 	<form class="form-inline" role="search" method="post" action="TODO">{% csrf_token %}
-	  {% for field in form %}
+	  {% for field in search_form %}
 	  {% bootstrap_field field label_class="sr-only" %}
 	  {% endfor %}
 	  {% buttons %}
@@ -28,13 +28,64 @@
       </header>
       <div class="col-md-6">
 	<p>Je recherche une personne de confiance pour garder mes enfants</p>
-	<a href="#" class="btn btn-success">Familles</a>
+	<a href="#" class="btn btn-success" data-toggle="modal" data-target="#createFamille">Familles</a>
       </div>
       <div class="col-md-6">
 	<p>J'améliore ma visibilité auprès des familles</p>
-	<a href="#" class="btn btn-primary">Prestataires</a>
+	<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createPresta">Prestataires</a>
       </div>
     </article>
   </section>
 </main>
+<aside>
+  <!-- Modals -->
+  <div class="modal fade" id="createFamille" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-thin">
+      <div class="modal-content">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Je crée mon compte famille</h4>
+	</div>
+        <form role="register" method="post" action="/register/">{% csrf_token %}
+	  <div class="modal-body">
+	    {% for field in registration_form %}
+	    {% bootstrap_field field %}
+	    {% endfor %}
+	    {% buttons %}
+	    {% endbuttons %}
+	  </div>
+	  <div class="modal-footer">
+	    <input type="hidden" name="type" value="famille"/>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-success">Valider</button>
+	  </div>
+	</form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  <div class="modal fade" id="createPresta" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-thin">
+      <div class="modal-content">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Je crée mon compte prestataire</h4>
+	</div>
+        <form role="register" method="post" action="/register/">{% csrf_token %}
+	  <div class="modal-body">
+	    {% for field in registration_form %}
+	    {% bootstrap_field field %}
+	    {% endfor %}
+	    {% buttons %}
+	    {% endbuttons %}
+	  </div>
+	  <div class="modal-footer">
+	    <input type="hidden" name="type" value="prestataire"/>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-success">Valider</button>
+	  </div>
+	</form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</aside>
 {% endblock %}
