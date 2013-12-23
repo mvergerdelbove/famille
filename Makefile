@@ -1,7 +1,7 @@
 ROOTDIR = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 PYTHONHOME = ${ROOTDIR}/venv/
-LOCAL_SETTINGS = ${ROOTDIR}/famille/core/local_settings.py
-LOCAL_SETTINGS_TPL = ${LOCAL_SETTINGS}.tpl
+LOCAL_ENV = ${ROOTDIR}/.env
+LOCAL_ENV_TPL = ${LOCAL_ENV}.tpl
 
 .SILENT: install venv settings test dependencies
 
@@ -20,7 +20,7 @@ venv:
 
 settings:
 	echo 'Copying settings...'
-	$(call cp-settings, ${LOCAL_SETTINGS_TPL}, ${LOCAL_SETTINGS})
+	$(call cp-settings, ${LOCAL_ENV_TPL}, ${LOCAL_ENV})
 
 test:
-	./manage.py test
+	foreman run ./manage.py test --noinput
