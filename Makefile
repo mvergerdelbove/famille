@@ -23,4 +23,4 @@ settings:
 	$(call cp-settings, ${LOCAL_ENV_TPL}, ${LOCAL_ENV})
 
 test:
-	foreman run ./manage.py test --noinput
+	set -a && . ${LOCAL_ENV} && set +a && ./manage.py test --noinput
