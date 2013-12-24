@@ -24,3 +24,9 @@ settings:
 
 test:
 	set -a && . ${LOCAL_ENV} && set +a && ./manage.py test --noinput
+
+schemamigration:
+	foreman run ./manage.py schemamigration famille --auto
+
+migration:
+	foreman run ./manage.py migrate famille
