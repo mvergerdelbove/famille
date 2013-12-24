@@ -4,9 +4,12 @@ postgres:
   database: famille
   username: postgres
 python:
-    - "2.7"
-install: "make install"
+- '2.7'
+install: make install
 before_script:
-  - "psql -c 'create database famille;' -U postgres"
-script: "make test"
-
+- psql -c 'create database famille;' -U postgres
+script: make test
+deploy:
+  provider: heroku
+  api_key:
+    secure: PSQreLsvN7MlLobSp8sRIPeYBSEvHMCJXD8eiuXUH4Dy1Jc+60ApKweB1eQcHWo2yV3FK2a6kQlprgAWlXvFoZFpUmeh3ypfWSaLz5pHRwYgIzkEYWN66cGGzZODL2sW9lIz3ihcRyV9/srFRUuXl3iy3MUryMkAtX2AZRUQ4tk=
