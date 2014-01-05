@@ -76,6 +76,8 @@ class FamilleForm(forms.ModelForm):
             self.enfant_forms = map(
                 lambda e: EnfantForm(instance=e), enfants
             )
+            # binding an empty form anyway
+            self.enfant_form_empty = EnfantForm()
 
         super(FamilleForm, self).__init__(*args, **kwargs)
 

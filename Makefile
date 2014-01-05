@@ -29,4 +29,4 @@ schemamigration:
 	foreman run ./manage.py schemamigration famille --auto
 
 migration:
-	foreman run ./manage.py migrate famille
+	./manage.py migrate famille
