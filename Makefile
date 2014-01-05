@@ -23,7 +23,7 @@ settings:
 	$(call cp-settings, ${LOCAL_ENV_TPL}, ${LOCAL_ENV})
 
 test:
-	set -a && . ${LOCAL_ENV} && set +a && ./manage.py test --noinput
+	set -a && . ${LOCAL_ENV} && set +a && ${PYTHONHOME}/bin/python manage.py test --noinput
 
 schemamigration:
 	foreman run ./manage.py schemamigration famille --auto
