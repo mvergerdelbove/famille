@@ -1,10 +1,4 @@
-#!/bin/bash
-
-# coding=utf-8
-
-"true" '''\'
-exec "$(dirname $0)/venv/bin/python" "$0" "$@"
-'''
+# !/bin/python
 
 import os
 import sys
