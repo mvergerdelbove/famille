@@ -43,7 +43,6 @@ def register(request):
 def account(request):
     famille = Famille.objects.get(user=request.user)
     if request.method == "POST":
-        import pdb; pdb.set_trace()
         form = forms.FamilleForm(data=request.POST, instance=famille)
         if form.is_valid():
             form.save()
