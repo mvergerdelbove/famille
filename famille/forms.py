@@ -1,7 +1,11 @@
+# -*- coding=utf-8 -*-
+from itertools import chain, izip_longest
+
 from django import forms
 from django.contrib.auth.models import User
 
-from famille.models import Famille, Prestataire
+from famille.models import Famille, Prestataire, Enfant
+from famille.utils import isplit, pick, repeat_lambda
 
 
 class RegistrationForm(forms.Form):
@@ -40,4 +44,108 @@ class SimpleSearchForm(forms.Form):
 class FamilleForm(forms.ModelForm):
     class Meta:
         model = Famille
-        exclude = ['created_at', 'updated_at', ]
+        fields = (
+            'name', 'first_name', 'email', 'street',
+            'postal_code', 'city', 'country',
+        )
+        labels = {
+            "name": "Nom",
+            "first_name": u"Prénom",
+            "street": "Rue",
+            "postal_code": "Code postal",
+            "city": "Ville",
+            "country": "Pays"
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.enfants_to_delete, enfants, instance = [], [], None
+
+        if kwargs.get("instance", None):
+            instance = kwargs["instance"]
+            enfants = instance.enfants.all()
+
+        if kwargs.get("data", None) is not None:
+            data = pick(kwargs["data"], *EnfantForm.Meta.fields)
+            data = EnfantForm.unzip_data(data)
+            enfants, self.enfants_to_delete = self.compute_enfants_diff(data, enfants, instance)
+            data = izip_longest(data, enfants)
+            init_forms = lambda d: EnfantForm(data=d[0], instance=d[1])
+
+            self.enfant_forms = map(init_forms, data)
+        else:
+            self.enfant_forms = map(
+                lambda e: EnfantForm(instance=e), enfants
+            )
+
+        super(FamilleForm, self).__init__(*args, **kwargs)
+
+    @staticmethod
+    def compute_enfants_diff(data, enfants, instance):
+        """
+        Find out the right number of enfants to be saved,
+        given the data and the enfants that are already present.
+
+        :param data:       list of data for EnfantForm
+        :param enfants:    enfants that are already there
+        :param instance:   a Famille instance
+        """
+        enfants_to_delete = []
+        diff = len(data) - len(enfants)
+        # manage child addition
+        if diff > 0:
+            enfants = chain(
+                enfants,
+                repeat_lambda(lambda: Enfant(famille=instance), diff)
+            )
+        # manage child deletion
+        elif diff < 0:
+            enfants, enfants_to_delete = isplit(enfants, len(data))
+
+        return enfants, enfants_to_delete
+
+    def is_valid(self):
+        """
+        Validate the FamilleForm and the
+        EnfantForms too.
+        """
+        is_valid = super(FamilleForm, self).is_valid()
+        return all((e.is_valid() for e in self.enfant_forms)) and is_valid
+
+    def save(self, *args, **kwargs):
+        """
+        Save the FamilleForm and the
+        EnfantForms too.
+        """
+        for e in self.enfant_forms:
+            e.save(*args, **kwargs)
+
+        [e.delete() for e in self.enfants_to_delete]
+        return super(FamilleForm, self).save(*args, **kwargs)
+
+
+class EnfantForm(forms.ModelForm):
+    class Meta:
+        model = Enfant
+        fields = ("e_name", "e_age")
+        labels = {
+            "e_name": u"Prénom",
+            "e_age": "Age",
+        }
+
+    @classmethod
+    def unzip_data(cls, data):
+        """
+        Unzip a POST data to manage several
+        Enfant instances.
+        """
+        try:
+            nb_enfants = len(data[cls.Meta.fields[0]])
+        except KeyError:
+            return []
+
+        data_list = [{} for i in xrange(nb_enfants)]
+        for field, values in data.iteritems():
+            for i, value in enumerate(values):
+                data_list[i][field] = value
+
+        return data_list

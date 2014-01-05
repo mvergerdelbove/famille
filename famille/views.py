@@ -41,13 +41,14 @@ def register(request):
 
 @login_required
 def account(request):
+    famille = Famille.objects.get(user=request.user)
     if request.method == "POST":
-        form = forms.FamilleForm(request.POST)
+        import pdb; pdb.set_trace()
+        form = forms.FamilleForm(data=request.POST, instance=famille)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/mon-compte/')
     else:
-        famille = Famille.objects.get(user=request.user)
         form = forms.FamilleForm(instance=famille)
 
     # TODO : template

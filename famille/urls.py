@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^in/$', 'django.contrib.auth.views.login', name='auth_login'),
     url(r'^out/$', 'django.contrib.auth.views.logout', {
         'next_page': '/',
+        'extra_context': {'action': 'logged_out'}
     }, name='auth_logout'),
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
     url(r'^register/$', 'famille.views.register', name="register"),

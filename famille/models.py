@@ -19,9 +19,8 @@ class UserInfo(BaseModel):
     a Prestataire need.
     """
     user = models.OneToOneField(User)
-    name = models.CharField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    surname = models.CharField(max_length=20)
+    name = models.CharField(blank=True, max_length=50)
+    first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100)
 
     class Meta:
@@ -32,10 +31,10 @@ class Famille(UserInfo):
     """
     The Famille user.
     """
-    street = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=8)
-    city = models.CharField(max_length=40)
-    country = models.CharField(max_length=20, default="France")
+    street = models.CharField(blank=True, max_length=100)
+    postal_code = models.CharField(blank=True, max_length=8)
+    city = models.CharField(blank=True, max_length=40)
+    country = models.CharField(blank=True, max_length=20, default="France")
     # TODO : planning
     # TODO : criteres
 
@@ -44,9 +43,10 @@ class Enfant(BaseModel):
     """
     An child of a Famille.
     """
-    famille = models.ForeignKey(Famille)
-    name = models.CharField(max_length=20)
-    age = models.PositiveSmallIntegerField()
+    famille = models.ForeignKey(Famille, related_name="enfants")
+    # compelled to do this naming because we cannot change the form field names...
+    e_name = models.CharField(max_length=20, db_column="name")
+    e_age = models.PositiveSmallIntegerField(blank=True, db_column="age")
 
 
 class Prestataire(UserInfo):

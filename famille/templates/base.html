@@ -5,11 +5,11 @@
 <head>
   <link rel="stylesheet" href="{% static "lib/bootstrap/dist/css/bootstrap.min.css" %}"/>
   <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="all" />
-  <link rel="icon" type="image/gif" href="{% static "img/interface/favicon.ico" %}"/>
+  <link rel="shortcut icon" type="image/x-icon" href="{% static "img/favicon.png" %}"/>
   <meta charset="utf-8"></meta>
   <meta><!-- TODO keywords --></meta>
   {% block extrahead %}{% endblock %}
-  <title>{% block title %}{% endblock %}{{ site_title }}</title>
+  <title>{{ site_title }}{% block title %}{% endblock %}</title>
 </head>
 
 <body class="{% block body-class %}{% endblock %}">
@@ -22,7 +22,7 @@
 	<span class="icon-bar"></span>
 	<span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">{{ site_title }}</a>
+      <a class="navbar-brand" href="/">{{ site_title }}</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -59,8 +59,8 @@
       </ul>
       {% if user.is_authenticated %}
       <ul class="nav navbar-nav navbar-right">
-	<li><a href="#">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
-	<li><a href="#">Déconnexion</a></li>
+	<li><a href="{% url 'account' %}">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
+	<li><a href="{% url 'auth_logout' %}">Déconnexion</a></li>
       </ul>
       {% else %}
       {% url 'auth_login' as login_url %}
@@ -82,9 +82,8 @@
   </nav>
   {% endblock %}
   {% block content %}{% endblock %}
-  {% block script %}
   <script src="{% static "lib/jquery/jquery.min.js" %}"></script>
   <script src="{% static "lib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-  {% endblock %}
+  {% block script %}{% endblock %}
 </body>
 </html>
