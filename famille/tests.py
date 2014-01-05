@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.http.request import QueryDict
 from django.test import TestCase
@@ -84,11 +86,11 @@ class EnfantFormTestCase(TestCase):
     def test_unzip_data(self):
         _in = {
             "e_name": ["Tom", "Jerry"],
-            "e_age": ["10", "11"]
+            "e_birthday": ["10", "11"]
         }
         out = [
-            {"e_name": "Tom", "e_age": "10"},
-            {"e_name": "Jerry", "e_age": "11"},
+            {"e_name": "Tom", "e_birthday": "10"},
+            {"e_name": "Jerry", "e_birthday": "11"},
         ]
         self.assertEqual(forms.EnfantForm.unzip_data(_in), out)
 
@@ -103,7 +105,9 @@ class FamilleFormTestCase(TestCase):
         self.user.save()
         self.famille = models.Famille(user=self.user)
         self.famille.save()
-        self.enfant = models.Enfant(famille=self.famille, e_name="Loulou", e_age=9)
+        self.enfant = models.Enfant(
+            famille=self.famille, e_name="Loulou", e_birthday=date.today()
+        )
         self.enfant.save()
 
     def tearDown(self):
@@ -117,7 +121,7 @@ class FamilleFormTestCase(TestCase):
         self.assertEqual(len(form.enfant_forms), 1)
 
         # data : adding a child
-        data = QueryDict("e_name=Loulou&e_name=Lili&e_age=10&e_age=12")
+        data = QueryDict("e_name=Loulou&e_name=Lili&e_birthday=2007-09-04&e_birthday=2003-01-20")
         form = forms.FamilleForm(data=data, instance=self.famille)
         self.assertEqual(len(form.enfant_forms), 2)
         self.assertEqual(form.enfants_to_delete, [])
@@ -137,8 +141,8 @@ class FamilleFormTestCase(TestCase):
 
         # adding a child
         data = [
-            {"e_name": "A", "e_age": "10"},
-            {"e_name": "B", "e_age": "9"},
+            {"e_name": "A", "e_birthday": "2007-09-04"},
+            {"e_name": "B", "e_birthday": "2003-01-12"},
         ]
         enfants = [self.enfant, ]
         enfant_list, to_delete = self.form.compute_enfants_diff(data, enfants, self.famille)
@@ -146,7 +150,7 @@ class FamilleFormTestCase(TestCase):
         self.assertEqual(list(to_delete), [])
 
         # removing a child
-        e2 = models.Enfant(famille=self.famille, e_name="B", e_age=10)
+        e2 = models.Enfant(famille=self.famille, e_name="B", e_birthday=date.today())
         e2.save()
         enfants.append(e2)
         data.pop()

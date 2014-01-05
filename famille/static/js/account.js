@@ -23,6 +23,7 @@
 
     // event handling
     $('.nav-tabs a:first').tab('show');
+    $('[data-toggle="tooltip"]').tooltip();
     $(".add-child").on("click", addChild);
     $(".remove-child").on("click", removeChild);
     // init

@@ -128,10 +128,13 @@ class FamilleForm(forms.ModelForm):
 class EnfantForm(forms.ModelForm):
     class Meta:
         model = Enfant
-        fields = ("e_name", "e_age")
+        fields = ("e_name", "e_birthday")
         labels = {
             "e_name": u"Prénom",
-            "e_age": "Age",
+            "e_birthday": "Date de naissance",
+        }
+        widgets = {
+            "e_birthday": forms.TextInput(attrs={'type':'date'}),
         }
 
     @classmethod

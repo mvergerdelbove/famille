@@ -23,7 +23,7 @@
 	      {% bootstrap_field field field_class="col-md-5" label_class="col-md-2" %}
 	      {% endfor %}
 	    </div>
-	    <div class="form col-md-5">
+	    <div class="form col-md-5 form-horizontal">
 	      <h4 class="margin-bottom-0">Enfants</h4>
 	      <div class="no-child">
 		Vous n'avez pas encore ajouté d'enfant à votre famille.
@@ -31,9 +31,9 @@
 	      <div class="child-container">
 		{% for form in form.enfant_forms %}
 		<div class="child-form">
-		  {% bootstrap_field form.e_name field_class="col-md-5 pull-left" label_class="sr-only" %}
-		  {% bootstrap_field form.e_age field_class="col-md-4 pull-left" label_class="sr-only" %}
-		  <i class="glyphicon glyphicon-minus remove-child"></i>
+		  {% bootstrap_field form.e_name field_class="col-sm-7" label_class="col-sm-5"%}
+		  {% bootstrap_field form.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
+		  <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
 		</div>
 		{% endfor %}
 	      </div>
@@ -46,9 +46,9 @@
 	</form>
 	<div class="empty-child-form hidden">
 	  <div class="child-form">
-	    {% bootstrap_field form.enfant_form_empty.e_name field_class="col-md-5 pull-left" label_class="sr-only" %}
-	    {% bootstrap_field form.enfant_form_empty.e_age field_class="col-md-4 pull-left" label_class="sr-only" %}
-	    <i class="glyphicon glyphicon-minus remove-child"></i>
+	    {% bootstrap_field form.enfant_form_empty.e_name field_class="col-sm-7" label_class="col-sm-5"%}
+	    {% bootstrap_field form.enfant_form_empty.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
+	    <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
 	  </div>
 	</div>
       </div>

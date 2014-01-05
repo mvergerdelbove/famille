@@ -1,13 +1,11 @@
 # -*- coding=utf-8 -*-
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from django.db import models
 
 
 class BaseModel(models.Model):
-    created_at = models.DateField(default=datetime.now)
-    updated_at = models.DateField(default=datetime.now)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
     class Meta:
         abstract = True
@@ -46,7 +44,7 @@ class Enfant(BaseModel):
     famille = models.ForeignKey(Famille, related_name="enfants")
     # compelled to do this naming because we cannot change the form field names...
     e_name = models.CharField(max_length=20, db_column="name")
-    e_age = models.PositiveSmallIntegerField(blank=True, db_column="age")
+    e_birthday = models.DateField(blank=True, db_column="birthday")
 
 
 class Prestataire(UserInfo):
