@@ -43,12 +43,21 @@ def register(request):
 def account(request):
     famille = Famille.objects.get(user=request.user)
     if request.method == "POST":
-        form = forms.FamilleForm(data=request.POST, instance=famille)
+        hash = ""
+        if request.POST["submit"] == "criteria":
+            hash = "#attentes"
+            FormClass = forms.FamilleCriteriaForm
+        else:
+            FormClass = forms.FamilleForm
+        form = FormClass(data=request.POST, instance=famille)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/mon-compte/')
+            return HttpResponseRedirect('/mon-compte/' + hash)
     else:
         form = forms.FamilleForm(instance=famille)
+        criteria_form = forms.FamilleCriteriaForm(instance=famille)
 
-    # TODO : template
-    return render(request, 'account.html', get_context(form=form))
+    return render(
+        request, 'account.html',
+        get_context(form=form, criteria_form=criteria_form)
+    )

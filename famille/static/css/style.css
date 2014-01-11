@@ -17,3 +17,7 @@
 .add-child:hover, .remove-child:hover {
     cursor: pointer;
 }
+
+.slider {
+    width: 100%;
+}

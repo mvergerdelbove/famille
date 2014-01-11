@@ -21,12 +21,32 @@
 	if (!hasChildren()) noChild.show();
     };
 
+    var initSlider = function($el){
+	var value = $el.val();
+	$el.slider({value: value});
+    };
+
+    var showTab = function(){
+	$('.nav-tabs a:first').tab('show');
+	if (document.location.hash){
+	    $('.nav-tabs a[href="' + document.location.hash + '"]').tab('show');
+	}
+    };
+
     // event handling
-    $('.nav-tabs a:first').tab('show');
     $('[data-toggle="tooltip"]').tooltip();
     $(".add-child").on("click", addChild);
     $(".remove-child").on("click", removeChild);
+    initSlider($("#id_tarif"));
+    $(".slider").removeAttr("style");
     // init
     if (hasChildren()) noChild.hide();
+    showTab();
+    $('.nav-tabs a').click(function (e) {
+	$(this).tab('show');
+	var scrollmem = $('body').scrollTop();
+	window.location.hash = this.hash;
+	$('html,body').scrollTop(scrollmem);
+    });
 
 })(jQuery);

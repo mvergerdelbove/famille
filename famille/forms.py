@@ -154,3 +154,43 @@ class EnfantForm(forms.ModelForm):
                 data_list[i][field] = value
 
         return data_list
+
+
+class FamilleCriteriaForm(forms.ModelForm):
+    class Meta:
+        model = Famille
+        labels = {
+            "type_garde": "Type de garde",
+            "type_presta": "Type de prestataire",
+            "tarif": u"Tarif horaire (€/h)",
+            "diploma": u"Diplôme souhaité",
+            "menage": u"Ménage",
+            "repassage": "Repassage",
+            "cdt_periscolaire": u"Conduite périscolaire",
+            "sortie_ecole": u"Sortie d'école",
+            "nuit": "Garde de nuit",
+            "non_fumeur": "Non-fumeur",
+            "devoirs": "Aide devoirs",
+            "urgence": "Garde d'urgence",
+            "psc1": "Premiers secours",
+            "permis": "Permis voiture",
+            "langue": u"Langue étrangère",
+            "baby": u"Expérience avec bébés",
+            "description": u"Plus de détails"
+        }
+        fields = labels.keys()
+        widgets = {
+            "tarif": forms.TextInput(
+                attrs={
+                    'type': 'text',
+                    'data-slider-min': '0',
+                    'data-slider-max': '80',
+                    'data-slider-step': '0.5'
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    'rows': '5',
+                }
+            )
+        }

@@ -3,6 +3,9 @@
 {% load staticfiles %}
 
 {% block title %} - Mon compte{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static "lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" %}" media="all"/>
+{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -41,7 +44,7 @@
 	    </div>
 	  </div>
 	  <div class="row"><div class="col-md-4 col-md-offset-5">
-	    <button type="submit" class="btn btn-success">Sauvegarder</button>
+	    <button type="submit" name="submit" value="profil" class="btn btn-success">Sauvegarder</button>
 	  </div></div>
 	</form>
 	<div class="empty-child-form hidden">
@@ -53,13 +56,68 @@
 	</div>
       </div>
       <div class="tab-pane fade" id="planning">...</div>
-      <div class="tab-pane fade" id="attentes">...</div>
+      <div class="tab-pane fade" id="attentes">
+	<form method="post" action="{% url "account" %}">
+	  {% csrf_token %}
+	  <div class="row">
+	    <div class="col-md-4">
+	      {% bootstrap_field criteria_form.type_garde %}
+	      {% bootstrap_field criteria_form.type_presta %}
+	      <!-- TODO proximité -->
+	    </div>
+	    <div class="col-md-8">
+	      <div class="row">
+		<div class="col-md-12">
+		  <div class="form form-horizontal">
+		    {% bootstrap_field criteria_form.tarif field_class="col-md-6" label_class="col-md-4"%}
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="col-md-6">
+		  {% bootstrap_field criteria_form.diploma %}
+		</div>
+		<div class="col-md-6">
+		  {% bootstrap_field criteria_form.langue %}
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="col-md-6">
+		  {% bootstrap_field criteria_form.devoirs %}
+		  {% bootstrap_field criteria_form.menage %}
+		  {% bootstrap_field criteria_form.repassage %}
+		  {% bootstrap_field criteria_form.cdt_periscolaire %}
+		  {% bootstrap_field criteria_form.sortie_ecole %}
+		  {% bootstrap_field criteria_form.nuit %}
+		</div>
+		<div class="col-md-6">
+		  {% bootstrap_field criteria_form.permis %}
+		  {% bootstrap_field criteria_form.non_fumeur %}
+		  {% bootstrap_field criteria_form.urgence %}
+		  {% bootstrap_field criteria_form.psc1 %}
+		  {% bootstrap_field criteria_form.baby %}
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="col-md-12">
+		  {% bootstrap_field criteria_form.description %}
+		</div>
+	      </div>
+	    </div>
+	    <div class="row"><div class="col-md-4 col-md-offset-5">
+		<button type="submit" name="submit" value="criteria" class="btn btn-success">Sauvegarder</button>
+	    </div></div>
+	  </div>
+	</form>
+      </div>
     </div>
   </div>
   <div class="col-md-4">
+    <!-- TODO : préférences, réglages -->
   </div>
 </div>
 {% endblock %}
 {% block script %}
+<script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/account.js" %}"></script>
 {% endblock %}
