@@ -3,6 +3,7 @@ from itertools import chain, izip_longest
 
 from django import forms
 from django.contrib.auth.models import User
+from localflavor.fr.forms import FRPhoneNumberField
 
 from famille.models import Famille, Prestataire, Enfant
 from famille.utils import isplit, pick, repeat_lambda
@@ -42,11 +43,14 @@ class SimpleSearchForm(forms.Form):
 
 
 class FamilleForm(forms.ModelForm):
+    tel = FRPhoneNumberField(required=False)
+
     class Meta:
         model = Famille
         fields = (
             'name', 'first_name', 'email', 'street',
             'postal_code', 'city', 'country',
+            'type', 'tel', 'tel_visible'
         )
         labels = {
             "name": "Nom",
@@ -54,7 +58,10 @@ class FamilleForm(forms.ModelForm):
             "street": "Rue",
             "postal_code": "Code postal",
             "city": "Ville",
-            "country": "Pays"
+            "country": "Pays",
+            "tel": u"Téléphone",
+            "tel_visible": u"Téléphone visible",
+            "type": u"Type de famille"
         }
 
     def __init__(self, *args, **kwargs):
@@ -76,9 +83,9 @@ class FamilleForm(forms.ModelForm):
             self.enfant_forms = map(
                 lambda e: EnfantForm(instance=e), enfants
             )
-            # binding an empty form anyway
-            self.enfant_form_empty = EnfantForm()
 
+        # binding an empty form anyway
+        self.enfant_form_empty = EnfantForm()
         super(FamilleForm, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -128,10 +135,11 @@ class FamilleForm(forms.ModelForm):
 class EnfantForm(forms.ModelForm):
     class Meta:
         model = Enfant
-        fields = ("e_name", "e_birthday")
+        fields = ("e_name", "e_birthday", "e_school")
         labels = {
             "e_name": u"Prénom",
             "e_birthday": "Date de naissance",
+            "e_school": u"Son école"
         }
         widgets = {
             "e_birthday": forms.TextInput(attrs={'type':'date'}),

@@ -46,10 +46,12 @@ def account(request):
         hash = ""
         if request.POST["submit"] == "criteria":
             hash = "#attentes"
-            FormClass = forms.FamilleCriteriaForm
+            criteria_form = forms.FamilleCriteriaForm(data=request.POST, instance=famille)
+            form = forms.FamilleForm(instance=famille)
         else:
-            FormClass = forms.FamilleForm
-        form = FormClass(data=request.POST, instance=famille)
+            criteria_form = forms.FamilleCriteriaForm(instance=famille)
+            form = forms.FamilleForm(data=request.POST,instance=famille)
+
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/mon-compte/' + hash)

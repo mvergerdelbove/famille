@@ -60,11 +60,19 @@ class Famille(UserInfo):
         "mat": "Garde par une assistante maternelle",
         "struct": "Structure d'accueil",
     }
+    TYPE_FAMILLE = {
+        "mono": "Famille monoparentale",
+        "foyer": "Famille Mère/Père au foyer",
+        "actif": "Famille couple actif",
+    }
 
     street = models.CharField(blank=True, null=True, max_length=100)
     postal_code = models.CharField(blank=True, null=True, max_length=8)
     city = models.CharField(blank=True, null=True, max_length=40)
     country = models.CharField(blank=True, max_length=20, default="France")
+    tel = models.CharField(blank=True, null=True, max_length=15)
+    tel_visible = models.BooleanField(blank=True, default=False)
+    type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     # TODO : planning
 
     # criteres
@@ -72,7 +80,7 @@ class Famille(UserInfo):
     type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     tarif = models.FloatField(blank=True, null=True)
-    diploma = models.CharField(blank=True, null=True, max_length=30, choices=Prestataire.DIPLOMA.items())
+    diploma = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.DIPLOMA.items())
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)
     cdt_periscolaire = models.BooleanField(blank=True, default=False)
@@ -94,4 +102,5 @@ class Enfant(BaseModel):
     famille = models.ForeignKey(Famille, related_name="enfants")
     # compelled to do this naming because we cannot change the form field names...
     e_name = models.CharField(max_length=20, db_column="name")
-    e_birthday = models.DateField(blank=True, db_column="birthday")
+    e_birthday = models.DateField(blank=True, null=True, db_column="birthday")
+    e_school = models.CharField(blank=True, null=True, max_length=50, db_column="school")
