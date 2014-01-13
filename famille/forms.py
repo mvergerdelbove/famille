@@ -42,15 +42,14 @@ class SimpleSearchForm(forms.Form):
     postal_code = forms.CharField(label="Code postal")
 
 
-class FamilleForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
     tel = FRPhoneNumberField(required=False)
 
     class Meta:
-        model = Famille
         fields = (
             'name', 'first_name', 'email', 'street',
             'postal_code', 'city', 'country',
-            'type', 'tel', 'tel_visible'
+            'tel', 'tel_visible'
         )
         labels = {
             "name": "Nom",
@@ -61,8 +60,14 @@ class FamilleForm(forms.ModelForm):
             "country": "Pays",
             "tel": u"Téléphone",
             "tel_visible": u"Téléphone visible",
-            "type": u"Type de famille"
         }
+
+
+class FamilleForm(UserForm):
+    class Meta:
+        model = Famille
+        fields = UserForm.Meta.fields + ('type', )
+        labels = dict(UserForm.Meta.labels, type="Type de famille")
 
     def __init__(self, *args, **kwargs):
         self.enfants_to_delete, enfants, instance = [], [], None
@@ -202,3 +207,9 @@ class FamilleCriteriaForm(forms.ModelForm):
                 }
             )
         }
+
+class PrestataireForm(UserForm):
+    class Meta:
+        model = Prestataire
+        fields = UserForm.Meta.fields + ("type", "sub_types")
+        labels = dict(UserForm.Meta.labels, type="Type de prestataire")

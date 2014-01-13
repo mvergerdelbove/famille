@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required as django_login_required
-from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from famille import forms
-from famille.models import Famille
+from famille.models import Famille, Prestataire, get_user_related
 from famille.utils import get_context
 
 
@@ -41,25 +42,62 @@ def register(request):
 
 @login_required
 def account(request):
-    famille = Famille.objects.get(user=request.user)
+    try:
+        related = get_user_related(request.user)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    if isinstance(related, Famille):
+        return famille_account(request, related)
+    return prestataire_account(request, related)
+
+
+def famille_account(request, famille):
     if request.method == "POST":
         hash = ""
         if request.POST["submit"] == "criteria":
             hash = "#attentes"
             criteria_form = forms.FamilleCriteriaForm(data=request.POST, instance=famille)
             form = forms.FamilleForm(instance=famille)
+            form_to_validate = criteria_form
         else:
             criteria_form = forms.FamilleCriteriaForm(instance=famille)
-            form = forms.FamilleForm(data=request.POST,instance=famille)
+            form = forms.FamilleForm(data=request.POST, instance=famille)
+            form_to_validate = form
 
-        if form.is_valid():
-            form.save()
+        if form_to_validate.is_valid():
+            form_to_validate.save()
             return HttpResponseRedirect('/mon-compte/' + hash)
     else:
         form = forms.FamilleForm(instance=famille)
         criteria_form = forms.FamilleCriteriaForm(instance=famille)
 
     return render(
-        request, 'account.html',
+        request, 'famille_account.html',
         get_context(form=form, criteria_form=criteria_form)
+    )
+
+
+def prestataire_account(request, prestataire):
+    if request.method == "POST":
+#         hash = ""
+#         if request.POST["submit"] == "criteria":
+#             hash = "#attentes"
+#             criteria_form = forms.FamilleCriteriaForm(data=request.POST, instance=famille)
+#             form = forms.FamilleForm(instance=famille)
+#             form_to_validate = criteria_form
+#         else:
+        # criteria_form = forms.FamilleCriteriaForm(instance=famille)
+        form = forms.PrestataireForm(data=request.POST, instance=prestataire)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/mon-compte/')
+    else:
+        form = forms.PrestataireForm(instance=prestataire)
+        # criteria_form = forms.FamilleCriteriaForm(instance=famille)
+
+    return render(
+        request, 'prestataire_account.html',
+        get_context(form=form)
     )

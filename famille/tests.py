@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
@@ -196,3 +197,23 @@ class FamilleFormTestCase(TestCase):
         self.assertIsInstance(out, models.Famille)
         self.assertTrue(self.form.enfants_to_delete[0].delete.called)
         self.assertTrue(self.form.enfants_to_delete[1].delete.called)
+
+
+class ModelsTestCase(TestCase):
+
+    def setUp(self):
+        self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
+        models.Famille(user=self.user1).save()
+        self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
+        models.Prestataire(user=self.user2).save()
+        self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
+
+    def tearDown(self):
+        User.objects.all().delete()
+        models.Famille.objects.all().delete()
+        models.Prestataire.objects.all().delete()
+
+    def test_get_user_related(self):
+        self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
+        self.assertIsInstance(models.get_user_related(self.user2), models.Prestataire)
+        self.assertRaises(ObjectDoesNotExist, models.get_user_related, self.user3)
