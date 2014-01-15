@@ -213,3 +213,47 @@ class PrestataireForm(UserForm):
         model = Prestataire
         fields = UserForm.Meta.fields + ("type", "sub_types")
         labels = dict(UserForm.Meta.labels, type="Type de prestataire")
+
+
+class AccountFormManager(object):
+
+    base_form_classes = {
+        "famille": {
+            "attentes": FamilleCriteriaForm,
+            "profil": FamilleForm
+        },
+        "prestataire": {
+            "profil": PrestataireForm
+        }
+    }
+
+    def __init__(self, instance, data=None):
+        self.instance = instance
+        self.instance_type = instance.__class__.__name__.lower()
+        self.form_classes = self.base_form_classes[self.instance_type]
+        self.data = data or {}
+        self.form_submitted = self.data.get("submit", None)
+        self.init_forms()
+
+    def init_forms(self):
+        """
+        Initialize the forms using data and instance.
+        """
+        self.forms = {}
+        for key, Form in self.form_classes.iteritems():
+            if key == self.form_submitted:
+                self.forms[key] = Form(data=self.data, instance=self.instance)
+            else:
+                self.forms[key] = Form(instance=self.instance)
+
+    def is_valid(self):
+        """
+        Validate the submitted form.
+        """
+        return self.form_submitted and self.forms[self.form_submitted].is_valid()
+
+    def save(self):
+        """
+        Save the submitted form.
+        """
+        return self.forms[self.form_submitted].save()

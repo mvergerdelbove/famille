@@ -199,6 +199,41 @@ class FamilleFormTestCase(TestCase):
         self.assertTrue(self.form.enfants_to_delete[1].delete.called)
 
 
+class AccountFormManager(TestCase):
+    def setUp(self):
+        self.famille = models.Famille()
+        self.prestataire = models.Prestataire()
+
+    def test_init(self):
+        # no data famille
+        m = forms.AccountFormManager(instance=self.famille)
+        self.assertIsNone(m.form_submitted)
+        self.assertEqual(m.instance_type, "famille")
+        self.assertFalse(m.is_valid())
+        self.assertIsInstance(m.forms["profil"], forms.FamilleForm)
+
+        # no data prestataire
+        m = forms.AccountFormManager(instance=self.prestataire)
+        self.assertEqual(m.instance_type, "prestataire")
+        self.assertFalse(m.is_valid())
+        self.assertIsInstance(m.forms["profil"], forms.PrestataireForm)
+
+        # data
+        data = {"submit": "attentes"}
+        m = forms.AccountFormManager(instance=self.famille, data=data)
+        m.forms["attentes"].is_valid = MagicMock(return_value=True)
+        m.forms["profil"].is_valid = MagicMock(return_value=False)
+        m.forms["attentes"].save = MagicMock()
+        m.forms["profil"].save = MagicMock()
+
+        self.assertTrue(m.is_valid())
+        self.assertTrue(m.forms["attentes"].is_valid.called)
+        self.assertFalse(m.forms["profil"].is_valid.called)
+        m.save()
+        self.assertTrue(m.forms["attentes"].save.called)
+        self.assertFalse(m.forms["profil"].save.called)
+
+
 class ModelsTestCase(TestCase):
 
     def setUp(self):

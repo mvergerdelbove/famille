@@ -11,18 +11,18 @@
 <div class="row">
   <div class="col-md-offset-1 col-md-7">
     <ul class="nav nav-tabs">
-      <li><a href="#compte" data-toggle="tab">Mon compte</a></li>
+      <li><a href="#profil" data-toggle="tab">Mon compte</a></li>
       <li><a href="#planning" data-toggle="tab">Planning</a></li>
       <li><a href="#attentes" data-toggle="tab">Attentes</a></li>
     </ul>
     <div class="tab-content margin-top-1">
-      <div class="tab-pane fade in active" id="compte">
+      <div class="tab-pane fade in active" id="profil">
 	<form method="post" action="{% url "account" %}">
 	  {% csrf_token %}
 	  <div class="row">
 	    <div class="form form-horizontal col-md-7">
 	      <h4 class="margin-bottom-0">Coordonnées</h4>
-	      {% for field in form %}
+	      {% for field in profil %}
 	      {% bootstrap_field field field_class="col-md-5" label_class="col-md-2" %}
 	      {% endfor %}
 	    </div>
@@ -32,7 +32,7 @@
 		Vous n'avez pas encore ajouté d'enfant à votre famille.
 	      </div>
 	      <div class="child-container">
-		{% for form in form.enfant_forms %}
+		{% for form in profil.enfant_forms %}
 		<div class="child-form clearfix">
 		  {% bootstrap_field form.e_name field_class="col-sm-7" label_class="col-sm-5"%}
 		  {% bootstrap_field form.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
@@ -50,9 +50,9 @@
 	</form>
 	<div class="empty-child-form hidden">
 	  <div class="child-form clearfix">
-	    {% bootstrap_field form.enfant_form_empty.e_name field_class="col-sm-7" label_class="col-sm-5"%}
-	    {% bootstrap_field form.enfant_form_empty.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
-	    {% bootstrap_field form.enfant_form_empty.e_school field_class="col-sm-7" label_class="col-sm-5"%}
+	    {% bootstrap_field profil.enfant_form_empty.e_name field_class="col-sm-7" label_class="col-sm-5"%}
+	    {% bootstrap_field profil.enfant_form_empty.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
+	    {% bootstrap_field profil.enfant_form_empty.e_school field_class="col-sm-7" label_class="col-sm-5"%}
 	    <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
 	  </div>
 	</div>
@@ -63,51 +63,51 @@
 	  {% csrf_token %}
 	  <div class="row">
 	    <div class="col-md-4">
-	      {% bootstrap_field criteria_form.type_garde %}
-	      {% bootstrap_field criteria_form.type_presta %}
+	      {% bootstrap_field attentes.type_garde %}
+	      {% bootstrap_field attentes.type_presta %}
 	      <!-- TODO proximité -->
 	    </div>
 	    <div class="col-md-8">
 	      <div class="row">
 		<div class="col-md-12">
 		  <div class="form form-horizontal">
-		    {% bootstrap_field criteria_form.tarif field_class="col-md-6" label_class="col-md-4"%}
+		    {% bootstrap_field attentes.tarif field_class="col-md-6" label_class="col-md-4"%}
 		  </div>
 		</div>
 	      </div>
 	      <div class="row">
 		<div class="col-md-6">
-		  {% bootstrap_field criteria_form.diploma %}
+		  {% bootstrap_field attentes.diploma %}
 		</div>
 		<div class="col-md-6">
-		  {% bootstrap_field criteria_form.langue %}
+		  {% bootstrap_field attentes.langue %}
 		</div>
 	      </div>
 	      <div class="row">
 		<div class="col-md-6">
-		  {% bootstrap_field criteria_form.devoirs %}
-		  {% bootstrap_field criteria_form.menage %}
-		  {% bootstrap_field criteria_form.repassage %}
-		  {% bootstrap_field criteria_form.cdt_periscolaire %}
-		  {% bootstrap_field criteria_form.sortie_ecole %}
-		  {% bootstrap_field criteria_form.nuit %}
+		  {% bootstrap_field attentes.devoirs %}
+		  {% bootstrap_field attentes.menage %}
+		  {% bootstrap_field attentes.repassage %}
+		  {% bootstrap_field attentes.cdt_periscolaire %}
+		  {% bootstrap_field attentes.sortie_ecole %}
+		  {% bootstrap_field attentes.nuit %}
 		</div>
 		<div class="col-md-6">
-		  {% bootstrap_field criteria_form.permis %}
-		  {% bootstrap_field criteria_form.non_fumeur %}
-		  {% bootstrap_field criteria_form.urgence %}
-		  {% bootstrap_field criteria_form.psc1 %}
-		  {% bootstrap_field criteria_form.baby %}
+		  {% bootstrap_field attentes.permis %}
+		  {% bootstrap_field attentes.non_fumeur %}
+		  {% bootstrap_field attentes.urgence %}
+		  {% bootstrap_field attentes.psc1 %}
+		  {% bootstrap_field attentes.baby %}
 		</div>
 	      </div>
 	      <div class="row">
 		<div class="col-md-12">
-		  {% bootstrap_field criteria_form.description %}
+		  {% bootstrap_field attentes.description %}
 		</div>
 	      </div>
 	    </div>
 	    <div class="row"><div class="col-md-4 col-md-offset-5">
-		<button type="submit" name="submit" value="criteria" class="btn btn-success">Sauvegarder</button>
+		<button type="submit" name="submit" value="attentes" class="btn btn-success">Sauvegarder</button>
 	    </div></div>
 	  </div>
 	</form>
