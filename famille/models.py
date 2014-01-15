@@ -66,6 +66,7 @@ class Criteria(UserInfo):
         "it": "Italien",
     }
 
+    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE.items())
     diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)
@@ -78,6 +79,8 @@ class Criteria(UserInfo):
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
     baby = models.BooleanField(blank=True, default=False)
+    tarif = models.FloatField(blank=True, null=True)
+    description = models.CharField(blank=True, null=True, max_length=400)
 
     class Meta:
         abstract = True
@@ -106,6 +109,7 @@ class Prestataire(Criteria):
     level_de = models.CharField(**language_kw)
     level_es = models.CharField(**language_kw)
     level_it = models.CharField(**language_kw)
+    other_language = models.CharField(blank=True, null=True, max_length=50)
 
 
 class Famille(Criteria):
@@ -120,11 +124,8 @@ class Famille(Criteria):
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     # TODO : planning
-    description = models.CharField(blank=True, null=True, max_length=400)
-    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=Criteria.TYPES_GARDE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
-    tarif = models.FloatField(blank=True, null=True)
 
 
 class Enfant(BaseModel):

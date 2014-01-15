@@ -64,7 +64,7 @@ class UserForm(forms.ModelForm):
 
 
 class FamilleForm(UserForm):
-    class Meta:
+    class Meta(UserForm.Meta):
         model = Famille
         fields = UserForm.Meta.fields + ('type', )
         labels = dict(UserForm.Meta.labels, type="Type de famille")
@@ -82,7 +82,6 @@ class FamilleForm(UserForm):
             enfants, self.enfants_to_delete = self.compute_enfants_diff(data, enfants, instance)
             data = izip_longest(data, enfants)
             init_forms = lambda d: EnfantForm(data=d[0], instance=d[1])
-
             self.enfant_forms = map(init_forms, data)
         else:
             self.enfant_forms = map(
@@ -169,12 +168,10 @@ class EnfantForm(forms.ModelForm):
         return data_list
 
 
-class FamilleCriteriaForm(forms.ModelForm):
+class CriteriaForm(forms.ModelForm):
     class Meta:
-        model = Famille
         labels = {
             "type_garde": "Type de garde",
-            "type_presta": "Type de prestataire",
             "tarif": u"Tarif horaire (€/h)",
             "diploma": u"Diplôme souhaité",
             "menage": u"Ménage",
@@ -187,7 +184,6 @@ class FamilleCriteriaForm(forms.ModelForm):
             "urgence": "Garde d'urgence",
             "psc1": "Premiers secours",
             "permis": "Permis voiture",
-            "langue": u"Langue étrangère",
             "baby": u"Expérience avec bébés",
             "description": u"Plus de détails"
         }
@@ -208,22 +204,46 @@ class FamilleCriteriaForm(forms.ModelForm):
             )
         }
 
+
+class FamilleCriteriaForm(CriteriaForm):
+    class Meta(CriteriaForm.Meta):
+        model = Famille
+        labels = dict(
+            CriteriaForm.Meta.labels, type_presta="Type de prestataire",
+            langue=u"Langue étrangère"
+        )
+        fields = labels.keys()
+
+
 class PrestataireForm(UserForm):
-    class Meta:
+    class Meta(UserForm.Meta):
         model = Prestataire
         fields = UserForm.Meta.fields + ("type", "sub_types")
         labels = dict(UserForm.Meta.labels, type="Type de prestataire")
 
 
-class AccountFormManager(object):
+class PrestataireCompetenceForm(CriteriaForm):
+    class Meta(CriteriaForm.Meta):
+        model = Prestataire
+        fields = CriteriaForm.Meta.fields + [
+            "level_en", "level_de", "level_es", "level_it", "other_language"
+        ]
+        labels = dict(
+            CriteriaForm.Meta.labels, diploma=u"Diplôme", level_en="Anglais",
+            level_de="Allemand", level_es="Espagnol", level_it="Italien",
+            other_language="Autre langue"
+        )
 
+
+class AccountFormManager(object):
     base_form_classes = {
         "famille": {
             "attentes": FamilleCriteriaForm,
             "profil": FamilleForm
         },
         "prestataire": {
-            "profil": PrestataireForm
+            "profil": PrestataireForm,
+            "competences": PrestataireCompetenceForm
         }
     }
 
