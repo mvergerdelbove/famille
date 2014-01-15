@@ -5,7 +5,7 @@ def get_context(**kwargs):
     """
     Minimum context configuration for all the templates.
     """
-    kwargs.update(site_title="Un air de famille")
+    kwargs.update(site_title="Une vie de famille")
     return kwargs
 
 def pick(d, *args):

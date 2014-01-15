@@ -20,6 +20,7 @@ urlpatterns = patterns(
         'extra_context': {'action': 'logged_out'}
     }, name='auth_logout'),
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
+    url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register/$', 'famille.views.register', name="register"),
     url(
         r'^confirmation/$', TemplateView.as_view(template_name="confirmation.html"),

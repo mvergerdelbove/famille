@@ -277,3 +277,13 @@ class AccountFormManager(object):
         Save the submitted form.
         """
         return self.forms[self.form_submitted].save()
+
+
+class SearchForm(forms.Form):
+    postal_code = forms.CharField(label="Code postal")
+    type_garde = forms.MultipleChoiceField(label="Type de garde", choices=Prestataire.TYPES_GARDE.items())
+    diploma = forms.MultipleChoiceField(label=u"Diplôme", choices=Prestataire.DIPLOMA.items())
+    language = forms.MultipleChoiceField(label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items())
+
+    class Meta:
+        pass

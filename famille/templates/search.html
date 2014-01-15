@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %} - Recherche{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static "lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" %}" media="all"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 col-md-offset-1">
+        <div data-spy="affix" data-offset-top="0">
+            <h3>Rechercher un prestataire</h3>
+            <form class="form">
+                {% for field in search_form %}
+                {% bootstrap_field field %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6 col-md-offset-1">
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
+<script src="{% static "js/search.js" %}"></script>
+{% endblock %}

@@ -25,6 +25,11 @@ def home(request):
         get_context(search_form=search_form, registration_form=registration_form)
     )
 
+def search(request):
+    """
+    Search view.
+    """
+    return render(request, "search.html", get_context(search_form=forms.SearchForm()))
 
 @require_POST
 def register(request):
