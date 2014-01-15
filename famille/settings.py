@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'south',
     'localflavor',
+    'tastypie',
     'famille',
 )
 

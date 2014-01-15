@@ -1,9 +1,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
+from tastypie.api import Api
+
+from famille import resources
 
 
 admin.autodiscover()
+api = Api(api_name='v1')
+api.register(resources.PrestataireResource())
 
 
 urlpatterns = patterns(
@@ -22,4 +27,5 @@ urlpatterns = patterns(
     ),
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(api.urls)),
 )
