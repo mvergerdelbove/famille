@@ -29,7 +29,12 @@ def search(request):
     """
     Search view.
     """
-    return render(request, "search.html", get_context(search_form=forms.SearchForm()))
+    data = request.POST if request.method == "POST" else request.GET
+    form = forms.SearchForm(data)
+    if not form.is_valid():
+        form = forms.SearchForm()
+
+    return render(request, "search.html", get_context(search_form=form))
 
 @require_POST
 def register(request):

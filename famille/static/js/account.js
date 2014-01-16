@@ -17,20 +17,20 @@
     };
 
     var removeChild = function(e){
-	$(e.target).parent(".child-form").remove();
-		if (!hasChildren()) noChild.show();
+        $(e.target).parent(".child-form").remove();
+        if (!hasChildren()) noChild.show();
     };
 
     var initSlider = function($el){
-	var value = $el.val();
-		$el.slider({value: value});
+        var value = $el.val();
+        $el.slider({value: value});
     };
 
     var showTab = function(){
-	$('.nav-tabs a:first').tab('show');
-		if (document.location.hash){
-			$('.nav-tabs a[href="' + document.location.hash + '"]').tab('show');
-		}
+        $('.nav-tabs a:first').tab('show');
+        if (document.location.hash){
+            $('.nav-tabs a[href="' + document.location.hash + '"]').tab('show');
+        }
     };
 
     // event handling

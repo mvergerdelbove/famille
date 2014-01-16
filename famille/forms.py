@@ -38,10 +38,6 @@ class RegistrationForm(forms.Form):
         pass
 
 
-class SimpleSearchForm(forms.Form):
-    postal_code = forms.CharField(label="Code postal")
-
-
 class UserForm(forms.ModelForm):
     tel = FRPhoneNumberField(required=False)
 
@@ -279,11 +275,39 @@ class AccountFormManager(object):
         return self.forms[self.form_submitted].save()
 
 
-class SearchForm(forms.Form):
+class SimpleSearchForm(forms.Form):
     postal_code = forms.CharField(label="Code postal")
-    type_garde = forms.MultipleChoiceField(label="Type de garde", choices=Prestataire.TYPES_GARDE.items())
-    diploma = forms.MultipleChoiceField(label=u"Diplôme", choices=Prestataire.DIPLOMA.items())
-    language = forms.MultipleChoiceField(label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items())
 
-    class Meta:
-        pass
+
+class SearchForm(forms.Form):
+    # classic
+    city = forms.CharField(label="Ville", required=False)
+    postal_code = forms.CharField(label="Code postal", required=False) # TODO : add completion on frontend
+    type_garde = forms.MultipleChoiceField(
+        label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False
+    ) # TODO: add select2
+    diploma = forms.MultipleChoiceField(label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False)
+    language = forms.MultipleChoiceField(label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False)
+    tarif = forms.CharField(
+        label=u"Tarif horaire (€/h)", widget=forms.TextInput(
+            attrs={
+                'type': 'text',
+                'data-slider-min': '0',
+                'data-slider-max': '80',
+                'data-slider-step': '0.5'
+            }
+        ), required=False
+    )
+    # extra 1
+    cdt_periscolaire = forms.BooleanField(label=u"Conduite périscolaire", required=False)
+    sortie_ecole = forms.BooleanField(label=u"Sortie d'école", required=False)
+    baby = forms.BooleanField(label=u"Expérience avec bébés", required=False)
+    devoirs = forms.BooleanField(label=u"Aide devoirs", required=False)
+    menage = forms.BooleanField(label=u"Ménage", required=False)
+    repassage = forms.BooleanField(label=u"Repassage", required=False)
+    # extra 2
+    psc1 = forms.BooleanField(label=u"Premiers secours", required=False)
+    permis = forms.BooleanField(label=u"Permis voiture", required=False)
+    urgence = forms.BooleanField(label=u"Garde d'urgence", required=False)
+    nuit = forms.BooleanField(label=u"Garde de nuit", required=False)
+    non_fumeur = forms.BooleanField(label=u"Non-fumeur", required=False)

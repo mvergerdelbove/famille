@@ -12,7 +12,7 @@
       </header>
       <div class="col-md-12">
 	<p>Consultez gratuitement toutes les propositions près de chez vous</p>
-	<form class="form-inline" role="search" method="post" action="TODO">
+	<form class="form-inline" role="search" method="post" action="{% url 'search' %}">
 	  {% csrf_token %}
 	  {% for field in search_form %}
 	  {% bootstrap_field field show_label=False %}
