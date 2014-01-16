@@ -8,6 +8,19 @@ def get_context(**kwargs):
     kwargs.update(site_title="Une vie de famille")
     return kwargs
 
+
+def get_result_template_from_user(request):
+    """
+    Retrieve the template name to display the
+    search results from the request. It will
+    depend on the user right to see some / all
+    parts of the results.
+
+    :param request:          an HTTP request
+    """
+    return "simple_results.html"
+
+
 def pick(d, *args):
     """
     Pick some keys on a given dictionary.

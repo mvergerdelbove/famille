@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required as django_login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404
@@ -6,7 +7,7 @@ from django.views.decorators.http import require_POST
 
 from famille import forms
 from famille.models import Famille, Prestataire, get_user_related
-from famille.utils import get_context
+from famille.utils import get_context, get_result_template_from_user
 
 
 login_required = django_login_required(
@@ -34,7 +35,12 @@ def search(request):
     if not form.is_valid():
         form = forms.SearchForm()
 
-    return render(request, "search.html", get_context(search_form=form))
+    objects = Prestataire.objects.all()[:settings.NB_SEARCH_RESULTS]
+    template = get_result_template_from_user(request)
+    return render(
+        request, "search.html",
+        get_context(search_form=form, results=objects, result_template=template)
+    )
 
 @require_POST
 def register(request):

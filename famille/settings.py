@@ -95,3 +95,5 @@ TEMPLATE_DIRS = (
 
 for key in os.environ:
     globals()[key] = os.environ[key]
+
+NB_SEARCH_RESULTS = 5

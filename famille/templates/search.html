@@ -12,7 +12,7 @@
     <div class="col-md-3 col-md-offset-1">
             <h3>Rechercher un prestataire</h3>
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#c-classic">
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#c-plus">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#c-other">
@@ -77,6 +77,10 @@
             </div>
     </div>
     <div class="col-md-6 col-md-offset-1">
+        <h3>Résultats</h3>
+        {% for result in results %}
+        {% include result_template with prestataire=result only %}
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
