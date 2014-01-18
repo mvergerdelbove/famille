@@ -2,7 +2,10 @@
     "name": "famille",
     "version": "0.0.1",
     "dependencies": {
+        "backbone": "1.1.0",
         "bootstrap": "3.0.3",
-        "seiyria-bootstrap-slider": "1.9.5"
+        "jquery.cookie": "1.4.0",
+        "seiyria-bootstrap-slider": "1.9.5",
+        "underscore": "1.5.2"
     }
 }

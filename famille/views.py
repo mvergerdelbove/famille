@@ -39,7 +39,10 @@ def search(request):
     template = get_result_template_from_user(request)
     return render(
         request, "search.html",
-        get_context(search_form=form, results=objects, result_template=template)
+        get_context(
+            search_form=form, results=objects, result_template=template,
+            nb_search_results=settings.NB_SEARCH_RESULTS
+        )
     )
 
 @require_POST

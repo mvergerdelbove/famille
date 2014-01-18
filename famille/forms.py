@@ -281,13 +281,25 @@ class SimpleSearchForm(forms.Form):
 
 class SearchForm(forms.Form):
     # classic
-    city = forms.CharField(label="Ville", required=False)
-    postal_code = forms.CharField(label="Code postal", required=False) # TODO : add completion on frontend
+    city = forms.CharField(
+        label="Ville", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
+    )
+    postal_code = forms.CharField(
+        label="Code postal", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
+    ) # TODO : add completion on frontend
     type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False
+        label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     ) # TODO: add select2
-    diploma = forms.MultipleChoiceField(label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False)
-    language = forms.MultipleChoiceField(label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False)
+    diploma = forms.MultipleChoiceField(
+        label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    language = forms.MultipleChoiceField(
+        label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
+    )
     tarif = forms.CharField(
         label=u"Tarif horaire (€/h)", widget=forms.TextInput(
             attrs={
@@ -297,7 +309,7 @@ class SearchForm(forms.Form):
                 'data-slider-step': '0.5'
             }
         ), required=False
-    )
+    ) # TODO: range, not slider
     # extra 1
     cdt_periscolaire = forms.BooleanField(label=u"Conduite périscolaire", required=False)
     sortie_ecole = forms.BooleanField(label=u"Sortie d'école", required=False)

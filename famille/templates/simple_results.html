@@ -3,11 +3,12 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    {{ prestataire.first_name }} {{ prestataire.name }}
-                    <span class="panel-subtitle">- {{ prestataire.city }}</span>
+                    <span data-field="first_name">{{ prestataire.first_name }}</span>
+                    <span data-field="name">{{ prestataire.name }}</span> -
+                    <span data-field="city" class="panel-subtitle">{{ prestataire.city }}</span>
                 </h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" data-field="description">
                 {{ prestataire.description }}
             </div>
         </div>

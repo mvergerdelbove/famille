@@ -8,9 +8,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row search-view">
     <div class="col-md-3 col-md-offset-1">
             <h3>Rechercher un prestataire</h3>
+            <p>
+                Voir les résultats pour ces critères
+                <button type="button" class="btn btn-xs btn-primary do-search"><i class="glyphicon glyphicon-play"></i></button>
+            </p>
             <div class="panel-group" id="accordion">
                 <div class="panel panel-info">
                     <div class="panel-heading">
@@ -22,7 +26,7 @@
                     </div>
                     <div id="c-classic" class="panel-collapse collapse in">
                         <div class="panel-body">
-                            <form class="form">
+                            <form class="form form-search">
                                 {% bootstrap_field search_form.city %}
                                 {% bootstrap_field search_form.postal_code %}
                                 {% bootstrap_field search_form.tarif %}
@@ -43,7 +47,7 @@
                     </div>
                     <div id="c-plus" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <form class="form">
+                            <form class="form form-search">
                                 {% bootstrap_field search_form.cdt_periscolaire %}
                                 {% bootstrap_field search_form.sortie_ecole %}
                                 {% bootstrap_field search_form.baby %}
@@ -64,7 +68,7 @@
                     </div>
                     <div id="c-other" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <form class="form">
+                            <form class="form form-search">
                                 {% bootstrap_field search_form.permis %}
                                 {% bootstrap_field search_form.urgence %}
                                 {% bootstrap_field search_form.psc1 %}
@@ -78,14 +82,25 @@
     </div>
     <div class="col-md-6 col-md-offset-1">
         <h3>Résultats</h3>
-        {% for result in results %}
-        {% include result_template with prestataire=result only %}
-        {% endfor %}
+        <div class="search-results">
+            {% for result in results %}
+            {% include result_template with prestataire=result only %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="hidden">
+        <div class="empty-result-template">
+            {% include result_template only %}
+        </div>
+        <input type="hidden" class="nb-search-results" value="{{ nb_search_results }}"/>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
+<script src="{% static "lib/underscore/underscore-min.js" %}"></script>
+<script src="{% static "lib/backbone/backbone-min.js" %}"></script>
+<script src="{% static "lib/jquery.cookie/jquery.cookie.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 {% endblock %}
