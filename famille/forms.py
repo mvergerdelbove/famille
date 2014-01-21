@@ -283,7 +283,7 @@ class SearchForm(forms.Form):
     # classic
     city = forms.CharField(
         label="Ville", required=False,
-        widget=forms.TextInput(attrs={"data-api": "iexact"})
+        widget=forms.TextInput(attrs={"data-api": "icontains"})
     )
     postal_code = forms.CharField(
         label="Code postal", required=False,
@@ -311,15 +311,48 @@ class SearchForm(forms.Form):
         ), required=False
     ) # TODO: range, not slider
     # extra 1
-    cdt_periscolaire = forms.BooleanField(label=u"Conduite périscolaire", required=False)
-    sortie_ecole = forms.BooleanField(label=u"Sortie d'école", required=False)
-    baby = forms.BooleanField(label=u"Expérience avec bébés", required=False)
-    devoirs = forms.BooleanField(label=u"Aide devoirs", required=False)
-    menage = forms.BooleanField(label=u"Ménage", required=False)
-    repassage = forms.BooleanField(label=u"Repassage", required=False)
+    cdt_periscolaire = forms.BooleanField(
+        label=u"Conduite périscolaire", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    sortie_ecole = forms.BooleanField(
+        label=u"Sortie d'école", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    baby = forms.BooleanField(
+        label=u"Expérience avec bébés", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    devoirs = forms.BooleanField(
+        label=u"Aide devoirs", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    menage = forms.BooleanField(
+        label=u"Ménage", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    repassage = forms.BooleanField(
+        label=u"Repassage", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
     # extra 2
-    psc1 = forms.BooleanField(label=u"Premiers secours", required=False)
-    permis = forms.BooleanField(label=u"Permis voiture", required=False)
-    urgence = forms.BooleanField(label=u"Garde d'urgence", required=False)
-    nuit = forms.BooleanField(label=u"Garde de nuit", required=False)
-    non_fumeur = forms.BooleanField(label=u"Non-fumeur", required=False)
+    psc1 = forms.BooleanField(
+        label=u"Premiers secours", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    permis = forms.BooleanField(
+        label=u"Permis voiture", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    urgence = forms.BooleanField(
+        label=u"Garde d'urgence", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    nuit = forms.BooleanField(
+        label=u"Garde de nuit", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    non_fumeur = forms.BooleanField(
+        label=u"Non-fumeur", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )

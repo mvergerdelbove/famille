@@ -1,7 +1,8 @@
-//(function($){
+(function($){
     window.famille = window.famille || {};
 
-    var searchApi = location.origin + "/api/v1/prestataires/?",
+    var baseUrl = location.origin,
+        searchApi = "/api/v1/prestataires/?",
         nbSearchResults = parseInt($(".nb-search-results").val(), 10),
         emptyResultTemplate = $(".empty-result-template").html();
 
@@ -25,10 +26,15 @@
         }).join("&");
     };
 
+    var sortedQueryString = function(uri){
+        return uri.substring(uri.indexOf('?') + 1).split("&").sort().join("&");
+    };
+
     var Router = Backbone.Router.extend({
         initialize: function(options){
+            _.bindAll(this, "processResults");
             this.limit = options.limit;
-            this.next = null;
+            this.next = "/api/v1/prestataires/?offset="+ this.limit +"&limit="+ this.limit;
             this.previous = null;
             this.total_count = 0;
         },
@@ -42,53 +48,92 @@
                 if (value && query) return constructFilter(name, query, value);
                 if (value && name == "language") return constructLanguageFilter(name, value);
             });
-            return _.compact(filters).join("&") + "&limit=" + this.limit;
+            return _.compact(filters).join("&") + "&limit=" + this.limit + "&offset=0";
         },
 
-        doSearch: function($els, options){
-            var url = searchApi + this.buildQuery($els),
+        doSearch: function(url_or_$els, options){
+            var url = _.isString(url_or_$els) ? url_or_$els : searchApi + this.buildQuery(url_or_$els),
                 that = this;
+
             options.success = options.success || $.noop;
             options.error = options.error || $.noop;
-            $.ajax({
-                url: url,
-                headers: {'X-CSRFToken': $.cookie('csrftoken')},
-                dataType: "json",
-                success: _.partial(that.processResults, options.success),
-                error: options.error
-            });
+
+            this.currentUri = sortedQueryString(url);
+            if (_.has(famille.cache, this.currentUri)) {
+                this.processResults(options.success, famille.cache[this.currentUri])
+            }
+            else {
+                url = baseUrl + url;
+                $.ajax({
+                    url: url,
+                    headers: {'X-CSRFToken': $.cookie('csrftoken')},
+                    dataType: "json",
+                    success: _.partial(that.processResults, options.success),
+                    error: options.error
+                });
+            }
         },
 
         processResults: function(callback, data){
             this.next = data.meta.next;
             this.previous = data.meta.previous;
             this.total = data.meta.total_count;
+            // storing in cache to avoid duplicate requests
+            famille.cache[this.currentUri] = data;
             callback(data.objects);
         }
     });
 
     var View = Backbone.View.extend({
         events: {
-            "click .do-search": "doSearch"
+            "click .do-search": "doSearch",
+            "click .next": "displayNext",
+            "click .previous": "displayPrevious",
         },
 
         initialize: function(options){
             this.resultTemplate = options.resultTemplate;
-            _.bindAll(this, "displayResults", "formatResult");
+            _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious");
         },
 
         doSearch: function(){
-            var $els = this.$(".form-search .form-control,[type=checkbox]");
+            var $els = this.$(".form-search .form-control,[type=checkbox]:checked");
             famille.router.doSearch($els, {
                 success: this.displayResults,
                 error: this.error
             });
         },
 
+        displayNext: function(e){
+            e.preventDefault();
+            if (famille.router.next)
+                famille.router.doSearch(famille.router.next, {
+                    success: this.displayResults,
+                    error: this.error
+                });
+        },
+
+        displayPrevious: function(e){
+            e.preventDefault();
+            if (famille.router.previous)
+               famille.router.doSearch(famille.router.previous, {
+                    success: this.displayResults,
+                    error: this.error
+                });
+        },
+
         displayResults: function(data){
             var $container = this.$(".search-results");
             $container.html("");
             $container.append(_.map(data, this.formatResult));
+            this.displayPagination();
+        },
+
+        displayPagination: function(){
+            if (!famille.router.next) this.$(".next").addClass("disabled");
+            else this.$(".next").removeClass("disabled");
+            if (!famille.router.previous) this.$(".previous").addClass("disabled");
+            else this.$(".previous").removeClass("disabled");
         },
 
         formatResult: function(object){
@@ -116,5 +161,6 @@
         el: $(".search-view"),
         resultTemplate: emptyResultTemplate
     });
+    famille.cache = {};
 
-    //})(jQuery);
+})(jQuery);

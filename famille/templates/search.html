@@ -81,18 +81,37 @@
             </div>
     </div>
     <div class="col-md-6 col-md-offset-1">
-        <h3>Résultats</h3>
-        <div class="search-results">
-            {% for result in results %}
-            {% include result_template with prestataire=result only %}
-            {% endfor %}
+        <div class="row">
+            <div class="col-md-7"><h3>Résultats</h3></div>
+            <div class="col-md-5 pagination-sm pull-right small">
+                <ul class="pager">
+                    <li class="previous disabled"><a href="#">&larr; Précédents</a></li>
+                    <li class="next"><a href="#">Suivants &rarr;</a></li>
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class="hidden">
-        <div class="empty-result-template">
-            {% include result_template only %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="search-results">
+                    {% for result in results %}
+                    {% include result_template with prestataire=result only %}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <input type="hidden" class="nb-search-results" value="{{ nb_search_results }}"/>
+        <div class="row">
+            <div class="col-md-offset-7 col-md-5 pagination-sm small">
+                <ul class="pager">
+                    <li class="previous disabled"><a href="#">&larr; Précédents</a></li>
+                    <li class="next"><a href="#">Suivants &rarr;</a></li>
+                </ul>
+            </div>
+            <div class="hidden">
+                <div class="empty-result-template">
+                {% include result_template only %}
+            </div>
+            <input type="hidden" class="nb-search-results" value="{{ nb_search_results }}"/>
+        </div>
     </div>
 </div>
 {% endblock %}
