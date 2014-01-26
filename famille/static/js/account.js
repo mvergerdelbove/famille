@@ -1,24 +1,20 @@
 (function($){
-    var childContainer = $(".child-container"),
-	childForm = $(".empty-child-form .child-form"),
-	noChild = $(".no-child");
+    var containers = {child: $(".child-container"), planning: $(".planning-container")},
+	forms = {child: $(".empty-child-form .child-form"), planning: $(".empty-planning-form .planning-form")},
+	no = {child: $(".no-child"), planning: $(".no-planning")};
 
-    var addChild = function(){
-		noChild.hide();
-		getChildForm().appendTo(childContainer);
+    var addSubForm = function(key){
+		no[key].hide();
+		forms[key].clone(true).appendTo(containers[key]);
     };
 
-    var getChildForm = function(){
-		return childForm.clone(true);
+    var hasSubForm = function(key){
+		return $("."+ key +"-form", containers[key]).length > 0;
     };
 
-    var hasChildren = function(){
-		return $(".child-form", childContainer).length > 0;
-    };
-
-    var removeChild = function(e){
-        $(e.target).parent(".child-form").remove();
-        if (!hasChildren()) noChild.show();
+    var removeSubForm = function(key, e){
+        $(e.target).parent("."+ key +"-form").remove();
+        if (!hasSubForm(key)) no[key].show();
     };
 
     var initSlider = function($el){
@@ -33,12 +29,17 @@
         }
     };
 
+    var initSubForms = function(key){
+        $(".add-" + key).on("click", function(e){addSubForm(key, e);});
+        $(".remove-" + key).on("click", function(e){removeSubForm(key, e);});
+        if (hasSubForm(key)) no[key].hide();
+    };
+
     // event handling
     $('[data-toggle="tooltip"]').tooltip();
-	if (childForm){
-		$(".add-child").on("click", addChild);
-		$(".remove-child").on("click", removeChild);
-		if (hasChildren()) noChild.hide();
+	if (forms.child && forms.planning){
+        initSubForms("child");
+        initSubForms("planning");
 	}
     initSlider($("#id_tarif"));
     $(".slider").removeAttr("style");

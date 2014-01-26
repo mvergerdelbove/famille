@@ -80,20 +80,6 @@ class RegistrationFormTestCase(TestCase):
         model = models.Prestataire.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(model)
         self.assertIsInstance(model.user, User)
-        
-
-class EnfantFormTestCase(TestCase):
-
-    def test_unzip_data(self):
-        _in = {
-            "e_name": ["Tom", "Jerry"],
-            "e_birthday": ["10", "11"]
-        }
-        out = [
-            {"e_name": "Tom", "e_birthday": "10"},
-            {"e_name": "Jerry", "e_birthday": "11"},
-        ]
-        self.assertEqual(forms.EnfantForm.unzip_data(_in), out)
 
 
 class FamilleFormTestCase(TestCase):
@@ -116,24 +102,35 @@ class FamilleFormTestCase(TestCase):
         self.famille.delete()
         models.Enfant.objects.all().delete()
 
+    def test_unzip_data(self):
+        _in = {
+            "e_name": ["Tom", "Jerry"],
+            "e_birthday": ["10", "11"]
+        }
+        out = [
+            {"e_name": "Tom", "e_birthday": "10"},
+            {"e_name": "Jerry", "e_birthday": "11"},
+        ]
+        self.assertEqual(self.form.unzip_data(_in), out)
+
     def test_init(self):
         # no data
         form = forms.FamilleForm(instance=self.famille)
-        self.assertEqual(len(form.enfant_forms), 1)
+        self.assertEqual(len(form.sub_forms), 1)
 
         # data : adding a child
         data = QueryDict("e_name=Loulou&e_name=Lili&e_birthday=2007-09-04&e_birthday=2003-01-20")
         form = forms.FamilleForm(data=data, instance=self.famille)
-        self.assertEqual(len(form.enfant_forms), 2)
-        self.assertEqual(form.enfants_to_delete, [])
+        self.assertEqual(len(form.sub_forms), 2)
+        self.assertEqual(form.objs_to_delete, [])
 
         # data : removing children
         data = QueryDict("")
         form = forms.FamilleForm(data=data, instance=self.famille)
-        self.assertEqual(form.enfant_forms, [])
-        self.assertEqual(len(list(form.enfants_to_delete)), 1)
+        self.assertEqual(form.sub_forms, [])
+        self.assertEqual(len(list(form.objs_to_delete)), 1)
 
-    def test_compute_enfants_diff(self):
+    def test_compute_objs_diff(self):
         def check_enfant_list(e, l):
             e = list(e)
             self.assertEqual(len(e), l)
@@ -146,7 +143,7 @@ class FamilleFormTestCase(TestCase):
             {"e_name": "B", "e_birthday": "2003-01-12"},
         ]
         enfants = [self.enfant, ]
-        enfant_list, to_delete = self.form.compute_enfants_diff(data, enfants, self.famille)
+        enfant_list, to_delete = self.form.compute_objs_diff(data, enfants, self.famille)
         check_enfant_list(enfant_list, 2)
         self.assertEqual(list(to_delete), [])
 
@@ -155,19 +152,19 @@ class FamilleFormTestCase(TestCase):
         e2.save()
         enfants.append(e2)
         data.pop()
-        enfant_list, to_delete = self.form.compute_enfants_diff(data, enfants, self.famille)
+        enfant_list, to_delete = self.form.compute_objs_diff(data, enfants, self.famille)
         check_enfant_list(enfant_list, 1)
         to_delete = list(to_delete)
         self.assertEqual(to_delete, [e2, ])
 
         # removing all children
         data.pop()
-        enfant_list, to_delete = self.form.compute_enfants_diff(data, enfants, self.famille)
+        enfant_list, to_delete = self.form.compute_objs_diff(data, enfants, self.famille)
         check_enfant_list(enfant_list, 0)
         self.assertEqual(list(to_delete), enfants)
 
     def test_is_valid(self):
-        self.form.enfant_forms = [
+        self.form.sub_forms = [
             MagicMock(is_valid=MagicMock(return_value=True)),
             MagicMock(is_valid=MagicMock(return_value=True))
         ]
@@ -177,26 +174,26 @@ class FamilleFormTestCase(TestCase):
         self.assertFalse(self.form.is_valid())
 
         self.form.is_bound = True
-        self.form.enfant_forms[0].is_valid.return_value = False
+        self.form.sub_forms[0].is_valid.return_value = False
         self.assertFalse(self.form.is_valid())
 
     @patch("django.forms.models.BaseModelForm")
     def test_save(self, mock):
-        self.form.enfant_forms = [
+        self.form.sub_forms = [
             MagicMock(save=MagicMock()),
             MagicMock(save=MagicMock())
         ]
-        self.form.enfants_to_delete = [
+        self.form.objs_to_delete = [
             MagicMock(delete=MagicMock()),
             MagicMock(delete=MagicMock())
         ]
 
         out = self.form.save(commit=False)
-        self.assertTrue(self.form.enfant_forms[0].save.called)
-        self.assertTrue(self.form.enfant_forms[1].save.called)
+        self.assertTrue(self.form.sub_forms[0].save.called)
+        self.assertTrue(self.form.sub_forms[1].save.called)
         self.assertIsInstance(out, models.Famille)
-        self.assertTrue(self.form.enfants_to_delete[0].delete.called)
-        self.assertTrue(self.form.enfants_to_delete[1].delete.called)
+        self.assertTrue(self.form.objs_to_delete[0].delete.called)
+        self.assertTrue(self.form.objs_to_delete[1].delete.called)
 
 
 class AccountFormManager(TestCase):

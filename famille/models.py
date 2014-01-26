@@ -123,7 +123,6 @@ class Famille(Criteria):
     }
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
-    # TODO : planning
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
@@ -137,3 +136,30 @@ class Enfant(BaseModel):
     e_name = models.CharField(max_length=20, db_column="name")
     e_birthday = models.DateField(blank=True, null=True, db_column="birthday")
     e_school = models.CharField(blank=True, null=True, max_length=50, db_column="school")
+
+
+class BasePlanning(BaseModel):
+    """
+    A planning entry.
+    """
+    FREQUENCY = {
+        "all": "Tous les jours",
+        "week": "Tous les jours en semaine",
+        "hebdo": "Hebdomadaire",
+        "2week": "Toute les 2 semaines",
+        "month": "Tous les mois"
+    }
+    start_date = models.DateTimeField()
+    frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
+    comment = models.CharField(blank=True, null=True, max_length=50)
+
+    class Meta:
+        abstract = True
+
+
+class FamillePlanning(BasePlanning):
+    famille = models.ForeignKey(Famille, related_name="planning")
+
+
+class PrestatairePlanning(BasePlanning):
+    prestataire = models.ForeignKey(Prestataire, related_name="planning")

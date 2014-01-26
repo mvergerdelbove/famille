@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.auth.models import User
 from localflavor.fr.forms import FRPhoneNumberField
 
-from famille.models import Famille, Prestataire, Enfant
+from famille.models import Famille, Prestataire, Enfant, FamillePlanning
 from famille.utils import isplit, pick, repeat_lambda
 
 
@@ -59,77 +59,93 @@ class UserForm(forms.ModelForm):
         }
 
 
-class FamilleForm(UserForm):
-    class Meta(UserForm.Meta):
-        model = Famille
-        fields = UserForm.Meta.fields + ('type', )
-        labels = dict(UserForm.Meta.labels, type="Type de famille")
+class ForeignKeyForm(object):
+
+    foreign_model = None
+    origin_model_name = None
+    related_name = None
+    sub_form = None
 
     def __init__(self, *args, **kwargs):
-        self.enfants_to_delete, enfants, instance = [], [], None
+        self.objs_to_delete, objs, instance = [], [], None
 
         if kwargs.get("instance", None):
             instance = kwargs["instance"]
-            enfants = instance.enfants.all()
+            objs = getattr(instance, self.related_name).all()
 
         if kwargs.get("data", None) is not None:
-            data = pick(kwargs["data"], *EnfantForm.Meta.fields)
-            data = EnfantForm.unzip_data(data)
-            enfants, self.enfants_to_delete = self.compute_enfants_diff(data, enfants, instance)
-            data = izip_longest(data, enfants)
-            init_forms = lambda d: EnfantForm(data=d[0], instance=d[1])
-            self.enfant_forms = map(init_forms, data)
+            data = pick(kwargs["data"], *self.sub_form.Meta.fields)
+            data = self.unzip_data(data)
+            objs, self.objs_to_delete = self.compute_objs_diff(data, objs, instance)
+            data = izip_longest(data, objs)
+            init_forms = lambda d: self.sub_form(data=d[0], instance=d[1])
+            self.sub_forms = map(init_forms, data)
         else:
-            self.enfant_forms = map(
-                lambda e: EnfantForm(instance=e), enfants
+            self.sub_forms = map(
+                lambda o: self.sub_form(instance=o), objs
             )
 
         # binding an empty form anyway
-        self.enfant_form_empty = EnfantForm()
-        super(FamilleForm, self).__init__(*args, **kwargs)
+        self.sub_form_empty = self.sub_form()
+        super(ForeignKeyForm, self).__init__(*args, **kwargs)
 
-    @staticmethod
-    def compute_enfants_diff(data, enfants, instance):
+    def unzip_data(self, data):
         """
-        Find out the right number of enfants to be saved,
-        given the data and the enfants that are already present.
+        Unzip a POST data to manage several
+        related object instances.
+        """
+        try:
+            nb_objs = len(data[self.sub_form.Meta.fields[0]])
+        except KeyError:
+            return []
 
-        :param data:       list of data for EnfantForm
-        :param enfants:    enfants that are already there
-        :param instance:   a Famille instance
+        data_list = [{} for i in xrange(nb_objs)]
+        for field, values in data.iteritems():
+            for i, value in enumerate(values):
+                data_list[i][field] = value
+
+        return data_list
+
+    def compute_objs_diff(self, data, objs, instance):
         """
-        enfants_to_delete = []
-        diff = len(data) - len(enfants)
-        # manage child addition
+        Find out the right number of related objects to be saved,
+        given the data and the objects that are already present.
+
+        :param data:       list of data for sub forms
+        :param objs:       objs that are already there
+        :param instance:   a model instance
+        """
+        objs_to_delete = []
+        diff = len(data) - len(objs)
+        # manage obj addition
         if diff > 0:
-            enfants = chain(
-                enfants,
-                repeat_lambda(lambda: Enfant(famille=instance), diff)
+            kwargs = {self.origin_model_name: instance}
+            objs = chain(
+                objs,
+                repeat_lambda(lambda: self.foreign_model(**kwargs), diff)
             )
-        # manage child deletion
+        # manage obj deletion
         elif diff < 0:
-            enfants, enfants_to_delete = isplit(enfants, len(data))
+            objs, objs_to_delete = isplit(objs, len(data))
 
-        return enfants, enfants_to_delete
+        return objs, objs_to_delete
 
     def is_valid(self):
         """
-        Validate the FamilleForm and the
-        EnfantForms too.
+        Validate the form and sub forms.
         """
-        is_valid = super(FamilleForm, self).is_valid()
-        return all((e.is_valid() for e in self.enfant_forms)) and is_valid
+        is_valid = super(ForeignKeyForm, self).is_valid()
+        return all((f.is_valid() for f in self.sub_forms)) and is_valid
 
     def save(self, *args, **kwargs):
         """
-        Save the FamilleForm and the
-        EnfantForms too.
+        Save the form and sub forms.
         """
-        for e in self.enfant_forms:
-            e.save(*args, **kwargs)
+        for f in self.sub_forms:
+            f.save(*args, **kwargs)
 
-        [e.delete() for e in self.enfants_to_delete]
-        return super(FamilleForm, self).save(*args, **kwargs)
+        [o.delete() for o in self.objs_to_delete]
+        return super(ForeignKeyForm, self).save(*args, **kwargs)
 
 
 class EnfantForm(forms.ModelForm):
@@ -145,23 +161,41 @@ class EnfantForm(forms.ModelForm):
             "e_birthday": forms.TextInput(attrs={'type':'date'}),
         }
 
-    @classmethod
-    def unzip_data(cls, data):
-        """
-        Unzip a POST data to manage several
-        Enfant instances.
-        """
-        try:
-            nb_enfants = len(data[cls.Meta.fields[0]])
-        except KeyError:
-            return []
 
-        data_list = [{} for i in xrange(nb_enfants)]
-        for field, values in data.iteritems():
-            for i, value in enumerate(values):
-                data_list[i][field] = value
+class FamillePlanningSubForm(forms.ModelForm):
+    class Meta:
+        model = FamillePlanning
+        labels = {
+            "start_date": u"Choisir une date de début",
+            "frequency": u"A quelle fréquence ?"
+        }
+        fields = labels.keys()
+        widgets = {
+            "start_date": forms.TextInput(attrs={'type':'datetime'}),
+        }
 
-        return data_list
+
+class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
+    foreign_model = FamillePlanning
+    origin_model_name = "famille"
+    related_name = "planning"
+    sub_form = FamillePlanningSubForm
+
+    class Meta:
+        model = Famille
+        fields = ()
+
+
+class FamilleForm(ForeignKeyForm, UserForm):
+    foreign_model = Enfant
+    origin_model_name = "famille"
+    related_name = "enfants"
+    sub_form = EnfantForm
+
+    class Meta(UserForm.Meta):
+        model = Famille
+        fields = UserForm.Meta.fields + ('type', )
+        labels = dict(UserForm.Meta.labels, type="Type de famille")
 
 
 class CriteriaForm(forms.ModelForm):
@@ -235,7 +269,8 @@ class AccountFormManager(object):
     base_form_classes = {
         "famille": {
             "attentes": FamilleCriteriaForm,
-            "profil": FamilleForm
+            "profil": FamilleForm,
+            "planning": FamillePlanningForm
         },
         "prestataire": {
             "profil": PrestataireForm,
