@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+{% bootstrap_messages %}
 <div class="row">
     <div class="col-md-offset-1 col-md-7">
         <ul class="nav nav-tabs">
@@ -72,7 +73,15 @@
                             <div class="planning-container">
                                 {% for form in planning.sub_forms %}
                                 <div class="planning-form clearfix">
-                                    {% bootstrap_field form.start_date field_class="col-sm-7" label_class="col-sm-5"%}
+                                    <div class="form-group">
+                                        {% bootstrap_label form.start_date.label_tag label_class="col-sm-5" %}
+                                        <div class="col-md-7 input-group date initial-date">
+                                            {{ form.start_date }}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
                                     {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5"%}
                                     <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                                 </div>
@@ -89,7 +98,15 @@
                 </form>
                 <div class="empty-planning-form hidden">
                     <div class="planning-form clearfix">
-                        {% bootstrap_field planning.sub_form_empty.start_date field_class="col-sm-7" label_class="col-sm-5"%}
+                        <div class="form-group">
+                            {% bootstrap_label planning.sub_form_empty.start_date.label_tag label_class="col-sm-5" %}
+                            <div class="col-md-7 input-group date">
+                                {{ planning.sub_form_empty.start_date }}
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
                         {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
                         <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                     </div>
@@ -160,6 +177,7 @@
 <!-- TODO: make the datepicker work -->
 <script src="{% static "lib/moment/min/moment.min.js" %}"></script>
 <script src="{% static "lib/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/account.js" %}"></script>
 {% endblock %}

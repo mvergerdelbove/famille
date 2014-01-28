@@ -4,8 +4,10 @@
 	no = {child: $(".no-child"), planning: $(".no-planning")};
 
     var addSubForm = function(key){
-		no[key].hide();
-		forms[key].clone(true).appendTo(containers[key]);
+        no[key].hide();
+        var $form = forms[key].clone(true);
+        $form.appendTo(containers[key]);
+        if (key == "planning") initDatepicker($(".date", $form));
     };
 
     var hasSubForm = function(key){
@@ -35,8 +37,18 @@
         if (hasSubForm(key)) no[key].hide();
     };
 
+    var initDatepicker = function($els){
+        $els.datetimepicker({
+            language: 'fr',
+            format: "DD/MM/YYYY HH:mm:ss",
+            minuteStepping: 10,
+            startDate: moment().startOf("day")
+        });
+    };
+
     // event handling
     $('[data-toggle="tooltip"]').tooltip();
+    initDatepicker($('.initial-date'));
 	if (forms.child && forms.planning){
         initSubForms("child");
         initSubForms("planning");

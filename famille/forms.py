@@ -171,7 +171,10 @@ class FamillePlanningSubForm(forms.ModelForm):
         }
         fields = labels.keys()
         widgets = {
-            "start_date": forms.TextInput(attrs={'type':'datetime'}),
+            "start_date": forms.DateTimeInput(
+                attrs={'type':'datetime', "class": "form-control"},
+                format="%d/%m/%Y %H:%M:%S"
+            ),
         }
 
 
