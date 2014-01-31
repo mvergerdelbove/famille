@@ -26,7 +26,14 @@ urlpatterns = patterns(
         r'^confirmation/$', TemplateView.as_view(template_name="confirmation.html"),
         name="confirmation"
     ),
-    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(api.urls)),
+
+    url(
+        r'^espace-famille/$', TemplateView.as_view(template_name="espace_famille.html"),
+        name="espace_famille"
+    ),
+
+    # plugin urls
+    url(r'^grappelli/', include('grappelli.urls')),  # grappelli
 )

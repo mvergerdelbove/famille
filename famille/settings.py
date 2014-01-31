@@ -30,8 +30,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.flatpages',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'bootstrap3',
     'south',
@@ -47,6 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'famille.urls'
@@ -97,3 +100,10 @@ for key in os.environ:
     globals()[key] = os.environ[key]
 
 NB_SEARCH_RESULTS = 5
+
+################################################################################
+#                         Plugins settings                                     #
+################################################################################
+
+# flatpages
+SITE_ID = 1
