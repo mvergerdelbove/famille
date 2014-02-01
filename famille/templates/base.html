@@ -3,13 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="{% static "lib/bootstrap/dist/css/bootstrap.min.css" %}"/>
-  <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="all" />
-  <link rel="shortcut icon" type="image/x-icon" href="{% static "img/favicon.png" %}"/>
-  <meta charset="utf-8"></meta>
-  <meta><!-- TODO keywords --></meta>
-  {% block extrahead %}{% endblock %}
-  <title>{{ site_title }}{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "lib/bootstrap/dist/css/bootstrap.min.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="all" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "img/favicon.png" %}"/>
+    <meta charset="utf-8"></meta>
+    <meta><!-- TODO keywords --></meta>
+    {% block extrahead %}{% endblock %}
+    <title>{{ site_title }}{% block title %}{% endblock %}</title>
 </head>
 
 <body class="{% block body-class %}{% endblock %}" {% block bodyattrs %}{% endblock %}>
@@ -28,39 +28,41 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-	<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	    Espace Famille <b class="caret"></b>
-	  </a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Présentaiton</a></li>
-            <li><a href="#">Créer un compte</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Avantages offerts</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Témoignages</a></li>
-          </ul>
-	</li>
-	<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	    Espace Prestataire<b class="caret"></b>
-	  </a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Présentaiton</a></li>
-            <li><a href="#">Créer un compte</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Avantages offerts</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Témoignages</a></li>
-          </ul>
-	</li>
-	<li><a href="#">A propos</a></li>
-	<li><a href="#">Nous contacter</a></li>
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Espace Famille <b class="caret"></b>
+              </a>
+              {% url 'espace_famille' as famille %}
+              <ul class="dropdown-menu">
+                  <li><a href="{{ famille }}#first">Présentaiton</a></li>
+                  <li><a href="#">Créer un compte</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ famille }}#second">Avantages offerts</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ famille }}#third">Témoignages</a></li>
+              </ul>
+	      </li>
+	      <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Espace Prestataire<b class="caret"></b>
+              </a>
+              {% url 'espace_prestataire' as prestataire %}
+              <ul class="dropdown-menu">
+                  <li><a href="{{ prestataire }}#first">Présentaiton</a></li>
+                  <li><a href="#">Créer un compte</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ prestataire }}#second">Avantages offerts</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ prestataire }}#third">Témoignages</a></li>
+              </ul>
+          </li>
+          <li><a href="#">A propos</a></li>
+          <li><a href="#">Nous contacter</a></li>
       </ul>
       {% if user.is_authenticated %}
       <ul class="nav navbar-nav navbar-right">
-	<li><a href="{% url 'account' %}">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
-	<li><a href="{% url 'auth_logout' %}">Déconnexion</a></li>
+	      <li><a href="{% url 'account' %}">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
+	      <li><a href="{% url 'auth_logout' %}">Déconnexion</a></li>
       </ul>
       {% else %}
       {% url 'auth_login' as login_url %}

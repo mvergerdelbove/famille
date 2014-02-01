@@ -22,16 +22,21 @@ urlpatterns = patterns(
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register/$', 'famille.views.register', name="register"),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(api.urls)),
+
+    # static pages
     url(
         r'^confirmation/$', TemplateView.as_view(template_name="confirmation.html"),
         name="confirmation"
     ),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(api.urls)),
-
     url(
         r'^espace-famille/$', TemplateView.as_view(template_name="espace_famille.html"),
         name="espace_famille"
+    ),
+    url(
+        r'^espace-prestataire/$', TemplateView.as_view(template_name="espace_prestataire.html"),
+        name="espace_prestataire"
     ),
 
     # plugin urls
