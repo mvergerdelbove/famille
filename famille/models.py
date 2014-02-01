@@ -2,6 +2,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from famille.utils import geolocation
+
 
 class BaseModel(models.Model):
     created_at = models.DateField(auto_now_add=True)
@@ -9,6 +11,15 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Geolocation(BaseModel):
+    """
+    A model that represent a geolocation
+    of a user.
+    """
+    lat = models.FloatField()
+    lon = models.FloatField()
 
 
 def get_user_related(user):
@@ -30,6 +41,7 @@ class UserInfo(BaseModel):
     a Prestataire need.
     """
     user = models.OneToOneField(User)
+    geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100)
@@ -44,6 +56,30 @@ class UserInfo(BaseModel):
 
     class Meta:
         abstract = True
+
+    @property
+    def is_geolocated(self):
+        """
+        A property to check if a user is geolocated.
+        """
+        return bool(self.geolocation)
+
+    def geolocate(self):
+        """
+        Geolocate a user, using google geolocation.
+        It basically calls the Google API and
+        saves the GPS coordinates into database
+        """
+        address = "%s %s %s, %s" % (
+            self.street or "",
+            self.postal_code or "",
+            self.city or "",
+            self.country or ""
+        )
+        lat, lon = geolocation.geolocate(address)
+        self.geolocation = Geolocation(lat=lat, lon=lon)
+        self.geolocation.save()
+        self.save()
 
 
 class Criteria(UserInfo):

@@ -7,6 +7,7 @@ from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
+from famille.utils import geolocation
 
 
 class UtilsTestCase(TestCase):
@@ -235,7 +236,8 @@ class ModelsTestCase(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
-        models.Famille(user=self.user1).save()
+        self.famille = models.Famille(user=self.user1)
+        self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
         models.Prestataire(user=self.user2).save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
@@ -244,8 +246,46 @@ class ModelsTestCase(TestCase):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
         models.Prestataire.objects.all().delete()
+        models.Geolocation.objects.all().delete()
 
     def test_get_user_related(self):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
         self.assertIsInstance(models.get_user_related(self.user2), models.Prestataire)
         self.assertRaises(ObjectDoesNotExist, models.get_user_related, self.user3)
+
+    def test_is_geolocated(self):
+        geoloc = models.Geolocation(lat=33.01, lon=2.89)
+        geoloc.save()
+
+        self.assertFalse(self.famille.is_geolocated)
+
+        self.famille.geolocation = geoloc
+        self.famille.save()
+        self.assertTrue(self.famille.is_geolocated)
+
+    @patch("famille.utils.geolocation.geolocate")
+    def test_geolocate(self, geolocate):
+        geolocate.return_value = 48.895603, 2.322858
+        self.famille.street = "32 rue des Epinettes"
+        self.famille.postal_code = "75017"
+        self.famille.city = "Paris"
+        self.famille.country = "France"
+        self.famille.save()
+
+        self.famille.geolocate()
+        geolocate.assert_called_with("32 rue des Epinettes 75017 Paris, France")
+        self.assertIsNotNone(models.Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
+        self.assertEqual(self.famille.geolocation.lat, 48.895603)
+        self.assertEqual(self.famille.geolocation.lon, 2.322858)
+
+
+class GeolocationTestCase(TestCase):
+
+    def test_geodistance(self):
+        origin = (12.2, 1.0)
+        to = origin
+        self.assertEqual(geolocation.geodistance(origin, to), 0)
+
+        origin = (48.895603, 2.322858)  # 32 rue des epinettes
+        to = (48.883588, 2.327195)  # place de clichy
+        self.assertLessEqual(geolocation.geodistance(origin, to), 1400)  # ~ 1.373 km
