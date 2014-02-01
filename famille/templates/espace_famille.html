@@ -36,13 +36,13 @@
             </div>
             <div class="col-md-8">
                 <header><h3>{{ first.title }}</h3></header>
-                {{ first.content }}
+                {{ first.content|safe }}
             </div>
         </article><br/><br/><br/><br/>
         <article class="row" id="second">
             <div class="col-md-8">
                 <header><h3>{{ second.title }}</h3></header>
-                {{ second.content }}
+                {{ second.content|safe }}
             </div>
             <div class="col-md-4">
                 <a href="#" class="thumbnail">
@@ -58,7 +58,7 @@
             </div>
             <div class="col-md-8">
                 <header><h3>{{ third.title }}</h3></header>
-                {{ third.content }}
+                {{ third.content|safe }}
             </div>
         </article>
     </section>

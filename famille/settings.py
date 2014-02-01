@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'south',
     'localflavor',
     'tastypie',
+    'tinymce',
     'famille',
 )
 
@@ -107,3 +108,10 @@ NB_SEARCH_RESULTS = 5
 
 # flatpages
 SITE_ID = 1
+
+# tinymce
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "spellchecker,paste,searchreplace",  # see http://www.tinymce.com/wiki.php/Plugins
+}
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True

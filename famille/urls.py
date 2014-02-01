@@ -36,4 +36,5 @@ urlpatterns = patterns(
 
     # plugin urls
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli
+    url(r'^tinymce/', include('tinymce.urls')),  # tinymce
 )
