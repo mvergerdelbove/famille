@@ -84,6 +84,15 @@ class UserInfo(BaseModel):
         self.geolocation = Geolocation(lat=lat, lon=lon)
         self.geolocation.save()
 
+    @staticmethod
+    def _geolocate(sender, instance, **kwargs):
+        """
+        A signal receiver to geolocate a user whenever its
+        data is saved.
+        """
+        if not instance.geolocation and any((instance.postal_code, instance.city)):
+            instance.geolocate()
+
 
 class Criteria(UserInfo):
     TYPES_GARDE = {
@@ -202,3 +211,8 @@ class FamillePlanning(BasePlanning):
 
 class PrestatairePlanning(BasePlanning):
     prestataire = models.ForeignKey(Prestataire, related_name="planning")
+
+
+# signals
+models.signals.pre_save.connect(UserInfo._geolocate, sender=Famille, dispatch_uid="famille_geolocate")
+models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatch_uid="prestataire_geolocate")

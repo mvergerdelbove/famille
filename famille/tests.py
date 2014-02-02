@@ -7,7 +7,7 @@ from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
 
-from famille import forms, models, utils, signals
+from famille import forms, models, utils
 from famille.utils import geolocation
 
 
@@ -296,8 +296,8 @@ class ModelsTestCase(TestCase):
     @patch("famille.models.UserInfo.geolocate")
     def test_signal(self, mock, process):
         process.side_effect = self.mock_process
-        pre_save.connect(signals.geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
-        pre_save.connect(signals.geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+        pre_save.connect(models.UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
+        pre_save.connect(models.UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
         self.famille.country = "France"  # not enough
         self.famille.save()
