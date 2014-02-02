@@ -2,12 +2,18 @@ from datetime import date
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.signals import pre_save
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
 
-from famille import forms, models, utils
+from famille import forms, models, utils, signals
 from famille.utils import geolocation
+
+
+# disconnecting signal to not alter testing and flooding google
+pre_save.disconnect(sender=models.Famille, dispatch_uid="famille_geolocate")
+pre_save.disconnect(sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
 
 class UtilsTestCase(TestCase):
@@ -248,6 +254,14 @@ class ModelsTestCase(TestCase):
         models.Prestataire.objects.all().delete()
         models.Geolocation.objects.all().delete()
 
+    def mock_process(self, target, args, kwargs, *_, **__):
+        """
+        Mocking multiprocessing.Process in order to test.
+        """
+        def start():
+            target(*args, **kwargs)
+        return MagicMock(start=start)
+
     def test_get_user_related(self):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
         self.assertIsInstance(models.get_user_related(self.user2), models.Prestataire)
@@ -278,6 +292,34 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.famille.geolocation.lat, 48.895603)
         self.assertEqual(self.famille.geolocation.lon, 2.322858)
 
+    @patch("multiprocessing.Process")
+    @patch("famille.models.UserInfo.geolocate")
+    def test_signal(self, mock, process):
+        process.side_effect = self.mock_process
+        pre_save.connect(signals.geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
+        pre_save.connect(signals.geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+
+        self.famille.country = "France"  # not enough
+        self.famille.save()
+        self.assertFalse(mock.called)
+
+        self.famille.street = "32 rue des Epinettes"  # not enough
+        self.famille.save()
+        self.assertFalse(mock.called)
+
+        self.famille.city = "Paris"  # enough info to geolocate
+        self.famille.save()
+        self.assertTrue(mock.called)
+        mock.reset_mock()
+
+        self.famille.geolocation = models.Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
+        self.famille.geolocation.save()
+        self.famille.save()
+        self.assertFalse(mock.called)
+
+        pre_save.disconnect(sender=models.Famille, dispatch_uid="famille_geolocate")
+        pre_save.disconnect(sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+
 
 class GeolocationTestCase(TestCase):
 
@@ -289,3 +331,6 @@ class GeolocationTestCase(TestCase):
         origin = (48.895603, 2.322858)  # 32 rue des epinettes
         to = (48.883588, 2.327195)  # place de clichy
         self.assertLessEqual(geolocation.geodistance(origin, to), 1400)  # ~ 1.373 km
+
+    
+        self.famille = models.Famille()

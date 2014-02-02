@@ -68,7 +68,11 @@ class UserInfo(BaseModel):
         """
         Geolocate a user, using google geolocation.
         It basically calls the Google API and
-        saves the GPS coordinates into database
+        saves the GPS coordinates into database.
+
+        NB: since geolocate is called in a pre_save signal,
+            we do not save the model to save time, since
+            it'll be saved soon enough.
         """
         address = "%s %s %s, %s" % (
             self.street or "",
@@ -79,7 +83,6 @@ class UserInfo(BaseModel):
         lat, lon = geolocation.geolocate(address)
         self.geolocation = Geolocation(lat=lat, lon=lon)
         self.geolocation.save()
-        self.save()
 
 
 class Criteria(UserInfo):
