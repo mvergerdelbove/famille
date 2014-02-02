@@ -1,10 +1,8 @@
 from django.db.models.signals import pre_save
 
 from famille import models
-from famille.utils import threading
 
 
-@threading.async
 def geolocate(sender, instance, **kwargs):
     """
     A signal receiver to geolocate a user whenever its
