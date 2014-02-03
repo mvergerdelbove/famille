@@ -198,6 +198,7 @@ class BasePlanning(BaseModel):
         "month": "Tous les mois"
     }
     start_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
     frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
     comment = models.CharField(blank=True, null=True, max_length=50)
 
