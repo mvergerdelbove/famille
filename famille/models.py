@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from famille.utils import geolocation
+from famille.utils import geolocation, fields as extra_fields
 
 
 class BaseModel(models.Model):
@@ -148,6 +148,12 @@ class Prestataire(Criteria):
         "pro": u"Maîtrisé",
         "bil": "Bilingue"
     }
+    RESUME_TYPES = {
+        ".doc": "application/msword",
+        ".pdf": "application/pdf",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".pages": "application/x-iwork-pages-sffpages"
+    }
 
     type = models.CharField(max_length=40, choices=TYPES.items())
     sub_types = models.CharField(max_length=40) # TODO choices
@@ -158,6 +164,11 @@ class Prestataire(Criteria):
     level_es = models.CharField(**language_kw)
     level_it = models.CharField(**language_kw)
     other_language = models.CharField(blank=True, null=True, max_length=50)
+    resume = extra_fields.ContentTypeRestrictedFileField(
+        upload_to="resume", blank=True, null=True,
+        content_types=RESUME_TYPES.values(), extensions=RESUME_TYPES.keys(),
+        max_upload_size=2621440  # 2.5MB
+    )
 
 
 class Famille(Criteria):

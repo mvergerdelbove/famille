@@ -264,12 +264,12 @@ class PrestataireCompetenceForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Prestataire
         fields = CriteriaForm.Meta.fields + [
-            "level_en", "level_de", "level_es", "level_it", "other_language"
+            "level_en", "level_de", "level_es", "level_it", "other_language", "resume"
         ]
         labels = dict(
             CriteriaForm.Meta.labels, diploma=u"Diplôme", level_en="Anglais",
             level_de="Allemand", level_es="Espagnol", level_it="Italien",
-            other_language="Autre langue"
+            other_language="Autre langue", resume="Joindre un CV"
         )
 
 
@@ -286,11 +286,12 @@ class AccountFormManager(object):
         }
     }
 
-    def __init__(self, instance, data=None):
+    def __init__(self, instance, data=None, files=None):
         self.instance = instance
         self.instance_type = instance.__class__.__name__.lower()
         self.form_classes = self.base_form_classes[self.instance_type]
         self.data = data or {}
+        self.files = files or {}
         self.form_submitted = self.data.get("submit", None)
         self.init_forms()
 
@@ -301,7 +302,7 @@ class AccountFormManager(object):
         self.forms = {}
         for key, Form in self.form_classes.iteritems():
             if key == self.form_submitted:
-                self.forms[key] = Form(data=self.data, instance=self.instance)
+                self.forms[key] = Form(data=self.data, files=self.files, instance=self.instance)
             else:
                 self.forms[key] = Form(instance=self.instance)
 

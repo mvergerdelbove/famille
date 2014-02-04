@@ -67,7 +67,7 @@ def account(request):
         raise Http404
 
     if request.method == "POST":
-        account_forms = forms.AccountFormManager(instance=related, data=request.POST)
+        account_forms = forms.AccountFormManager(instance=related, data=request.POST, files=request.FILES)
         if account_forms.is_valid():
             account_forms.save()
             return HttpResponseRedirect('/mon-compte/#' + account_forms.form_submitted)

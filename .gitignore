@@ -9,3 +9,5 @@ node_modules/
 staticfiles
 venv/*
 .env
+famille/media/*
+!famille/media/.keep

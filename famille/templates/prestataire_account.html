@@ -48,11 +48,12 @@
 			</div>
 			<div class="tab-pane fade" id="planning">...</div>
 			<div class="tab-pane fade" id="competences">
-				<form method="post" action="{% url "account" %}">
+				<form method="post" action="{% url "account" %}" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="row">
 						<div class="col-md-4">
 							{% bootstrap_field competences.diploma %}
+                            {% bootstrap_field competences.resume %}
 							<p>Quelles langues parlez-vous ?</p>
 							{% bootstrap_field competences.level_en %}
 							{% bootstrap_field competences.level_de %}
@@ -112,6 +113,9 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="{% static "lib/moment/min/moment.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/account.js" %}"></script>
 {% endblock %}
