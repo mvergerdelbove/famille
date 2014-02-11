@@ -1,6 +1,7 @@
 # -*- coding=utf-8 -*-
 from django.contrib.auth.models import User
 from django.db import models
+from south.modelsinspector import add_introspection_rules
 
 from famille.utils import geolocation, fields as extra_fields
 
@@ -228,3 +229,6 @@ class PrestatairePlanning(BasePlanning):
 # signals
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Famille, dispatch_uid="famille_geolocate")
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatch_uid="prestataire_geolocate")
+
+# south rules
+add_introspection_rules(extra_fields.content_type_restricted_file_field_rules, ["^famille\.utils\.fields", ])

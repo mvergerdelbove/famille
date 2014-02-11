@@ -45,3 +45,7 @@ class ContentTypeRestrictedFileField(FileField):
             raise forms.ValidationError('Fichier trop volumineux (max %s)' % filesizeformat(self.max_upload_size))
 
         return data
+
+content_type_restricted_file_field_rules = [
+    ([ContentTypeRestrictedFileField, ], [],{})
+]
