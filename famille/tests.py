@@ -47,6 +47,18 @@ class UtilsTestCase(TestCase):
         self.assertEqual(q, [1, 2])
         self.assertEqual(r, [3])
 
+    def test_parse_resource_uri(self):
+        _in = "not a uri"
+        self.assertRaises(ValueError, utils.parse_resource_uri, _in)
+
+        _in = "/api/v1/prestataire/12/"
+        out = "prestataire", "12"
+        self.assertEqual(utils.parse_resource_uri(_in), out)
+
+        _in = "/api/v1/famille_o/123"
+        out = "famille_o", "123"
+        self.assertEqual(utils.parse_resource_uri(_in), out)
+
 
 class RegistrationFormTestCase(TestCase):
     def setUp(self):
@@ -245,7 +257,8 @@ class ModelsTestCase(TestCase):
         self.famille = models.Famille(user=self.user1)
         self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
-        models.Prestataire(user=self.user2).save()
+        self.presta = models.Prestataire(user=self.user2)
+        self.presta.save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
 
     def tearDown(self):
@@ -253,6 +266,7 @@ class ModelsTestCase(TestCase):
         models.Famille.objects.all().delete()
         models.Prestataire.objects.all().delete()
         models.Geolocation.objects.all().delete()
+        models.FamilleFavorite.objects.all().delete()
 
     def mock_process(self, target, args, kwargs, *_, **__):
         """
@@ -319,6 +333,22 @@ class ModelsTestCase(TestCase):
 
         pre_save.disconnect(sender=models.Famille, dispatch_uid="famille_geolocate")
         pre_save.disconnect(sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+
+    def test_add_favorite(self):
+        uri = "/api/v1/prestataire/%s" % self.presta.pk
+        self.famille.add_favorite(uri)
+        self.assertEqual(self.famille.favorites.all().count(), 1)
+        qs = models.FamilleFavorite.objects.filter(
+            famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
+        )
+        self.assertEqual(qs.count(), 1)
+
+    def test_remove_favorite(self):
+        uri = "/api/v1/prestataire/%s" % self.presta.pk
+        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
+        self.famille.remove_favorite(uri)
+
+        self.assertEqual(self.famille.favorites.all().count(), 0)
 
 
 class GeolocationTestCase(TestCase):

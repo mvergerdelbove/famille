@@ -1,4 +1,5 @@
 from itertools import islice
+import re
 
 
 def get_context(**kwargs):
@@ -60,3 +61,18 @@ def isplit(iterable, index):
     :parma index:        where to split
     """
     return islice(iterable, index), islice(iterable, index, None)
+
+
+resource_pattern = re.compile("/api/v1/([a-z_-]+)/([\d]+)/?")
+
+
+def parse_resource_uri(resource_uri):
+    """
+    Parse a resource uri (like /api/v1/prestataires/1/) and return
+    the resource type and the object id.
+    """
+    match = resource_pattern.search(resource_uri)
+    if not match:
+        raise ValueError("Value %s is not a resource uri." % resource_uri)
+
+    return match.group(1), match.group(2)

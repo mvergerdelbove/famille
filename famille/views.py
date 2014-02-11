@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required as django_login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from famille import forms
-from famille.models import Famille, Prestataire, get_user_related
+from famille.models import Famille, Prestataire, get_user_related, BaseFavorite
 from famille.utils import get_context, get_result_template_from_user
 
 
@@ -78,3 +78,18 @@ def account(request):
         request, '%s_account.html' % account_forms.instance_type,
         get_context(**account_forms.forms)
     )
+
+@require_POST
+@login_required
+def favorite(request):
+    """
+    Mark an object as favorite. If action=remove is passed,
+    the given object is removed from favorites.
+    """
+    resource_uri = request.POST["resource_uri"]
+    action_name = request.POST.get("action", "add")
+    user_related = get_user_related(request.user)
+    action = user_related.remove_favorite if action_name == "remove" else user_related.add_favorite
+    action(resource_uri)
+
+    return HttpResponse()

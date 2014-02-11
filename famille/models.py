@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from south.modelsinspector import add_introspection_rules
 
-from famille.utils import geolocation, fields as extra_fields
+from famille.utils import parse_resource_uri, geolocation, fields as extra_fields
 
 
 class BaseModel(models.Model):
@@ -93,6 +93,26 @@ class UserInfo(BaseModel):
         """
         if not instance.geolocation and any((instance.postal_code, instance.city)):
             instance.geolocate()
+
+    def add_favorite(self, resource_uri):
+        """
+        Favorite an object for the user.
+
+        :param resource_uri:          the URI of the resource to favorite
+        """
+        object_type, object_id = parse_resource_uri(resource_uri)
+        self.favorites.create(object_type=object_type.title(), object_id=int(object_id))
+
+    def remove_favorite(self, resource_uri):
+        """
+        Unfavorite an object for the user.
+
+        :param resource_uri:      the URI of the resource to unfavorite
+        """
+        object_type, object_id = parse_resource_uri(resource_uri)
+        object_type = object_type.title()
+        object_id = int(object_id)
+        self.favorites.filter(object_type=object_type, object_id=object_id).delete()
 
 
 class Criteria(UserInfo):
@@ -224,6 +244,30 @@ class FamillePlanning(BasePlanning):
 
 class PrestatairePlanning(BasePlanning):
     prestataire = models.ForeignKey(Prestataire, related_name="planning")
+
+
+class BaseFavorite(BaseModel):
+    """
+    A model reprensenting a favorite.
+    """
+    OBJECT_TYPES = {
+        'Prestataire': 'Prestataire',
+        'Famille': 'Famille',
+    }
+    object_id = models.IntegerField()
+    object_type = models.CharField(max_length=20, choices=OBJECT_TYPES.items())
+
+    class Meta:
+        abstract = True
+
+
+
+class FamilleFavorite(BaseFavorite):
+    famille = models.ForeignKey(Famille, related_name="favorites")
+
+
+class PrestataireFavorite(BaseFavorite):
+    prestataire = models.ForeignKey(Prestataire, related_name="favorites")
 
 
 # signals
