@@ -25,3 +25,7 @@
 .little-margin {
     margin: 2px;
 }
+
+.favorite-icon:hover {
+    cursor: pointer;
+}

@@ -101,7 +101,7 @@ class UserInfo(BaseModel):
         :param resource_uri:          the URI of the resource to favorite
         """
         object_type, object_id = parse_resource_uri(resource_uri)
-        self.favorites.create(object_type=object_type.title(), object_id=int(object_id))
+        self.favorites.get_or_create(object_type=object_type.title(), object_id=int(object_id))
 
     def remove_favorite(self, resource_uri):
         """

@@ -22,6 +22,7 @@ urlpatterns = patterns(
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register/$', 'famille.views.register', name="register"),
+    url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(api.urls)),
 

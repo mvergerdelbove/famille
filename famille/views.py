@@ -37,11 +37,16 @@ def search(request):
 
     objects = Prestataire.objects.all()[:settings.NB_SEARCH_RESULTS]
     template = get_result_template_from_user(request)
+    if request.user.is_authenticated():
+        favorites = get_user_related(request.user).favorites.all()
+    else:
+        favorites = []
     return render(
         request, "search.html",
         get_context(
             search_form=form, results=objects, result_template=template,
-            nb_search_results=settings.NB_SEARCH_RESULTS
+            nb_search_results=settings.NB_SEARCH_RESULTS,
+            favorites=favorites, user=request.user
         )
     )
 
@@ -79,8 +84,9 @@ def account(request):
         get_context(**account_forms.forms)
     )
 
+
 @require_POST
-@login_required
+@login_required  # FIXME: does this work ?
 def favorite(request):
     """
     Mark an object as favorite. If action=remove is passed,

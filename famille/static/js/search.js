@@ -31,6 +31,11 @@
     };
 
     var Router = Backbone.Router.extend({
+
+        serverRoutes: {
+            toggleFavorite: "/favorite/"
+        },
+
         initialize: function(options){
             _.bindAll(this, "processResults");
             this.limit = options.limit;
@@ -81,6 +86,17 @@
             // storing in cache to avoid duplicate requests
             famille.cache[this.currentUri] = data;
             callback(data.objects);
+        },
+
+        toggleFavorite: function(options){
+            options.success = options.success || $.noop;
+            options.error = options.error || $.noop;
+            _.extend(options, {
+                url: this.serverRoutes.toggleFavorite,
+                type: "post",
+                headers: {'X-CSRFToken': $.cookie('csrftoken')}
+            });
+            $.ajax(options);
         }
     });
 
@@ -89,11 +105,12 @@
             "click .do-search": "doSearch",
             "click .next": "displayNext",
             "click .previous": "displayPrevious",
+            "click .favorite": "toggleFavorite"
         },
 
         initialize: function(options){
             this.resultTemplate = options.resultTemplate;
-            _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious");
+            _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious", "toggleFavorite");
         },
 
         doSearch: function(){
@@ -127,6 +144,7 @@
             $container.html("");
             $container.append(_.map(data, this.formatResult));
             this.displayPagination();
+            this.markFavoritedItems();
         },
 
         displayPagination: function(){
@@ -148,6 +166,48 @@
 
         error: function(jqXHR){
             console.log(jqXHR);
+        },
+
+        initFavorites: function(){
+            if (!this.isAuthenticated()) return;
+            famille.userData.favorites = this.$(".favorited-item").map(function(idx, el){
+                var $el = $(el);
+                return "/api/v1/" + $el.data("type").toLowerCase() + "/" + $el.data("id") + "/";
+            }).get();
+            this.markFavoritedItems();
+        },
+
+        markFavoritedItems: function(){
+            if (!this.isAuthenticated()) return;
+            var self = this;
+            _.each(famille.userData.favorites, function(uri){
+                self.$(".one-search-result:contains("+ uri +") .favorite")
+                .addClass("glyphicon-star")
+                .removeClass("glyphicon-star-empty");
+            });
+        },
+
+        toggleFavorite: function(e){
+            if (!this.isAuthenticated()) return;
+            var $target = $(e.target),
+            resource_uri = $("[data-field=resource_uri]", $target.parent().parent()).html(),
+            action = ($target.hasClass("glyphicon-star-empty")) ? "add": "remove";
+
+            $target.toggleClass("glyphicon-star").toggleClass("glyphicon-star-empty");
+            if (action == "add") famille.userData.favorites.push(resource_uri);
+            else famille.userData.favorites = _.without(famille.userData.favorites, resource_uri);
+
+            famille.router.toggleFavorite({
+                data: {
+                    resource_uri: resource_uri,
+                    action: action
+                },
+                error: this.error
+            });
+        },
+
+        isAuthenticated: function(){
+            return (this.$("[data-authenticated]").length == 1);
         }
     });
 
@@ -162,5 +222,6 @@
         resultTemplate: emptyResultTemplate
     });
     famille.cache = {};
-
+    famille.userData = {};
+    famille.view.initFavorites();  // TODO : it's bugging here
 })(jQuery);

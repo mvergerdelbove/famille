@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row one-search-result">
     <div class="col-md-12">
         <div class="panel panel-success">
             <div class="panel-heading">
@@ -6,7 +6,16 @@
                     <span data-field="first_name">{{ prestataire.first_name }}</span>
                     <span data-field="name">{{ prestataire.name }}</span> -
                     <span data-field="city" class="panel-subtitle">{{ prestataire.city }}</span>
+                    <i class="glyphicon glyphicon-star-empty favorite pull-right favorite-icon"
+                        data-toggle="tooltip" data-placement="top"
+                        {% if user.is_authenticated %}
+                        title="Mettre en favori"
+                        {% else %}
+                        title="Créez un compte pour pouvoire utiliser les favoris"
+                        {% endif %}
+                    ></i>
                 </h3>
+                <span data-field="resource_uri" class="hidden">/api/v1/prestataires/{{ prestataire.pk }}/</span>
             </div>
             <div class="panel-body" data-field="description">
                 {{ prestataire.description }}

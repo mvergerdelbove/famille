@@ -94,10 +94,15 @@
             <div class="col-md-12">
                 <div class="search-results">
                     {% for result in results %}
-                    {% include result_template with prestataire=result only %}
+                    {% include result_template with prestataire=result user=user only %}
                     {% endfor %}
                 </div>
             </div>
+        </div>
+        <div class="hidden favorite-list">
+            {% for favorite in favorites %}
+            <div class="favorited-item" data-id="{{ favorite.object_id }}" data-type="{{ favorite.object_type }}"></div>
+            {% endfor %}
         </div>
         <div class="row">
             <div class="col-md-offset-7 col-md-5 pagination-sm small">
@@ -109,6 +114,10 @@
             <div class="hidden">
                 <div class="empty-result-template">
                 {% include result_template only %}
+                </div>
+                {% if user.is_authenticated %}
+                <span data-authenticated></span>
+                {% endif %}
             </div>
             <input type="hidden" class="nb-search-results" value="{{ nb_search_results }}"/>
         </div>

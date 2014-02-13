@@ -343,6 +343,14 @@ class ModelsTestCase(TestCase):
         )
         self.assertEqual(qs.count(), 1)
 
+        # cannot add same favorite
+        self.famille.add_favorite(uri)
+        self.assertEqual(self.famille.favorites.all().count(), 1)
+        qs = models.FamilleFavorite.objects.filter(
+            famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
+        )
+        self.assertEqual(qs.count(), 1)
+
     def test_remove_favorite(self):
         uri = "/api/v1/prestataire/%s" % self.presta.pk
         models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
