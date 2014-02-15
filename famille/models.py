@@ -58,6 +58,12 @@ class UserInfo(BaseModel):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+        return unicode(self.__str__())
+
+    def __str__(self):
+        return self.name
+
     @property
     def is_geolocated(self):
         """
@@ -191,6 +197,9 @@ class Prestataire(Criteria):
         max_upload_size=2621440  # 2.5MB
     )
 
+    def __str__(self):
+        return "Prestataire %s" % super(Famille, self).__str__()
+
 
 class Famille(Criteria):
     """
@@ -205,6 +214,9 @@ class Famille(Criteria):
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
+
+    def __str__(self):
+        return "Famille %s" % super(Famille, self).__str__()
 
 
 class Enfant(BaseModel):
