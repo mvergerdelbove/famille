@@ -29,3 +29,7 @@
 .favorite-icon:hover {
     cursor: pointer;
 }
+
+.min-height {
+    min-height: 300px;
+}

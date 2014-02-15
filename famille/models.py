@@ -273,13 +273,24 @@ class BaseFavorite(BaseModel):
         abstract = True
 
 
-
 class FamilleFavorite(BaseFavorite):
     famille = models.ForeignKey(Famille, related_name="favorites")
 
 
 class PrestataireFavorite(BaseFavorite):
     prestataire = models.ForeignKey(Prestataire, related_name="favorites")
+
+
+class Reference(BaseModel):
+    """
+    A model representing a reference for a prestataire.
+    """
+    prestataire = models.ForeignKey(Prestataire, related_name="references")
+    name = models.CharField(max_length=100)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(blank=True, null=True, max_length=15)
+    missions = models.TextField(blank=True, null=True)
+    referenced_user = models.OneToOneField(Famille, blank=True, null=True, related_name="reference_of")
 
 
 # signals
