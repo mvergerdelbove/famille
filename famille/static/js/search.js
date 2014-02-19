@@ -216,6 +216,7 @@
     initSlider($("#id_tarif"));
     $(".slider").removeAttr("style").css("width", "100%");
     $(".has-success").removeClass("has-success");
+
     famille.router = new Router({limit: nbSearchResults}),
     famille.view = new View({
         el: $(".search-view"),

@@ -23,48 +23,76 @@
 					<div class="row">
 						<div class="form form-horizontal col-md-12 min-height">
                             <h4 class="margin-bottom-0">Mes références</h4>
-                            <!-- TODO: lister les références -->
+                            <div class="reference-list"></div>
                             <button type="button" class="btn btn-primary add-reference" data-toggle="modal" data-target="#referenceModal">Ajouter une référence</button>
                         </div>
                         <!-- TODO: favoris ?-->
+                    </div>
+                    <div class="hidden real-forms">
+                        {% for form in compte.sub_forms %}
+                        <div class="reference-form">
+                            {% for field in form %}
+                                {% bootstrap_field field %}
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
                     </div>
 					<div class="row"><div class="col-md-4 col-md-offset-5">
 						<button type="submit" name="submit" value="compte" class="btn btn-success">Sauvegarder</button>
 					</div></div>
                 </form>
+                <div class="hidden empty-real-form">
+                    <div class="reference-form">
+                        {% for field in compte.sub_form_empty %}
+                            {% bootstrap_field field %}
+                        {% endfor %}
+                    </div>
+                </div>
                 <div class="modal fade" id="referenceModal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                 <h4 class="modal-title">Ajouter une référence</h4>
+                                <small><i class="glyphicon glyphicon-warning-sign"></i>
+                                    Vous devez vous assurer que cette famille est d'accord pour être contactée via notre réseau.
+                                </small>
                             </div>
                             <div class="modal-body">
                                 <div class="form form-horizontal">
-                                    <h5>Votre référence est-elle sur <em>Une vie de famille</em> ?</h5>
-                                    {% bootstrap_field compte.sub_form_empty.referenced_user field_class="col-sm-7" label_class="col-sm-5"%}
-                                    <h5>Sinon veuillez remplir ses coordonnées :</h5>
-                                    {% bootstrap_field compte.sub_form_empty.name field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field compte.sub_form_empty.email field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field compte.sub_form_empty.phone field_class="col-sm-7" label_class="col-sm-5"%}
-                                    <h5>Quelles missions avez vous effetcuées pour cette famille ?</h5>
-                                    {% bootstrap_field compte.sub_form_empty.missions field_class="col-sm-7" label_class="sr-only" %}
+                                    <h5>
+                                        <input type="radio" name="reference-type" checked value="#exists" data-collapse>
+                                        Votre référence est sur <em>Une vie de famille</em>
+                                    </h5>
+                                    <div class="choice-collapse" id="exists">
+                                        {% bootstrap_field compte.sub_form_empty.referenced_user field_class="col-sm-7" label_class="col-sm-5"%}
+                                    </div>
+                                    <h5>
+                                        <input type="radio" name="reference-type" value="#doesnt-exists" data-collapse>
+                                        Votre référence n'est pas sur <em>Une vie de famille</em>
+                                    </h5>
+                                    <div class="choice-collapse hidden" id="doesnt-exists">
+                                        {% bootstrap_field compte.sub_form_empty.name field_class="col-sm-7" label_class="col-sm-5"%}
+                                        {% bootstrap_field compte.sub_form_empty.email field_class="col-sm-7" label_class="col-sm-5"%}
+                                        {% bootstrap_field compte.sub_form_empty.phone field_class="col-sm-7" label_class="col-sm-5"%}
+                                    </div>
+                                    <br/>
+                                    <div class="no-collapse">
+                                        <h5>Quelles missions avez vous effetcuées pour cette famille ?</h5>
+                                        {% bootstrap_field compte.sub_form_empty.missions field_class="col-sm-7" label_class="sr-only" %}
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-primary save-reference" data-dismiss="modal">
+                                    Save changes
+                                </button>
                             </div>
                         </div>
                       </div>
                 </div>
-                <div class="empty-reference-form hidden">
-                    <div class="reference-form clearfix">
-                        {% for field in compte.sub_form_empty %}
-                            {% bootstrap_field field field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% endfor %}
-                        <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
-                    </div>
+                <div class="empty-reference-form hidden"> <!-- TODO: needed ?-->
                 </div>
             </div>
 			<div class="tab-pane fade in" id="profil">
@@ -164,9 +192,12 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="{% static "lib/underscore/underscore-min.js" %}"></script>
+<script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "lib/moment/min/moment.min.js" %}"></script>
 <script src="{% static "lib/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
 <script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/account.js" %}"></script>
+<script src="{% static "js/prestataire_account.js" %}"></script>
 {% endblock %}

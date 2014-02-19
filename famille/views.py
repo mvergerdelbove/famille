@@ -64,6 +64,8 @@ def register(request):
     pass
 
 
+# TODO: error handling for compte form
+# TODO: redirect on right # on error
 @login_required
 def account(request):
     try:

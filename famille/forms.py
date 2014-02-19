@@ -186,11 +186,11 @@ class ReferenceForm(forms.ModelForm):
     class Meta:
         model = Reference
         labels = {
-            "name": "Nom de la famille",
+            "name": "Nom de famille",
             "email": "Adresse mail",
             "phone": u"Téléphone",
             "missions": "Missions",
-            "referenced_user": "Nom d'utilisateur"
+            "referenced_user": "Nom de famille"
         }
         fields = labels.keys()
 

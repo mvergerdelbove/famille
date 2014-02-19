@@ -197,9 +197,6 @@ class Prestataire(Criteria):
         max_upload_size=2621440  # 2.5MB
     )
 
-    def __str__(self):
-        return "Prestataire %s" % super(Famille, self).__str__()
-
 
 class Famille(Criteria):
     """
@@ -214,9 +211,6 @@ class Famille(Criteria):
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
-
-    def __str__(self):
-        return "Famille %s" % super(Famille, self).__str__()
 
 
 class Enfant(BaseModel):
@@ -286,7 +280,7 @@ class Reference(BaseModel):
     A model representing a reference for a prestataire.
     """
     prestataire = models.ForeignKey(Prestataire, related_name="references")
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(blank=True, null=True, max_length=15)
     missions = models.TextField(blank=True, null=True)
