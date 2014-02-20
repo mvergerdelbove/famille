@@ -1,0 +1,25 @@
+{% extends "search.html" %}
+{% load bootstrap3 %}
+
+{% block form %}
+<div class="panel-group" id="accordion">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-classic">
+                    Critères
+                </a>
+            </h4>
+        </div>
+        <div id="c-classic" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <form class="form form-search">
+                    {% bootstrap_field search_form.type_garde %}
+                    {% bootstrap_field search_form.cdt_periscolaire %}
+                    {% bootstrap_field search_form.sortie_ecole %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

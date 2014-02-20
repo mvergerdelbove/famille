@@ -260,10 +260,10 @@ class SimpleSearchForm(forms.Form):
         "famille": "Une famille pour garder mes enfants"
     }
     postal_code = forms.CharField(label="Code postal", required=False)
-    search_type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())
+    type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())
 
 
-class SearchForm(forms.Form):
+class PrestataireSearchForm(forms.Form):
     # classic
     city = forms.CharField(
         label="Ville", required=False,

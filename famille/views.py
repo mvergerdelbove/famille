@@ -31,23 +31,33 @@ def search(request):
     Search view.
     """
     data = request.POST if request.method == "POST" else request.GET
-    form = forms.SearchForm(data)
+    search_type = data.get("type")
+    if search_type == "famille":
+        FormClass = forms.FamilleSearchForm
+        Item = Famille
+        template = "search_for_familles.html"
+    else:
+        FormClass = forms.PrestataireSearchForm
+        Item = Prestataire
+        template = "search_for_prestataires.html"
+
+    form = FormClass(data)
     if not form.is_valid():
-        form = forms.SearchForm()
+        form = FormClass()
 
     # TODO: do location filtering, together with geolocation stuff
-    objects = Prestataire.objects.all()[:settings.NB_SEARCH_RESULTS]
-    template = get_result_template_from_user(request)
+    objects = Item.objects.all()[:settings.NB_SEARCH_RESULTS]
+    result_template = get_result_template_from_user(request)
     if request.user.is_authenticated():
         favorites = get_user_related(request.user).favorites.all()
     else:
         favorites = []
     return render(
-        request, "search.html",
+        request, template,
         get_context(
-            search_form=form, results=objects, result_template=template,
+            search_form=form, results=objects, result_template=result_template,
             nb_search_results=settings.NB_SEARCH_RESULTS,
-            favorites=favorites, user=request.user
+            favorites=favorites, user=request.user, search_type=search_type
         )
     )
 

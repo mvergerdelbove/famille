@@ -1,0 +1,69 @@
+{% extends "search.html" %}
+{% load bootstrap3 %}
+
+{% block form %}
+<div class="panel-group" id="accordion">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-classic">
+                    Critères classiques
+                </a>
+            </h4>
+        </div>
+        <div id="c-classic" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <form class="form form-search">
+                    {% bootstrap_field search_form.city %}
+                    {% bootstrap_field search_form.postal_code %}
+                    {% bootstrap_field search_form.tarif %}
+                    {% bootstrap_field search_form.type_garde %}
+                    {% bootstrap_field search_form.diploma %}
+                    {% bootstrap_field search_form.language %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-plus">
+                    Plus de critères
+                </a>
+            </h4>
+        </div>
+        <div id="c-plus" class="panel-collapse collapse">
+            <div class="panel-body">
+                <form class="form form-search">
+                    {% bootstrap_field search_form.cdt_periscolaire %}
+                    {% bootstrap_field search_form.sortie_ecole %}
+                    {% bootstrap_field search_form.baby %}
+                    {% bootstrap_field search_form.devoirs %}
+                    {% bootstrap_field search_form.menage %}
+                    {% bootstrap_field search_form.repassage %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-other">
+                    Autres critères
+                </a>
+            </h4>
+        </div>
+        <div id="c-other" class="panel-collapse collapse">
+            <div class="panel-body">
+                <form class="form form-search">
+                    {% bootstrap_field search_form.permis %}
+                    {% bootstrap_field search_form.urgence %}
+                    {% bootstrap_field search_form.psc1 %}
+                    {% bootstrap_field search_form.nuit %}
+                    {% bootstrap_field search_form.non_fumeur %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

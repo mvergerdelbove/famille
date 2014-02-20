@@ -10,7 +10,7 @@ class PrestataireResource(ModelResource):
         excludes = ['user', "street", "tel", "tel_visible", "email"]
         allowed_methods = ["get", ]
         filtering = dict(
-            [(key, ALL) for key in forms.SearchForm.base_fields.iterkeys()],
+            [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL
         )
 

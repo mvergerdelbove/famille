@@ -33,7 +33,8 @@
     var Router = Backbone.Router.extend({
 
         serverRoutes: {
-            toggleFavorite: "/favorite/"
+            toggleFavorite: "/favorite/",
+            switchSearch: "/recherche/",
         },
 
         initialize: function(options){
@@ -97,6 +98,11 @@
                 headers: {'X-CSRFToken': $.cookie('csrftoken')}
             });
             $.ajax(options);
+        },
+
+        switchSearch: function(search_type){
+            var url = window.location.origin + window.location.pathname + "?type=" + search_type;
+            window.location.href = url;
         }
     });
 
@@ -105,7 +111,8 @@
             "click .do-search": "doSearch",
             "click .next": "displayNext",
             "click .previous": "displayPrevious",
-            "click .favorite": "toggleFavorite"
+            "click .favorite": "toggleFavorite",
+            "click .choose-search": "switchSearch"
         },
 
         initialize: function(options){
@@ -208,13 +215,19 @@
 
         isAuthenticated: function(){
             return (this.$("[data-authenticated]").length == 1);
+        },
+
+        switchSearch: function(e){
+            famille.router.switchSearch($(e.target).data("search"));
         }
     });
 
     // init
     $('[data-toggle="tooltip"]').tooltip();
-    initSlider($("#id_tarif"));
-    $(".slider").removeAttr("style").css("width", "100%");
+    if ($("#id_tarif").length){
+        initSlider($("#id_tarif"));
+        $(".slider").removeAttr("style").css("width", "100%");
+    }
     $(".has-success").removeClass("has-success");
 
     famille.router = new Router({limit: nbSearchResults}),
