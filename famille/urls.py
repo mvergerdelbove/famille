@@ -9,6 +9,7 @@ from famille import resources
 admin.autodiscover()
 api = Api(api_name='v1')
 api.register(resources.PrestataireResource())
+api.register(resources.FamilleResource())
 
 
 urlpatterns = patterns(

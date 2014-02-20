@@ -122,6 +122,10 @@ class UserInfo(BaseModel):
 
 
 class Criteria(UserInfo):
+    TYPES_GARDE_FAMILLE = {
+        "dom": "Garde à domicile",
+        "part": "Garde partagée",
+    }
     TYPES_GARDE = {
         "dom": "Garde à domicile",
         "part": "Garde partagée",

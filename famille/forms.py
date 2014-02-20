@@ -335,3 +335,18 @@ class SearchForm(forms.Form):
         label=u"Non-fumeur", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
+
+
+class FamilleSearchForm(forms.Form):
+    type_garde = forms.MultipleChoiceField(
+        label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    ) # TODO: add select2
+    cdt_periscolaire = forms.BooleanField(
+        label=u"Conduite périscolaire", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    sortie_ecole = forms.BooleanField(
+        label=u"Sortie d'école", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
