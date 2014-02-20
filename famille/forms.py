@@ -255,7 +255,12 @@ class AccountFormManager(object):
 
 
 class SimpleSearchForm(forms.Form):
-    postal_code = forms.CharField(label="Code postal")
+    SEARCH_TYPE = {
+        "prestataire": "Un prestataire pour garder mes enfants",
+        "famille": "Une famille pour garder mes enfants"
+    }
+    postal_code = forms.CharField(label="Code postal", required=False)
+    search_type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())
 
 
 class SearchForm(forms.Form):

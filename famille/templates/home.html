@@ -4,39 +4,45 @@
 
 {% block content %}
 <main class="row">
-  <section class="col-md-7"><!-- TODO: video --></section>
-  <section class="col-md-5">
-    <article class="row margin-top-1">
-      <header>
-	<h4>je commence mes recherches</h4>
-      </header>
-      <div class="col-md-12">
-	<p>Consultez gratuitement toutes les propositions près de chez vous</p>
-	<form class="form-inline" role="search" method="post" action="{% url 'search' %}">
-	  {% csrf_token %}
-	  {% for field in search_form %}
-	  {% bootstrap_field field show_label=False %}
-	  {% endfor %}
-	  {% buttons %}
-	  <button type="submit" class="btn btn-warning">Rechercher</button>
-	  {% endbuttons %}
-	</form>
-      </div>
-    </article>
-    <article class="row margin-top-0">
-      <header>
-	<h4>je crée mon compte</h4>
-      </header>
-      <div class="col-md-6">
-	<p>Je recherche une personne de confiance pour garder mes enfants</p>
-	<a href="#" class="btn btn-success" data-toggle="modal" data-target="#createFamille">Familles</a>
-      </div>
-      <div class="col-md-6">
-	<p>J'améliore ma visibilité auprès des familles</p>
-	<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createPresta">Prestataires</a>
-      </div>
-    </article>
-  </section>
+    <section class="col-md-7"><!-- TODO: video --></section>
+    <section class="col-md-5">
+        <article class="row margin-top-1">
+            <header>
+                <h4>je commence mes recherches</h4>
+            </header>
+            <div class="col-md-12">
+                <p>Consultez gratuitement toutes les propositions près de chez vous</p>
+                <form class="form-inline" role="search" method="post" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for field in search_form %}
+                            {% bootstrap_field field show_label=False %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3 margin-top-little">
+                            <button type="submit" class="btn btn-warning">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </article>
+        <article class="row margin-top-0">
+            <header>
+	            <h4>je crée mon compte</h4>
+            </header>
+            <div class="col-md-6">
+	            <p>Je recherche une personne de confiance pour garder mes enfants</p>
+	            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#createFamille">Familles</a>
+            </div>
+            <div class="col-md-6">
+	            <p>J'améliore ma visibilité auprès des familles</p>
+	            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createPresta">Prestataires</a>
+            </div>
+        </article>
+    </section>
 </main>
 <aside>
   <!-- Modals -->

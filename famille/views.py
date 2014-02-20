@@ -35,6 +35,7 @@ def search(request):
     if not form.is_valid():
         form = forms.SearchForm()
 
+    # TODO: do location filtering, together with geolocation stuff
     objects = Prestataire.objects.all()[:settings.NB_SEARCH_RESULTS]
     template = get_result_template_from_user(request)
     if request.user.is_authenticated():
