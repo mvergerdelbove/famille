@@ -2,9 +2,10 @@
     window.famille = window.famille || {};
 
     var baseUrl = location.origin,
-        searchApi = "/api/v1/prestataires/?",
         nbSearchResults = parseInt($(".nb-search-results").val(), 10),
-        emptyResultTemplate = $(".empty-result-template").html();
+        emptyResultTemplate = $(".empty-result-template").html(),
+        searchType = $(".search-type").val()
+        searchApi = "/api/v1/{type}s/?".replace("{type}", searchType);
 
     var initSlider = function($el){
         var value = $el.val();
@@ -40,7 +41,8 @@
         initialize: function(options){
             _.bindAll(this, "processResults");
             this.limit = options.limit;
-            this.next = "/api/v1/prestataires/?offset="+ this.limit +"&limit="+ this.limit;
+            this.searchType = options.searchType;
+            this.next = searchApi + "offset=" + this.limit + "&limit=" + this.limit;
             this.previous = null;
             this.total_count = 0;
         },
@@ -232,12 +234,15 @@
     }
     $(".has-success").removeClass("has-success");
 
-    famille.router = new Router({limit: nbSearchResults}),
+    famille.router = new Router({
+        limit: nbSearchResults,
+        searchType: searchType
+    }),
     famille.view = new View({
         el: $(".search-view"),
         resultTemplate: emptyResultTemplate
     });
     famille.cache = {};
     famille.userData = {};
-    famille.view.initFavorites();  // TODO : it's bugging here
+    famille.view.initFavorites();  // FIXME : it's bugging here
 })(jQuery);
