@@ -26,8 +26,9 @@
 
     var showTab = function(){
         $('.nav-tabs a:first').tab('show');
-        if (document.location.hash){
-            $('.nav-tabs a[href="' + document.location.hash + '"]').tab('show');
+        var hash = document.location.hash || $(".url-hash").val();
+        if (hash){
+            $('.nav-tabs a[href="' + hash + '"]').tab('show');
         }
     };
 

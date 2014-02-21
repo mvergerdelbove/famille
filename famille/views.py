@@ -76,7 +76,6 @@ def register(request):
 
 
 # TODO: error handling for compte form
-# TODO: redirect on right # on error
 @login_required
 def account(request):
     try:
@@ -84,17 +83,19 @@ def account(request):
     except ObjectDoesNotExist:
         raise Http404
 
+    url_hash = ""
     if request.method == "POST":
         account_forms = forms.AccountFormManager(instance=related, data=request.POST, files=request.FILES)
+        url_hash = account_forms.form_submitted
         if account_forms.is_valid():
             account_forms.save()
-            return HttpResponseRedirect('/mon-compte/#' + account_forms.form_submitted)
+            return HttpResponseRedirect('/mon-compte/#' + url_hash)
     else:
         account_forms = forms.AccountFormManager(instance=related)
 
     return render(
         request, '%s_account.html' % account_forms.instance_type,
-        get_context(**account_forms.forms)
+        get_context(url_hash=url_hash, **account_forms.forms)
     )
 
 
