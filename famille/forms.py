@@ -3,7 +3,9 @@ from django import forms
 from django.contrib.auth.models import User
 from localflavor.fr.forms import FRPhoneNumberField
 
-from famille.models import Famille, Prestataire, Enfant, FamillePlanning, Reference
+from famille.models import (
+    Famille, Prestataire, Enfant, FamillePlanning, Reference, PrestatairePlanning
+)
 from famille.utils.forms import ForeignKeyForm
 
 
@@ -71,9 +73,8 @@ class EnfantForm(forms.ModelForm):
         }
 
 
-class FamillePlanningSubForm(forms.ModelForm):
+class PlanningSubForm(forms.ModelForm):
     class Meta:
-        model = FamillePlanning
         labels = {
             "start_date": u"Choisir une date de début",
             "frequency": u"A quelle fréquence ?",
@@ -92,6 +93,16 @@ class FamillePlanningSubForm(forms.ModelForm):
         }
 
 
+class FamillePlanningSubForm(PlanningSubForm):
+    class Meta(PlanningSubForm.Meta):
+        model = FamillePlanning
+
+
+class PrestatairePlanningSubForm(PlanningSubForm):
+    class Meta(PlanningSubForm.Meta):
+        model = PrestatairePlanning
+
+
 class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
     foreign_model = FamillePlanning
     origin_model_name = "famille"
@@ -100,6 +111,17 @@ class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
 
     class Meta:
         model = Famille
+        fields = ()
+
+
+class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
+    foreign_model = PrestatairePlanning
+    origin_model_name = "prestataire"
+    related_name = "planning"
+    sub_form = PrestatairePlanningSubForm
+
+    class Meta:
+        model = Prestataire
         fields = ()
 
 
@@ -217,7 +239,8 @@ class AccountFormManager(object):
         "prestataire": {
             "profil": PrestataireForm,
             "competences": PrestataireCompetenceForm,
-            "compte": PrestataireCompteForm
+            "compte": PrestataireCompteForm,
+            "planning": FamillePlanningForm
         }
     }
 

@@ -4,10 +4,12 @@
 
 {% block title %} - Mon compte{% endblock %}
 {% block extrahead %}
+<link rel="stylesheet" href="{% static "lib/bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}" media="all"/>
 <link rel="stylesheet" href="{% static "lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" %}" media="all"/>
 {% endblock %}
 
 {% block content %}
+{% bootstrap_messages %}
 <div class="row">
 	<div class="col-md-offset-1 col-md-7">
 		<ul class="nav nav-tabs">
@@ -92,8 +94,6 @@
                         </div>
                       </div>
                 </div>
-                <div class="empty-reference-form hidden"> <!-- TODO: needed ?-->
-                </div>
             </div>
 			<div class="tab-pane fade in" id="profil">
 				<form method="post" action="{% url "account" %}">
@@ -125,7 +125,75 @@
 					</div></div>
 				</form>
 			</div>
-			<div class="tab-pane fade" id="planning">...</div>
+            <div class="tab-pane fade" id="planning">
+                <form method="post" action="{% url "account" %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form form-horizontal col-md-12">
+                            <h4 class="margin-bottom-0">Planning</h4>
+                            <div class="no-planning">
+                                Vous n'avez pas encore ajouté de préférences de planning.
+                            </div>
+                            <div class="planning-container">
+                                {% for form in planning.sub_forms %}
+                                <div class="planning-form clearfix">
+                                    <div class="form-group">
+                                        {% bootstrap_label form.start_date.label_tag label_class="col-sm-5" %}
+                                        <div class="col-md-7 input-group date initial-date">
+                                            {{ form.start_date }}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5"%}
+                                    <div class="form-group">
+                                        {% bootstrap_label form.end_date.label_tag label_class="col-sm-5" %}
+                                        <div class="col-md-7 input-group date initial-date">
+                                            {{ form.end_date }}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="btn btn-primary add-planning margin-top-0">
+                                Ajouter une nouvelle préférence <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col-md-4 col-md-offset-5">
+                        <button type="submit" name="submit" value="planning" class="btn btn-success">Sauvegarder</button>
+                    </div></div>
+                </form>
+                <div class="empty-planning-form hidden">
+                    <div class="planning-form clearfix">
+                        <div class="form-group">
+                            {% bootstrap_label planning.sub_form_empty.start_date.label_tag label_class="col-sm-5" %}
+                            <div class="col-md-7 input-group date">
+                                {{ planning.sub_form_empty.start_date }}
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
+                        <div class="form-group">
+                            {% bootstrap_label planning.sub_form_empty.end_date.label_tag label_class="col-sm-5" %}
+                            <div class="col-md-7 input-group date">
+                                {{ planning.sub_form_empty.end_date }}
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
+                    </div>
+                </div>
+            </div>
 			<div class="tab-pane fade" id="competences">
 				<form method="post" action="{% url "account" %}" enctype="multipart/form-data">
 					{% csrf_token %}
