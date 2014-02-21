@@ -37,3 +37,7 @@
 .min-height {
     min-height: 300px;
 }
+
+.search-header {
+    margin-bottom: 20px;
+}

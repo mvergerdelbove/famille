@@ -11,7 +11,7 @@
 <div class="row search-view">
     <div class="col-md-3 col-md-offset-1">
             <h3>Vous recherchez...</h3>
-            <div class="btn-group">
+            <div class="btn-group search-header">
                 {% if search_type == "famille" %}
                 <button type="button" class="btn btn-default choose-search" data-search="prestataire">Un prestataire</button>
                 <button type="button" class="btn btn-success active">Une famille</button>
@@ -20,10 +20,6 @@
                 <button type="button" class="btn btn-default choose-search" data-search="famille">Une famille</button>
                 {% endif %}
             </div>
-            <p>
-                Voir les résultats pour ces critères
-                <button type="button" class="btn btn-xs btn-primary do-search"><i class="glyphicon glyphicon-play"></i></button>
-            </p>
             {% block form %}{% endblock %}
     </div>
     <div class="col-md-6 col-md-offset-1">

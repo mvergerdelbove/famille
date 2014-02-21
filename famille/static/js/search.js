@@ -108,11 +108,13 @@
 
     var View = Backbone.View.extend({
         events: {
-            "click .do-search": "doSearch",
             "click .next": "displayNext",
             "click .previous": "displayPrevious",
             "click .favorite": "toggleFavorite",
-            "click .choose-search": "switchSearch"
+            "click .choose-search": "switchSearch",
+            "change .form-control": "doSearch",
+            "click [type=checkbox]": "doSearch",
+            "onkeyup [type=text]": "doSearch"
         },
 
         initialize: function(options){
