@@ -41,8 +41,9 @@
         templateExistingReference: _.template(templateExistingReference),
         templateOutsideReference: _.template(templateOutsideReference),
 
-        initialize: function(data){
+        initialize: function(data, formEl){
             this.data = data;
+            if (formEl) this.$formEl = $(formEl);
         },
 
         render: function(data){
@@ -139,15 +140,15 @@
             var self = this;
             _.each(this.$(".real-forms .reference-form"), function(el){
                 var data = getDataFromEl(el);
-                self.addReference(data, true);
+                self.addReference(data, el);
             });
         },
 
-        addReference: function(data, hasFormEl){
-            var view = new ReferenceView(data);
+        addReference: function(data, formEl){
+            var view = new ReferenceView(data, formEl);
             this.views.push(view);
             this.$(".reference-list").append(view.render().el);
-            if (!hasFormEl) this.$(".real-forms").append(view.$formEl);
+            this.$(".real-forms").append(view.$formEl);
         },
 
         editReference: function(e){
@@ -178,7 +179,5 @@
     famille.modalView = new ReferenceEditionView({
         el: $("#referenceModal")
     });
-
-    // TODO: find a smart way for initialization
 
 })(jQuery);
