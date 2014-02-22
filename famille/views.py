@@ -95,7 +95,7 @@ def account(request):
 
     return render(
         request, '%s_account.html' % account_forms.instance_type,
-        get_context(url_hash=url_hash, **account_forms.forms)
+        get_context(related=related, url_hash=url_hash, **account_forms.forms)
     )
 
 

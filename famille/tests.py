@@ -1,4 +1,5 @@
 from datetime import date
+import types
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -51,12 +52,12 @@ class UtilsTestCase(TestCase):
         _in = "not a uri"
         self.assertRaises(ValueError, utils.parse_resource_uri, _in)
 
-        _in = "/api/v1/prestataire/12/"
+        _in = "/api/v1/prestataires/12/"
         out = "prestataire", "12"
         self.assertEqual(utils.parse_resource_uri(_in), out)
 
-        _in = "/api/v1/famille_o/123"
-        out = "famille_o", "123"
+        _in = "/api/v1/familles/123"
+        out = "famille", "123"
         self.assertEqual(utils.parse_resource_uri(_in), out)
 
 
@@ -257,7 +258,7 @@ class ModelsTestCase(TestCase):
         self.famille = models.Famille(user=self.user1)
         self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
-        self.presta = models.Prestataire(user=self.user2)
+        self.presta = models.Prestataire(user=self.user2, description="Une description")
         self.presta.save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
 
@@ -335,7 +336,7 @@ class ModelsTestCase(TestCase):
         pre_save.disconnect(sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
     def test_add_favorite(self):
-        uri = "/api/v1/prestataire/%s" % self.presta.pk
+        uri = "/api/v1/prestataires/%s" % self.presta.pk
         self.famille.add_favorite(uri)
         self.assertEqual(self.famille.favorites.all().count(), 1)
         qs = models.FamilleFavorite.objects.filter(
@@ -352,11 +353,20 @@ class ModelsTestCase(TestCase):
         self.assertEqual(qs.count(), 1)
 
     def test_remove_favorite(self):
-        uri = "/api/v1/prestataire/%s" % self.presta.pk
+        uri = "/api/v1/prestataires/%s" % self.presta.pk
         models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
         self.famille.remove_favorite(uri)
 
         self.assertEqual(self.famille.favorites.all().count(), 0)
+
+    def test_get_favorites_data(self):
+        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
+        favs = self.famille.get_favorites_data()
+        self.assertIsInstance(favs, types.GeneratorType)
+        favs = list(favs)
+        self.assertEqual(len(favs), 1)
+        self.assertIsInstance(favs[0], models.Prestataire)
+        self.assertEqual(favs[0].description, self.presta.description)
 
 
 class GeolocationTestCase(TestCase):

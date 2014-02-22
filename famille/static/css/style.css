@@ -38,6 +38,10 @@
     min-height: 300px;
 }
 
+.min-height-little {
+    min-height: 150px;
+}
+
 .search-header {
     margin-bottom: 20px;
 }

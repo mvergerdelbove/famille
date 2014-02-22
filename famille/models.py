@@ -120,6 +120,15 @@ class UserInfo(BaseModel):
         object_id = int(object_id)
         self.favorites.filter(object_type=object_type, object_id=object_id).delete()
 
+    def get_favorites_data(self):
+        """
+        Retrieve the favorites data.
+        """
+        # FIXME: can become greedy in the future
+        for favorite in self.favorites.all():
+            FavClass = USER_CLASSES[favorite.object_type]
+            yield FavClass.objects.filter(pk=favorite.object_id).first()
+
 
 class Criteria(UserInfo):
     TYPES_GARDE_FAMILLE = {
@@ -217,6 +226,12 @@ class Famille(Criteria):
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
 
+USER_CLASSES = {
+    "Famille": Famille,
+    "Prestataire": Prestataire
+}
+
+
 class Enfant(BaseModel):
     """
     An child of a Famille.
@@ -270,6 +285,11 @@ class BaseFavorite(BaseModel):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+        return unicode(self.__str__())
+
+    def __str__(self):
+        return "%s %s" % (self.object_type, self.object_id)
 
 class FamilleFavorite(BaseFavorite):
     famille = models.ForeignKey(Famille, related_name="favorites")

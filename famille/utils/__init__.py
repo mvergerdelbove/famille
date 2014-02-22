@@ -63,7 +63,7 @@ def isplit(iterable, index):
     return islice(iterable, index), islice(iterable, index, None)
 
 
-resource_pattern = re.compile("/api/v1/([a-z_-]+)/([\d]+)/?")
+resource_pattern = re.compile("/api/v1/([a-z_-]+)s/([\d]+)/?")
 
 
 def parse_resource_uri(resource_uri):
