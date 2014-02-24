@@ -11,3 +11,4 @@ venv/*
 .env
 famille/media/*
 !famille/media/.keep
+famille/static/js/build/*
