@@ -32,11 +32,21 @@ module.exports = function(grunt) {
             //     dest: BUILD_ROOT + "libs.js",
             //     src: [JS_ROOT + "libs/base.js"]
             // },
+        },
+        watch: {
+            options: {
+                atBegin: true
+            },
+            all: {
+                files: [JS_ROOT + '**/*.js'],
+                tasks: ['build']
+            }
         }
     });
 
     // Load tasks from "grunt-sample" grunt plugin installed via Npm.
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     // grunt.loadNpmTasks('grunt-contrib-connect');
     // grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
