@@ -32,6 +32,7 @@ def search(request):
     """
     data = request.POST if request.method == "POST" else request.GET
     search_type = data.get("type")
+    search_type = "prestataire" if search_type not in ["famille", "prestataire"] else search_type
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
         Item = Famille
