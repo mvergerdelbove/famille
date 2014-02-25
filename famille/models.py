@@ -129,6 +129,13 @@ class UserInfo(BaseModel):
             FavClass = USER_CLASSES[favorite.object_type]
             yield FavClass.objects.filter(pk=favorite.object_id).first()
 
+    def get_resource_name(self):
+        """
+        Return the API uri of the objet. Don't really like it but for now
+        didn't find another way.
+        """
+        return "%ss" % self.__class__.__name__.lower()
+
 
 class Criteria(UserInfo):
     TYPES_GARDE_FAMILLE = {
