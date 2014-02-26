@@ -39,7 +39,7 @@
                                 {% for favorite in related.get_favorites_data %}
                                 <div class="favorite-row row">
                                     <div class="col-md-8">
-                                        <h4>{{ favorite.first_name }} {{ favorite.name }}</h4>
+                                        <h4 class="favorite-name">{{ favorite.first_name }} {{ favorite.name }}</h4>
                                         <p>{{ favorite.description }}</p>
                                     </div>
                                     <div class="col-md-4">
@@ -53,6 +53,27 @@
                                 </div>
                                 {% endfor %}
                             </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="modal-contact-favorite"
+                             tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="myModalLabel">Formulaire de contact</h4>
+                                        <small class="modal-subtitle"></small>
+                                    </div>
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                                        <button type="button"
+                                            class="btn btn-primary send-contact"
+                                            data-dismiss="modal">Envoyer</button>
+                                    </div>
+                                </div>
+                              </div>
                         </div>
                     </div>
                 </div>
