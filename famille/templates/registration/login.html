@@ -1,29 +1,27 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block content %}
 {% url 'auth_login' as login_url %}
-<form action="{{ login_url }}" method="post">{% csrf_token %}
-    <div class="login-form">
-        <div class="row">
-            <div class="offset4 span4">
-                <h1>Connexion</h1>
-                <table class="login-table">
-                    {{ form.as_table }}
-                </table>
+<div class="row">
+    <div class="col-md-offset-3">
+        <form action="{{ login_url }}" method="post" class="form-horizontal" role="form">
+            {% csrf_token %}
+            <h1>Connexion</h1>
+            {% bootstrap_form form layout="horizontal" field_class="col-md-3"%}
+            <div class="form-group">
+                <div class="col-md-2 col-md-offset-3">
+                    <input type="submit" class="btn btn-success" value="Connexion"/>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="offset6 span2">
-                <input type="submit" class="btn btn-success" value="Connexion"/>
-            </div>
-        </div>
             {% if next %}
             <input type="hidden" name="next" value="{{ next }}" />
             {% else %}
-            <input type="hidden" name="next" value="/" />
+            <input type="hidden" name="next" value="/mon-compte/" />
             {% endif %}
+        </form>
     </div>
-</form>
+</div>
 {% endblock %}
