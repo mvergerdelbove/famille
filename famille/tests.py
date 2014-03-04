@@ -4,12 +4,13 @@ import types
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
+from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
-from famille.utils import geolocation
+from famille.utils import geolocation, http
 
 
 # disconnecting signal to not alter testing and flooding google
@@ -382,3 +383,50 @@ class GeolocationTestCase(TestCase):
 
     
         self.famille = models.Famille()
+
+
+class HTTPTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User(username="test@email.com", email="test@email.com", password="p")
+        self.user.save()
+        self.user_no_related = User(username="test2@email.com", email="test2@email.com", password="p")
+        self.user_no_related.save()
+        self.famille = models.Famille(user=self.user)
+        self.famille.save()
+        self.request = MagicMock(META={"CONTENT_TYPE": "text/html"}, body="my body")
+
+    def tearDown(self):
+        self.user.delete()
+        self.user_no_related.delete()
+        self.famille.delete()
+
+    def test_require_json(self):
+        def view(request, user):
+            return "success"
+
+        decorated = http.require_JSON(view)
+        self.assertIsInstance(decorated(self.request, "user"), HttpResponseBadRequest)
+
+        self.request.META["CONTENT_TYPE"] = "application/json"
+        self.assertIsInstance(decorated(self.request, "user"), HttpResponseBadRequest)
+
+        self.request.body = '{"some": "json"}'
+        self.assertEqual(decorated(self.request, "user"), "success")
+
+        # charset in content type
+        self.request.META["CONTENT_TYPE"] = "application/json; charset=utf-8"
+        self.assertEqual(decorated(self.request, "user"), "success")
+
+    def test_require_related(self):
+        def view(request):
+            return "success"
+
+        decorated = http.require_related(view)
+
+        self.request.user = self.user_no_related
+        self.assertRaises(Http404, decorated, self.request)
+
+        self.request.user = self.user
+        self.assertEqual(decorated(self.request), "success")
+        self.assertEqual(self.request.related_user, self.famille)
