@@ -10,7 +10,7 @@ from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
-from famille.utils import geolocation, http
+from famille.utils import geolocation, http, python
 
 
 # disconnecting signal to not alter testing and flooding google
@@ -25,30 +25,6 @@ class UtilsTestCase(TestCase):
         self.assertIn("site_title", utils.get_context(other="value"))
         self.assertEqual(utils.get_context(other="value")["other"], "value")
 
-    def test_pick(self):
-        _in = {"a": "ok", "b": "ko"}
-        out = {"a": "ok"}
-        self.assertEqual(utils.pick(_in, "a", "c"), out)
-
-        _in = QueryDict("a=1&b=2&a=3")
-        out = {"a": ["1", "3"]}
-        self.assertEqual(utils.pick(_in, "a", "c"), out)
-
-    def test_repeat_lambda(self):
-        out = list(utils.repeat_lambda(dict, 2))
-        self.assertEqual(len(out), 2)
-        self.assertIsNot(out[0], out[1])
-
-        out = list(utils.repeat_lambda(dict, -10))
-        self.assertEqual(len(out), 0)
-
-    def test_isplit(self):
-        _in = [1, 2, 3]
-        q, r = utils.isplit(_in, 2)
-        q, r = list(q), list(r)
-        self.assertEqual(q, [1, 2])
-        self.assertEqual(r, [3])
-
     def test_parse_resource_uri(self):
         _in = "not a uri"
         self.assertRaises(ValueError, utils.parse_resource_uri, _in)
@@ -60,6 +36,33 @@ class UtilsTestCase(TestCase):
         _in = "/api/v1/familles/123"
         out = "famille", "123"
         self.assertEqual(utils.parse_resource_uri(_in), out)
+
+
+class PythonTestCase(TestCase):
+
+    def test_pick(self):
+        _in = {"a": "ok", "b": "ko"}
+        out = {"a": "ok"}
+        self.assertEqual(python.pick(_in, "a", "c"), out)
+
+        _in = QueryDict("a=1&b=2&a=3")
+        out = {"a": ["1", "3"]}
+        self.assertEqual(python.pick(_in, "a", "c"), out)
+
+    def test_repeat_lambda(self):
+        out = list(python.repeat_lambda(dict, 2))
+        self.assertEqual(len(out), 2)
+        self.assertIsNot(out[0], out[1])
+
+        out = list(python.repeat_lambda(dict, -10))
+        self.assertEqual(len(out), 0)
+
+    def test_isplit(self):
+        _in = [1, 2, 3]
+        q, r = python.isplit(_in, 2)
+        q, r = list(q), list(r)
+        self.assertEqual(q, [1, 2])
+        self.assertEqual(r, [3])
 
 
 class RegistrationFormTestCase(TestCase):
