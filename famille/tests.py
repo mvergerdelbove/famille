@@ -10,6 +10,7 @@ from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
+from famille.templatetags import helpers
 from famille.utils import geolocation, http, python
 
 
@@ -433,3 +434,13 @@ class HTTPTestCase(TestCase):
         self.request.user = self.user
         self.assertEqual(decorated(self.request), "success")
         self.assertEqual(self.request.related_user, self.famille)
+
+
+class TemplateTagsTestCase(TestCase):
+
+    def test_get_class_name(self):
+        obj = models.Prestataire()
+        self.assertEqual(helpers.get_class_name(obj), "Prestataire")
+
+        obj = models.Famille()
+        self.assertEqual(helpers.get_class_name(obj), "Famille")

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load helpers %}
 
 {% block title %} - Mon compte{% endblock %}
 {% block extrahead %}
@@ -48,7 +49,8 @@
                                             <button type="button" class="btn btn-default btn-xs remove">Supprimer</button>
                                         </div>
                                         <span class="hidden favorite-pk">{{ favorite.pk }}</span>
-                                        <span class="hidden favorite-type">{{ favorite.get_resource_name }}</span>
+                                        <span class="hidden favorite-type">{{ favorite|class_name }}</span>
+                                        <span class="hidden favorite-uri">{{ favorite.get_resource_uri }}</span>
                                     </div>
                                 </div>
                                 {% endfor %}
