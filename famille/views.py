@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 from famille import forms
 from famille.models import Famille, Prestataire, get_user_related, BaseFavorite
 from famille.utils import get_context, get_result_template_from_user
+from famille.utils.http import require_JSON, require_related
 
 
 login_required = django_login_required(
@@ -25,6 +26,7 @@ def home(request):
         request, "home.html",
         get_context(search_form=search_form, registration_form=registration_form)
     )
+
 
 def search(request):
     """
@@ -62,6 +64,7 @@ def search(request):
         )
     )
 
+
 @require_POST
 def register(request):
     """
@@ -77,29 +80,26 @@ def register(request):
 
 
 # TODO: error handling for compte form
+@require_related
 @login_required
 def account(request):
-    try:
-        related = get_user_related(request.user)
-    except ObjectDoesNotExist:
-        raise Http404
-
     url_hash = ""
     if request.method == "POST":
-        account_forms = forms.AccountFormManager(instance=related, data=request.POST, files=request.FILES)
+        account_forms = forms.AccountFormManager(instance=request.related_user, data=request.POST, files=request.FILES)
         url_hash = account_forms.form_submitted
         if account_forms.is_valid():
             account_forms.save()
             return HttpResponseRedirect('/mon-compte/#' + url_hash)
     else:
-        account_forms = forms.AccountFormManager(instance=related)
+        account_forms = forms.AccountFormManager(instance=request.related_user)
 
     return render(
         request, '%s_account.html' % account_forms.instance_type,
-        get_context(related=related, url_hash=url_hash, **account_forms.forms)
+        get_context(related=request.related_user, url_hash=url_hash, **account_forms.forms)
     )
 
 
+@require_related
 @require_POST
 @login_required  # FIXME: does this work ?
 def favorite(request):
@@ -109,8 +109,23 @@ def favorite(request):
     """
     resource_uri = request.POST["resource_uri"]
     action_name = request.POST.get("action", "add")
-    user_related = get_user_related(request.user)
+    user_related = request.related_user
     action = user_related.remove_favorite if action_name == "remove" else user_related.add_favorite
     action(resource_uri)
 
     return HttpResponse()
+
+
+@require_related
+@require_POST
+@require_JSON
+@login_required
+def contact_favorites(request):
+    """
+    Contact favorites using mailer.
+    """
+    favorites = request.json["favorites"]
+    message = request.json["message"]
+
+    import pdb; pdb.set_trace()
+    request.related_user.send_mail_to_favorites(message, favorites)

@@ -11,7 +11,7 @@ from mock import MagicMock, patch
 
 from famille import forms, models, utils
 from famille.templatetags import helpers
-from famille.utils import geolocation, http, python
+from famille.utils import geolocation, http, python, mail
 
 
 # disconnecting signal to not alter testing and flooding google
@@ -260,12 +260,20 @@ class ModelsTestCase(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
-        self.famille = models.Famille(user=self.user1)
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
         self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
-        self.presta = models.Prestataire(user=self.user2, description="Une description")
+        self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
         self.presta.save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
+        self.famille_fav = models.FamilleFavorite(
+            object_type="Prestataire", object_id=self.presta.pk, famille=self.famille
+        )
+        self.famille_fav.save()
+        self.prestataire_fav = models.PrestataireFavorite(
+            object_type="Famille", object_id=self.famille.pk, prestataire=self.presta
+        )
+        self.prestataire_fav.save()
 
     def tearDown(self):
         User.objects.all().delete()
@@ -273,6 +281,7 @@ class ModelsTestCase(TestCase):
         models.Prestataire.objects.all().delete()
         models.Geolocation.objects.all().delete()
         models.FamilleFavorite.objects.all().delete()
+        models.PrestataireFavorite.objects.all().delete()
 
     def mock_process(self, target, args, kwargs, *_, **__):
         """
@@ -365,13 +374,23 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.famille.favorites.all().count(), 0)
 
     def test_get_favorites_data(self):
-        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
         favs = self.famille.get_favorites_data()
         self.assertIsInstance(favs, types.GeneratorType)
         favs = list(favs)
         self.assertEqual(len(favs), 1)
         self.assertIsInstance(favs[0], models.Prestataire)
         self.assertEqual(favs[0].description, self.presta.description)
+
+    def test_get_resource_uri(self):
+        out = "/api/v1/familles/%s" % self.famille.pk
+        self.assertEqual(self.famille.get_resource_uri(), out)
+
+        out = "/api/v1/prestataires/%s" % self.presta.pk
+        self.assertEqual(self.presta.get_resource_uri(), out)
+
+    def test_get_user(self):
+        self.assertEqual(self.famille_fav.get_user(), self.presta)
+        self.assertEqual(self.prestataire_fav.get_user(), self.famille)
 
 
 class GeolocationTestCase(TestCase):

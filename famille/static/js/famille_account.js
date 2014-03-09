@@ -15,6 +15,7 @@
     var Router = Backbone.Router.extend({
         serverRoutes: {
             toggleFavorite: "/favorite/",
+            contactFavorite: "/contact-favorites/",
         },
 
         removeFavorite: function(options){
@@ -30,7 +31,18 @@
         },
 
         sendContact: function(data){
-            console.log(data);
+            var self = this;
+            $.ajax({
+                type: "post",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                url: this.serverRoutes.contactFavorite,
+                headers: {'X-CSRFToken': $.cookie('csrftoken')}
+            }).done(function(){
+                self.trigger("contact:success");
+            }).fail(function(){
+                self.trigger("contact:fail");
+            });
         }
     });
 
@@ -41,13 +53,14 @@
         },
 
         contactFavorite: function(e){
-            famille.modal.render([this.getFavoriteData()]);
+            famille.modal.render([_.pick(this.getFavoriteData(), "object_type", "object_id")]);
         },
 
         getFavoriteData: function(){
             return {
-                type: this.$(".favorite-type").text(),
-                pk: this.$(".favorite-pk").text(),
+                object_type: this.$(".favorite-type").text(),
+                object_id: this.$(".favorite-pk").text(),
+                resource_uri: this.$(".favorite-uri").text(),
                 name: this.$(".favorite-name").text()
             };
         },
@@ -56,9 +69,7 @@
         removeFavorite: function(e){
             var data = this.getFavoriteData()
             famille.router.removeFavorite({
-                data: {
-                    resource_uri: "/api/v1/{type}/{pk}".replace("{type}", data.type).replace("{pk}", data.pk)
-                }
+                data: _.pick(data, "resource_uri")
             });
             this.trigger("remove");
             this.remove();
@@ -127,11 +138,11 @@
     });
 
     window.famille = {};
+    window.famille.router = new Router();
     window.famille.view = new View({
        el: $(".favorite-panel") 
     });
     window.famille.modal = new ModalView({
         el: $("#modal-contact-favorite")
     });
-    window.famille.router = new Router();
 })(jQuery);

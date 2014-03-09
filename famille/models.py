@@ -1,9 +1,13 @@
 # -*- coding=utf-8 -*-
+from itertools import imap
+
 from django.contrib.auth.models import User
 from django.db import models
 from south.modelsinspector import add_introspection_rules
 
 from famille.utils import parse_resource_uri, geolocation, fields as extra_fields
+from famille.utils.mail import send_mail_from_template_with_noreply
+from famille.utils.python import pick
 
 
 class BaseModel(models.Model):
@@ -125,16 +129,31 @@ class UserInfo(BaseModel):
         Retrieve the favorites data.
         """
         # FIXME: can become greedy in the future
-        for favorite in self.favorites.all():
-            FavClass = USER_CLASSES[favorite.object_type]
-            yield FavClass.objects.filter(pk=favorite.object_id).first()
+        return (favorite.get_user() for favorite in self.favorites.all())
 
-    def get_resource_name(self):
+    # FIXME: nothing to do here...
+    def get_resource_uri(self):
         """
         Return the API uri of the objet. Don't really like it but for now
         didn't find another way.
         """
-        return "%ss" % self.__class__.__name__.lower()
+        return "/api/v1/%ss/%s" % (self.__class__.__name__.lower(), self.pk)
+
+    # FIXME: cannot test it, cannot mock...
+    def send_mail_to_favorites(self, message, favorites):
+        FavoriteClass = FAVORITE_CLASSES[self.__class__]
+        favorites = imap(lambda fav: pick(fav, "object_type", "object_id"), favorites)
+        favorites = (FavoriteClass(**fav) for fav in favorites)
+        # verify that the users are real favorites
+        emails = (fav.get_user().email for fav in favorites if fav.owner == self)
+        # remove possible None
+        emails = filter(None, emails)
+
+        if emails:
+            send_mail_from_template_with_noreply(
+                "email/contact_favorites.html", message,
+                subject=message.get("subject", ""), recipient_list=emails
+            )
 
 
 class Criteria(UserInfo):
@@ -233,12 +252,6 @@ class Famille(Criteria):
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
 
-USER_CLASSES = {
-    "Famille": Famille,
-    "Prestataire": Prestataire
-}
-
-
 class Enfant(BaseModel):
     """
     An child of a Famille.
@@ -298,12 +311,27 @@ class BaseFavorite(BaseModel):
     def __str__(self):
         return "%s %s" % (self.object_type, self.object_id)
 
+    def get_user(self):
+        """
+        Return the user instance that is defined by the favorite.
+        """
+        return USER_CLASSES[self.object_type].objects.get(pk=self.object_id)
+
+
 class FamilleFavorite(BaseFavorite):
     famille = models.ForeignKey(Famille, related_name="favorites")
+
+    @property
+    def owner(self):
+        return self.famille
 
 
 class PrestataireFavorite(BaseFavorite):
     prestataire = models.ForeignKey(Prestataire, related_name="favorites")
+
+    @property
+    def owner(self):
+        return self.prestataire
 
 
 class Reference(BaseModel):
@@ -324,3 +352,14 @@ models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatc
 
 # south rules
 add_introspection_rules(extra_fields.content_type_restricted_file_field_rules, ["^famille\.utils\.fields", ])
+
+# consts
+USER_CLASSES = {
+    "Famille": Famille,
+    "Prestataire": Prestataire
+}
+
+FAVORITE_CLASSES = {
+    Famille: FamilleFavorite,
+    Prestataire: PrestataireFavorite
+}

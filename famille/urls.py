@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
+    url(r'^contact-favorites/$', 'famille.views.contact_favorites', name="contact_favorites"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(api.urls)),
 
