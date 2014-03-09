@@ -127,5 +127,4 @@ def contact_favorites(request):
     favorites = request.json["favorites"]
     message = request.json["message"]
 
-    import pdb; pdb.set_trace()
     request.related_user.send_mail_to_favorites(message, favorites)
