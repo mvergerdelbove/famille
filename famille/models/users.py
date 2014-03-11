@@ -1,21 +1,14 @@
 # -*- coding=utf-8 -*-
+from datetime import datetime
 from itertools import imap
 
 from django.contrib.auth.models import User
 from django.db import models
-from south.modelsinspector import add_introspection_rules
 
+from famille.models.base import BaseModel
 from famille.utils import parse_resource_uri, geolocation, fields as extra_fields
 from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
-
-
-class BaseModel(models.Model):
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 
 class Geolocation(BaseModel):
@@ -26,6 +19,8 @@ class Geolocation(BaseModel):
     lat = models.FloatField()
     lon = models.FloatField()
 
+    class Meta:
+        app_label = 'famille'
 
 def get_user_related(user):
     """
@@ -236,6 +231,8 @@ class Prestataire(Criteria):
         max_upload_size=2621440  # 2.5MB
     )
 
+    class Meta:
+        app_label = 'famille'
 
 class Famille(Criteria):
     """
@@ -251,6 +248,9 @@ class Famille(Criteria):
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
+    class Meta:
+        app_label = 'famille'
+
 
 class Enfant(BaseModel):
     """
@@ -262,33 +262,8 @@ class Enfant(BaseModel):
     e_birthday = models.DateField(blank=True, null=True, db_column="birthday")
     e_school = models.CharField(blank=True, null=True, max_length=50, db_column="school")
 
-
-class BasePlanning(BaseModel):
-    """
-    A planning entry.
-    """
-    FREQUENCY = {
-        "all": "Tous les jours",
-        "week": "Tous les jours en semaine",
-        "hebdo": "Hebdomadaire",
-        "2week": "Toute les 2 semaines",
-        "month": "Tous les mois"
-    }
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField(blank=True, null=True)
-    frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
-    comment = models.CharField(blank=True, null=True, max_length=50)
-
     class Meta:
-        abstract = True
-
-
-class FamillePlanning(BasePlanning):
-    famille = models.ForeignKey(Famille, related_name="planning")
-
-
-class PrestatairePlanning(BasePlanning):
-    prestataire = models.ForeignKey(Prestataire, related_name="planning")
+        app_label = 'famille'
 
 
 class BaseFavorite(BaseModel):
@@ -321,6 +296,9 @@ class BaseFavorite(BaseModel):
 class FamilleFavorite(BaseFavorite):
     famille = models.ForeignKey(Famille, related_name="favorites")
 
+    class Meta:
+        app_label = 'famille'
+
     @property
     def owner(self):
         return self.famille
@@ -328,6 +306,9 @@ class FamilleFavorite(BaseFavorite):
 
 class PrestataireFavorite(BaseFavorite):
     prestataire = models.ForeignKey(Prestataire, related_name="favorites")
+
+    class Meta:
+        app_label = 'famille'
 
     @property
     def owner(self):
@@ -345,13 +326,13 @@ class Reference(BaseModel):
     missions = models.TextField(blank=True, null=True)
     referenced_user = models.OneToOneField(Famille, blank=True, null=True, related_name="reference_of")
 
+    class Meta:
+        app_label = 'famille'
+
 
 # signals
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Famille, dispatch_uid="famille_geolocate")
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatch_uid="prestataire_geolocate")
-
-# south rules
-add_introspection_rules(extra_fields.content_type_restricted_file_field_rules, ["^famille\.utils\.fields", ])
 
 # consts
 USER_CLASSES = {

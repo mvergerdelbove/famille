@@ -77,19 +77,14 @@ class PlanningSubForm(forms.ModelForm):
     class Meta:
         labels = {
             "start_date": u"Choisir une date de début",
-            "frequency": u"A quelle fréquence ?",
-            "end_date": u"Une date de fin ?"
+            "frequency": u"A quelle fréquence ?"
         }
         fields = labels.keys()
         widgets = {
             "start_date": forms.DateTimeInput(
                 attrs={'type':'datetime', "class": "form-control"},
                 format="%d/%m/%Y %H:%M:%S"
-            ),
-            "end_date": forms.DateTimeInput(
-                attrs={'type':'datetime', "class": "form-control"},
-                format="%d/%m/%Y %H:%M:%S"
-            ),
+            )
         }
 
 

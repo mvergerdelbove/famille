@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from famille import forms
-from famille.models import Famille, Prestataire, get_user_related, BaseFavorite
+from famille.models import Famille, Prestataire, get_user_related
 from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_JSON, require_related
 

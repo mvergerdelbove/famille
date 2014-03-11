@@ -10,6 +10,7 @@ from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
+from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
 from famille.templatetags import helpers
 from famille.utils import geolocation, http, python, mail
 
@@ -266,11 +267,11 @@ class ModelsTestCase(TestCase):
         self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
         self.presta.save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
-        self.famille_fav = models.FamilleFavorite(
+        self.famille_fav = FamilleFavorite(
             object_type="Prestataire", object_id=self.presta.pk, famille=self.famille
         )
         self.famille_fav.save()
-        self.prestataire_fav = models.PrestataireFavorite(
+        self.prestataire_fav = PrestataireFavorite(
             object_type="Famille", object_id=self.famille.pk, prestataire=self.presta
         )
         self.prestataire_fav.save()
@@ -279,9 +280,9 @@ class ModelsTestCase(TestCase):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
         models.Prestataire.objects.all().delete()
-        models.Geolocation.objects.all().delete()
-        models.FamilleFavorite.objects.all().delete()
-        models.PrestataireFavorite.objects.all().delete()
+        Geolocation.objects.all().delete()
+        FamilleFavorite.objects.all().delete()
+        PrestataireFavorite.objects.all().delete()
 
     def mock_process(self, target, args, kwargs, *_, **__):
         """
@@ -297,7 +298,7 @@ class ModelsTestCase(TestCase):
         self.assertRaises(ObjectDoesNotExist, models.get_user_related, self.user3)
 
     def test_is_geolocated(self):
-        geoloc = models.Geolocation(lat=33.01, lon=2.89)
+        geoloc = Geolocation(lat=33.01, lon=2.89)
         geoloc.save()
 
         self.assertFalse(self.famille.is_geolocated)
@@ -317,16 +318,16 @@ class ModelsTestCase(TestCase):
 
         self.famille.geolocate()
         geolocate.assert_called_with("32 rue des Epinettes 75017 Paris, France")
-        self.assertIsNotNone(models.Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
+        self.assertIsNotNone(Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
         self.assertEqual(self.famille.geolocation.lat, 48.895603)
         self.assertEqual(self.famille.geolocation.lon, 2.322858)
 
     @patch("multiprocessing.Process")
-    @patch("famille.models.UserInfo.geolocate")
+    @patch("famille.models.users.UserInfo.geolocate")
     def test_signal(self, mock, process):
         process.side_effect = self.mock_process
-        pre_save.connect(models.UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
-        pre_save.connect(models.UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+        pre_save.connect(UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
+        pre_save.connect(UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
         self.famille.country = "France"  # not enough
         self.famille.save()
@@ -341,7 +342,7 @@ class ModelsTestCase(TestCase):
         self.assertTrue(mock.called)
         mock.reset_mock()
 
-        self.famille.geolocation = models.Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
+        self.famille.geolocation = Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
         self.famille.geolocation.save()
         self.famille.save()
         self.assertFalse(mock.called)
@@ -353,7 +354,7 @@ class ModelsTestCase(TestCase):
         uri = "/api/v1/prestataires/%s" % self.presta.pk
         self.famille.add_favorite(uri)
         self.assertEqual(self.famille.favorites.all().count(), 1)
-        qs = models.FamilleFavorite.objects.filter(
+        qs = FamilleFavorite.objects.filter(
             famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
         )
         self.assertEqual(qs.count(), 1)
@@ -361,14 +362,14 @@ class ModelsTestCase(TestCase):
         # cannot add same favorite
         self.famille.add_favorite(uri)
         self.assertEqual(self.famille.favorites.all().count(), 1)
-        qs = models.FamilleFavorite.objects.filter(
+        qs = FamilleFavorite.objects.filter(
             famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
         )
         self.assertEqual(qs.count(), 1)
 
     def test_remove_favorite(self):
         uri = "/api/v1/prestataires/%s" % self.presta.pk
-        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
+        FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
         self.famille.remove_favorite(uri)
 
         self.assertEqual(self.famille.favorites.all().count(), 0)
