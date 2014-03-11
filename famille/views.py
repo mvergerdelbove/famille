@@ -94,7 +94,7 @@ def account(request):
         account_forms = forms.AccountFormManager(instance=request.related_user)
 
     return render(
-        request, '%s_account.html' % account_forms.instance_type,
+        request, 'account/%s.html' % account_forms.instance_type,
         get_context(related=request.related_user, url_hash=url_hash, **account_forms.forms)
     )
 
