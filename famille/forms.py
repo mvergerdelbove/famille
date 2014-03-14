@@ -76,8 +76,10 @@ class EnfantForm(forms.ModelForm):
 class PlanningSubForm(forms.ModelForm):
     class Meta:
         labels = {
-            "start_date": u"Choisir une date de début",
-            "frequency": u"A quelle fréquence ?"
+            "start_date": u"A partir de",
+            "frequency": u"A quelle fréquence ?",
+            "weekday": u"Jour(s) de la semaine",
+            "schedule": u"Plage horaire",
         }
         fields = labels.keys()
         widgets = {

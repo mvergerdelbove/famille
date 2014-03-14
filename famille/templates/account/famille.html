@@ -145,15 +145,8 @@
                                         </div>
                                     </div>
                                     {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                                    <div class="form-group">
-                                        {% bootstrap_label form.end_date.label_tag label_class="col-sm-5" %}
-                                        <div class="col-md-7 input-group date initial-date">
-                                            {{ form.end_date }}
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5"%}
+                                    {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5"%}
                                     <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                                 </div>
                                 {% endfor %}
@@ -179,15 +172,8 @@
                             </div>
                         </div>
                         {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                        <div class="form-group">
-                            {% bootstrap_label planning.sub_form_empty.end_date.label_tag label_class="col-sm-5" %}
-                            <div class="col-md-7 input-group date">
-                                {{ planning.sub_form_empty.end_date }}
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
+                        {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5"%}
+                        {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5"%}
                         <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                     </div>
                 </div>

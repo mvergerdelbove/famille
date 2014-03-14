@@ -12,8 +12,8 @@ class Weekday(models.Model):
     class Meta:
         app_label = 'famille'
 
-    def __str__(self):
-        return self.name
+    def __unicode__(self):
+        return unicode(self.name)
 
 
 class Schedule(models.Model):
@@ -22,8 +22,8 @@ class Schedule(models.Model):
     class Meta:
         app_label = 'famille'
 
-    def __str__(self):
-        return self.name
+    def __unicode__(self):
+        return unicode(self.name)
 
 
 class BasePlanning(BaseModel):
@@ -34,7 +34,6 @@ class BasePlanning(BaseModel):
         "ponct": "Ponctuel",
         "hebdo": "Toutes les semaines",
     }
-    # TODO: make sure we can select multiple choices and save them
     start_date = models.DateTimeField(default=datetime.now)
     frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
     weekday = models.ManyToManyField(Weekday)
