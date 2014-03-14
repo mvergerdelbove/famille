@@ -4,12 +4,15 @@ import types
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
+from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import forms, models, utils
-from famille.utils import geolocation
+from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
+from famille.templatetags import helpers
+from famille.utils import geolocation, http, python, mail
 
 
 # disconnecting signal to not alter testing and flooding google
@@ -24,30 +27,6 @@ class UtilsTestCase(TestCase):
         self.assertIn("site_title", utils.get_context(other="value"))
         self.assertEqual(utils.get_context(other="value")["other"], "value")
 
-    def test_pick(self):
-        _in = {"a": "ok", "b": "ko"}
-        out = {"a": "ok"}
-        self.assertEqual(utils.pick(_in, "a", "c"), out)
-
-        _in = QueryDict("a=1&b=2&a=3")
-        out = {"a": ["1", "3"]}
-        self.assertEqual(utils.pick(_in, "a", "c"), out)
-
-    def test_repeat_lambda(self):
-        out = list(utils.repeat_lambda(dict, 2))
-        self.assertEqual(len(out), 2)
-        self.assertIsNot(out[0], out[1])
-
-        out = list(utils.repeat_lambda(dict, -10))
-        self.assertEqual(len(out), 0)
-
-    def test_isplit(self):
-        _in = [1, 2, 3]
-        q, r = utils.isplit(_in, 2)
-        q, r = list(q), list(r)
-        self.assertEqual(q, [1, 2])
-        self.assertEqual(r, [3])
-
     def test_parse_resource_uri(self):
         _in = "not a uri"
         self.assertRaises(ValueError, utils.parse_resource_uri, _in)
@@ -59,6 +38,33 @@ class UtilsTestCase(TestCase):
         _in = "/api/v1/familles/123"
         out = "famille", "123"
         self.assertEqual(utils.parse_resource_uri(_in), out)
+
+
+class PythonTestCase(TestCase):
+
+    def test_pick(self):
+        _in = {"a": "ok", "b": "ko"}
+        out = {"a": "ok"}
+        self.assertEqual(python.pick(_in, "a", "c"), out)
+
+        _in = QueryDict("a=1&b=2&a=3")
+        out = {"a": ["1", "3"]}
+        self.assertEqual(python.pick(_in, "a", "c"), out)
+
+    def test_repeat_lambda(self):
+        out = list(python.repeat_lambda(dict, 2))
+        self.assertEqual(len(out), 2)
+        self.assertIsNot(out[0], out[1])
+
+        out = list(python.repeat_lambda(dict, -10))
+        self.assertEqual(len(out), 0)
+
+    def test_isplit(self):
+        _in = [1, 2, 3]
+        q, r = python.isplit(_in, 2)
+        q, r = list(q), list(r)
+        self.assertEqual(q, [1, 2])
+        self.assertEqual(r, [3])
 
 
 class RegistrationFormTestCase(TestCase):
@@ -255,19 +261,28 @@ class ModelsTestCase(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
-        self.famille = models.Famille(user=self.user1)
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
         self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
-        self.presta = models.Prestataire(user=self.user2, description="Une description")
+        self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
         self.presta.save()
         self.user3 = User.objects.create_user("c", "c@gmail.com", "c")
+        self.famille_fav = FamilleFavorite(
+            object_type="Prestataire", object_id=self.presta.pk, famille=self.famille
+        )
+        self.famille_fav.save()
+        self.prestataire_fav = PrestataireFavorite(
+            object_type="Famille", object_id=self.famille.pk, prestataire=self.presta
+        )
+        self.prestataire_fav.save()
 
     def tearDown(self):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
         models.Prestataire.objects.all().delete()
-        models.Geolocation.objects.all().delete()
-        models.FamilleFavorite.objects.all().delete()
+        Geolocation.objects.all().delete()
+        FamilleFavorite.objects.all().delete()
+        PrestataireFavorite.objects.all().delete()
 
     def mock_process(self, target, args, kwargs, *_, **__):
         """
@@ -283,7 +298,7 @@ class ModelsTestCase(TestCase):
         self.assertRaises(ObjectDoesNotExist, models.get_user_related, self.user3)
 
     def test_is_geolocated(self):
-        geoloc = models.Geolocation(lat=33.01, lon=2.89)
+        geoloc = Geolocation(lat=33.01, lon=2.89)
         geoloc.save()
 
         self.assertFalse(self.famille.is_geolocated)
@@ -303,16 +318,16 @@ class ModelsTestCase(TestCase):
 
         self.famille.geolocate()
         geolocate.assert_called_with("32 rue des Epinettes 75017 Paris, France")
-        self.assertIsNotNone(models.Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
+        self.assertIsNotNone(Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
         self.assertEqual(self.famille.geolocation.lat, 48.895603)
         self.assertEqual(self.famille.geolocation.lon, 2.322858)
 
     @patch("multiprocessing.Process")
-    @patch("famille.models.UserInfo.geolocate")
+    @patch("famille.models.users.UserInfo.geolocate")
     def test_signal(self, mock, process):
         process.side_effect = self.mock_process
-        pre_save.connect(models.UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
-        pre_save.connect(models.UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
+        pre_save.connect(UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
+        pre_save.connect(UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
         self.famille.country = "France"  # not enough
         self.famille.save()
@@ -327,7 +342,7 @@ class ModelsTestCase(TestCase):
         self.assertTrue(mock.called)
         mock.reset_mock()
 
-        self.famille.geolocation = models.Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
+        self.famille.geolocation = Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
         self.famille.geolocation.save()
         self.famille.save()
         self.assertFalse(mock.called)
@@ -339,7 +354,7 @@ class ModelsTestCase(TestCase):
         uri = "/api/v1/prestataires/%s" % self.presta.pk
         self.famille.add_favorite(uri)
         self.assertEqual(self.famille.favorites.all().count(), 1)
-        qs = models.FamilleFavorite.objects.filter(
+        qs = FamilleFavorite.objects.filter(
             famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
         )
         self.assertEqual(qs.count(), 1)
@@ -347,26 +362,36 @@ class ModelsTestCase(TestCase):
         # cannot add same favorite
         self.famille.add_favorite(uri)
         self.assertEqual(self.famille.favorites.all().count(), 1)
-        qs = models.FamilleFavorite.objects.filter(
+        qs = FamilleFavorite.objects.filter(
             famille=self.famille, object_id=self.presta.pk, object_type="Prestataire"
         )
         self.assertEqual(qs.count(), 1)
 
     def test_remove_favorite(self):
         uri = "/api/v1/prestataires/%s" % self.presta.pk
-        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
+        FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
         self.famille.remove_favorite(uri)
 
         self.assertEqual(self.famille.favorites.all().count(), 0)
 
     def test_get_favorites_data(self):
-        models.FamilleFavorite(famille=self.famille, object_id=self.presta.pk, object_type="Prestataire").save()
         favs = self.famille.get_favorites_data()
         self.assertIsInstance(favs, types.GeneratorType)
         favs = list(favs)
         self.assertEqual(len(favs), 1)
         self.assertIsInstance(favs[0], models.Prestataire)
         self.assertEqual(favs[0].description, self.presta.description)
+
+    def test_get_resource_uri(self):
+        out = "/api/v1/familles/%s" % self.famille.pk
+        self.assertEqual(self.famille.get_resource_uri(), out)
+
+        out = "/api/v1/prestataires/%s" % self.presta.pk
+        self.assertEqual(self.presta.get_resource_uri(), out)
+
+    def test_get_user(self):
+        self.assertEqual(self.famille_fav.get_user(), self.presta)
+        self.assertEqual(self.prestataire_fav.get_user(), self.famille)
 
 
 class GeolocationTestCase(TestCase):
@@ -382,3 +407,60 @@ class GeolocationTestCase(TestCase):
 
     
         self.famille = models.Famille()
+
+
+class HTTPTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User(username="test@email.com", email="test@email.com", password="p")
+        self.user.save()
+        self.user_no_related = User(username="test2@email.com", email="test2@email.com", password="p")
+        self.user_no_related.save()
+        self.famille = models.Famille(user=self.user)
+        self.famille.save()
+        self.request = MagicMock(META={"CONTENT_TYPE": "text/html"}, body="my body")
+
+    def tearDown(self):
+        self.user.delete()
+        self.user_no_related.delete()
+        self.famille.delete()
+
+    def test_require_json(self):
+        def view(request, user):
+            return "success"
+
+        decorated = http.require_JSON(view)
+        self.assertIsInstance(decorated(self.request, "user"), HttpResponseBadRequest)
+
+        self.request.META["CONTENT_TYPE"] = "application/json"
+        self.assertIsInstance(decorated(self.request, "user"), HttpResponseBadRequest)
+
+        self.request.body = '{"some": "json"}'
+        self.assertEqual(decorated(self.request, "user"), "success")
+
+        # charset in content type
+        self.request.META["CONTENT_TYPE"] = "application/json; charset=utf-8"
+        self.assertEqual(decorated(self.request, "user"), "success")
+
+    def test_require_related(self):
+        def view(request):
+            return "success"
+
+        decorated = http.require_related(view)
+
+        self.request.user = self.user_no_related
+        self.assertRaises(Http404, decorated, self.request)
+
+        self.request.user = self.user
+        self.assertEqual(decorated(self.request), "success")
+        self.assertEqual(self.request.related_user, self.famille)
+
+
+class TemplateTagsTestCase(TestCase):
+
+    def test_get_class_name(self):
+        obj = models.Prestataire()
+        self.assertEqual(helpers.get_class_name(obj), "Prestataire")
+
+        obj = models.Famille()
+        self.assertEqual(helpers.get_class_name(obj), "Famille")

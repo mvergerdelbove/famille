@@ -1,17 +1,13 @@
 # -*- coding=utf-8 -*-
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
-from south.modelsinspector import add_introspection_rules
 
+from famille.models.base import BaseModel
 from famille.utils import parse_resource_uri, geolocation, fields as extra_fields
-
-
-class BaseModel(models.Model):
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from famille.utils.mail import send_mail_from_template_with_noreply
+from famille.utils.python import pick
 
 
 class Geolocation(BaseModel):
@@ -22,6 +18,8 @@ class Geolocation(BaseModel):
     lat = models.FloatField()
     lon = models.FloatField()
 
+    class Meta:
+        app_label = 'famille'
 
 def get_user_related(user):
     """
@@ -125,16 +123,32 @@ class UserInfo(BaseModel):
         Retrieve the favorites data.
         """
         # FIXME: can become greedy in the future
-        for favorite in self.favorites.all():
-            FavClass = USER_CLASSES[favorite.object_type]
-            yield FavClass.objects.filter(pk=favorite.object_id).first()
+        return (favorite.get_user() for favorite in self.favorites.all())
 
-    def get_resource_name(self):
+    # FIXME: nothing to do here...
+    def get_resource_uri(self):
         """
         Return the API uri of the objet. Don't really like it but for now
         didn't find another way.
         """
-        return "%ss" % self.__class__.__name__.lower()
+        return "/api/v1/%ss/%s" % (self.__class__.__name__.lower(), self.pk)
+
+    # FIXME: cannot test it, cannot mock...
+    def send_mail_to_favorites(self, message, favorites):
+        favs_to_contact = map(lambda fav: pick(fav, "object_type", "object_id"), favorites)
+        favs = self.favorites.all()
+        favs = (fav for fav in favs if {"object_type": fav.object_type, "object_id": str(fav.object_id)} in favs_to_contact)
+
+        # get emails
+        emails = (fav.get_user().email for fav in favs)
+        # remove possible None
+        emails = filter(None, emails)
+
+        if emails:
+            send_mail_from_template_with_noreply(
+                "email/contact_favorites.html", message,
+                subject=message.get("subject", ""), recipient_list=emails
+            )
 
 
 class Criteria(UserInfo):
@@ -217,6 +231,8 @@ class Prestataire(Criteria):
         max_upload_size=2621440  # 2.5MB
     )
 
+    class Meta:
+        app_label = 'famille'
 
 class Famille(Criteria):
     """
@@ -232,11 +248,8 @@ class Famille(Criteria):
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
-
-USER_CLASSES = {
-    "Famille": Famille,
-    "Prestataire": Prestataire
-}
+    class Meta:
+        app_label = 'famille'
 
 
 class Enfant(BaseModel):
@@ -249,33 +262,8 @@ class Enfant(BaseModel):
     e_birthday = models.DateField(blank=True, null=True, db_column="birthday")
     e_school = models.CharField(blank=True, null=True, max_length=50, db_column="school")
 
-
-class BasePlanning(BaseModel):
-    """
-    A planning entry.
-    """
-    FREQUENCY = {
-        "all": "Tous les jours",
-        "week": "Tous les jours en semaine",
-        "hebdo": "Hebdomadaire",
-        "2week": "Toute les 2 semaines",
-        "month": "Tous les mois"
-    }
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField(blank=True, null=True)
-    frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
-    comment = models.CharField(blank=True, null=True, max_length=50)
-
     class Meta:
-        abstract = True
-
-
-class FamillePlanning(BasePlanning):
-    famille = models.ForeignKey(Famille, related_name="planning")
-
-
-class PrestatairePlanning(BasePlanning):
-    prestataire = models.ForeignKey(Prestataire, related_name="planning")
+        app_label = 'famille'
 
 
 class BaseFavorite(BaseModel):
@@ -298,12 +286,33 @@ class BaseFavorite(BaseModel):
     def __str__(self):
         return "%s %s" % (self.object_type, self.object_id)
 
+    def get_user(self):
+        """
+        Return the user instance that is defined by the favorite.
+        """
+        return USER_CLASSES[self.object_type].objects.get(pk=self.object_id)
+
+
 class FamilleFavorite(BaseFavorite):
     famille = models.ForeignKey(Famille, related_name="favorites")
+
+    class Meta:
+        app_label = 'famille'
+
+    @property
+    def owner(self):
+        return self.famille
 
 
 class PrestataireFavorite(BaseFavorite):
     prestataire = models.ForeignKey(Prestataire, related_name="favorites")
+
+    class Meta:
+        app_label = 'famille'
+
+    @property
+    def owner(self):
+        return self.prestataire
 
 
 class Reference(BaseModel):
@@ -317,10 +326,21 @@ class Reference(BaseModel):
     missions = models.TextField(blank=True, null=True)
     referenced_user = models.OneToOneField(Famille, blank=True, null=True, related_name="reference_of")
 
+    class Meta:
+        app_label = 'famille'
+
 
 # signals
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Famille, dispatch_uid="famille_geolocate")
 models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatch_uid="prestataire_geolocate")
 
-# south rules
-add_introspection_rules(extra_fields.content_type_restricted_file_field_rules, ["^famille\.utils\.fields", ])
+# consts
+USER_CLASSES = {
+    "Famille": Famille,
+    "Prestataire": Prestataire
+}
+
+FAVORITE_CLASSES = {
+    Famille: FamilleFavorite,
+    Prestataire: PrestataireFavorite
+}

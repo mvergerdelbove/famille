@@ -1,6 +1,6 @@
 from itertools import chain, izip_longest
 
-from famille.utils import isplit, pick, repeat_lambda
+from famille.utils.python import isplit, pick, repeat_lambda
 
 
 class ForeignKeyForm(object):

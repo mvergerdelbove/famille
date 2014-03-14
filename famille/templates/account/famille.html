@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load helpers %}
 
 {% block title %} - Mon compte{% endblock %}
 {% block extrahead %}
@@ -48,7 +49,8 @@
                                             <button type="button" class="btn btn-default btn-xs remove">Supprimer</button>
                                         </div>
                                         <span class="hidden favorite-pk">{{ favorite.pk }}</span>
-                                        <span class="hidden favorite-type">{{ favorite.get_resource_name }}</span>
+                                        <span class="hidden favorite-type">{{ favorite|class_name }}</span>
+                                        <span class="hidden favorite-uri">{{ favorite.get_resource_uri }}</span>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -143,15 +145,8 @@
                                         </div>
                                     </div>
                                     {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                                    <div class="form-group">
-                                        {% bootstrap_label form.end_date.label_tag label_class="col-sm-5" %}
-                                        <div class="col-md-7 input-group date initial-date">
-                                            {{ form.end_date }}
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5"%}
+                                    {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5"%}
                                     <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                                 </div>
                                 {% endfor %}
@@ -177,15 +172,8 @@
                             </div>
                         </div>
                         {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                        <div class="form-group">
-                            {% bootstrap_label planning.sub_form_empty.end_date.label_tag label_class="col-sm-5" %}
-                            <div class="col-md-7 input-group date">
-                                {{ planning.sub_form_empty.end_date }}
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
+                        {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5"%}
+                        {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5"%}
                         <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                     </div>
                 </div>
@@ -260,5 +248,5 @@
 <script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/account.js" %}"></script>
-<script src="{% static "js/famille_account.js" %}"></script>
+<script src="{% static "js/build/famille_account.js" %}"></script>
 {% endblock %}

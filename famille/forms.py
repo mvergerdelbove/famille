@@ -76,20 +76,17 @@ class EnfantForm(forms.ModelForm):
 class PlanningSubForm(forms.ModelForm):
     class Meta:
         labels = {
-            "start_date": u"Choisir une date de début",
+            "start_date": u"A partir de",
             "frequency": u"A quelle fréquence ?",
-            "end_date": u"Une date de fin ?"
+            "weekday": u"Jour(s) de la semaine",
+            "schedule": u"Plage horaire",
         }
         fields = labels.keys()
         widgets = {
             "start_date": forms.DateTimeInput(
                 attrs={'type':'datetime', "class": "form-control"},
                 format="%d/%m/%Y %H:%M:%S"
-            ),
-            "end_date": forms.DateTimeInput(
-                attrs={'type':'datetime', "class": "form-control"},
-                format="%d/%m/%Y %H:%M:%S"
-            ),
+            )
         }
 
 

@@ -28,10 +28,10 @@ module.exports = function(grunt) {
                 dest: BUILD_ROOT + "search.js",
                 src: [JS_ROOT + "search/app.js"]
             },
-            // accounts: {
-            //     dest: BUILD_ROOT + "libs.js",
-            //     src: [JS_ROOT + "libs/base.js"]
-            // },
+            famille_account: {
+                dest: BUILD_ROOT + "famille_account.js",
+                src: [JS_ROOT + "account/famille.js"]
+            }
         },
         watch: {
             options: {
@@ -51,5 +51,5 @@ module.exports = function(grunt) {
     // grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
     // App tasks
-    grunt.registerTask('build', ['browserify:search']);
+    grunt.registerTask('build', ['browserify:search', 'browserify:famille_account']);
 };
