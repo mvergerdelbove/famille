@@ -128,3 +128,4 @@ def contact_favorites(request):
     message = request.json["message"]
 
     request.related_user.send_mail_to_favorites(message, favorites)
+    return HttpResponse()

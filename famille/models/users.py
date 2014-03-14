@@ -1,6 +1,5 @@
 # -*- coding=utf-8 -*-
 from datetime import datetime
-from itertools import imap
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -136,11 +135,12 @@ class UserInfo(BaseModel):
 
     # FIXME: cannot test it, cannot mock...
     def send_mail_to_favorites(self, message, favorites):
-        FavoriteClass = FAVORITE_CLASSES[self.__class__]
-        favorites = imap(lambda fav: pick(fav, "object_type", "object_id"), favorites)
-        favorites = (FavoriteClass(**fav) for fav in favorites)
-        # verify that the users are real favorites
-        emails = (fav.get_user().email for fav in favorites if fav.owner == self)
+        favs_to_contact = map(lambda fav: pick(fav, "object_type", "object_id"), favorites)
+        favs = self.favorites.all()
+        favs = (fav for fav in favs if {"object_type": fav.object_type, "object_id": str(fav.object_id)} in favs_to_contact)
+
+        # get emails
+        emails = (fav.get_user().email for fav in favs)
         # remove possible None
         emails = filter(None, emails)
 
