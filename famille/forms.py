@@ -83,9 +83,9 @@ class PlanningSubForm(forms.ModelForm):
         }
         fields = labels.keys()
         widgets = {
-            "start_date": forms.DateTimeInput(
+            "start_date": forms.DateInput(
                 attrs={'type':'datetime', "class": "form-control"},
-                format="%d/%m/%Y %H:%M:%S"
+                format="%d/%m/%Y"
             )
         }
 

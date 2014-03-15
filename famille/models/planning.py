@@ -34,7 +34,7 @@ class BasePlanning(BaseModel):
         "ponct": "Ponctuel",
         "hebdo": "Toutes les semaines",
     }
-    start_date = models.DateTimeField(default=datetime.now)
+    start_date = models.DateField(default=datetime.now)
     frequency = models.CharField(blank=True, null=True, max_length=10, choices=FREQUENCY.items())
     weekday = models.ManyToManyField(Weekday)
     schedule = models.ManyToManyField(Schedule)
