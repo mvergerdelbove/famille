@@ -1,4 +1,6 @@
+import datetime
 from itertools import islice
+import json
 
 
 def pick(d, *args):
@@ -40,3 +42,17 @@ def isplit(iterable, index):
     :parma index:        where to split
     """
     return islice(iterable, index), islice(iterable, index, None)
+
+
+class JSONEncoder(json.JSONEncoder):
+    """
+    Custom encoder to user when encoding object not
+    handle by python default JSONEncoder. Handles:
+
+        - date objects
+        - datetime objects
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime.date):
+            return obj.isoformat()
+        return super(JSONEncoder, self).default(obj)

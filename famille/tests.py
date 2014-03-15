@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+import json
 import types
 
 from django.contrib.auth.models import User
@@ -65,6 +66,13 @@ class PythonTestCase(TestCase):
         q, r = list(q), list(r)
         self.assertEqual(q, [1, 2])
         self.assertEqual(r, [3])
+
+    def test_jsonencoder(self):
+        d = date.today()
+        dt = datetime.now()
+        data = {"date": d, "datetime": dt}
+        expected  = '{"date": "%s", "datetime": "%s"}' % (d.isoformat(), dt.isoformat())
+        self.assertEqual(json.dumps(data, cls=python.JSONEncoder), expected)
 
 
 class RegistrationFormTestCase(TestCase):
