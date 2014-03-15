@@ -38,7 +38,7 @@ module.exports = function(grunt) {
                 atBegin: true
             },
             all: {
-                files: [JS_ROOT + '**/*.js'],
+                files: [JS_ROOT + 'search/**/*.js', JS_ROOT + 'account/**/*.js'],
                 tasks: ['build']
             }
         }
