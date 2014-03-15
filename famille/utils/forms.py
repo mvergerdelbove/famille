@@ -3,10 +3,7 @@ from itertools import chain, izip_longest
 from famille.utils.python import isplit, pick, repeat_lambda
 
 
-class ForeignKeyForm(object):
-    """
-    A class used to manage foreign key addition through forms.
-    """
+class BaseForeignKeyForm(object):
     foreign_model = None
     origin_model_name = None
     related_name = None
@@ -20,7 +17,7 @@ class ForeignKeyForm(object):
             objs = getattr(instance, self.related_name).all()
 
         if kwargs.get("data", None) is not None:
-            data = pick(kwargs["data"], *self.sub_form.Meta.fields)
+            data = self.retrieve_data(kwargs["data"])
             data = self.unzip_data(data)
             objs, self.objs_to_delete = self.compute_objs_diff(data, objs, instance)
             data = izip_longest(data, objs)
@@ -31,26 +28,19 @@ class ForeignKeyForm(object):
                 lambda o: self.sub_form(instance=o), objs
             )
 
-        # binding an empty form anyway
-        self.sub_form_empty = self.sub_form()
-        super(ForeignKeyForm, self).__init__(*args, **kwargs)
+        super(BaseForeignKeyForm, self).__init__(*args, **kwargs)
+
+    def retrieve_data(self, data):
+        """
+        Hook to override.
+        """
+        return data
 
     def unzip_data(self, data):
         """
-        Unzip a POST data to manage several
-        related object instances.
+        Hook to override.
         """
-        try:
-            nb_objs = len(data[self.sub_form.Meta.fields[0]])
-        except KeyError:
-            return []
-
-        data_list = [{} for i in xrange(nb_objs)]
-        for field, values in data.iteritems():
-            for i, value in enumerate(values):
-                data_list[i][field] = value
-
-        return data_list
+        return data
 
     def compute_objs_diff(self, data, objs, instance):
         """
@@ -80,7 +70,7 @@ class ForeignKeyForm(object):
         """
         Validate the form and sub forms.
         """
-        is_valid = super(ForeignKeyForm, self).is_valid()
+        is_valid = super(BaseForeignKeyForm, self).is_valid()
         return all((f.is_valid() for f in self.sub_forms)) and is_valid
 
     def save(self, *args, **kwargs):
@@ -91,4 +81,50 @@ class ForeignKeyForm(object):
             f.save(*args, **kwargs)
 
         [o.delete() for o in self.objs_to_delete]
-        return super(ForeignKeyForm, self).save(*args, **kwargs)
+        return super(BaseForeignKeyForm, self).save(*args, **kwargs)
+
+
+class ForeignKeyForm(BaseForeignKeyForm):
+    """
+    A class used to manage foreign key addition through forms.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # binding an empty form anyway
+        self.sub_form_empty = self.sub_form()
+        super(ForeignKeyForm, self).__init__(*args, **kwargs)
+
+    def retrieve_data(self, data):
+        return pick(data, *self.sub_form.Meta.fields)
+
+    def unzip_data(self, data):
+        """
+        Unzip a POST data to manage several
+        related object instances.
+        """
+        try:
+            nb_objs = len(data[self.sub_form.Meta.fields[0]])
+        except KeyError:
+            return []
+
+        data_list = [{} for i in xrange(nb_objs)]
+        for field, values in data.iteritems():
+            for i, value in enumerate(values):
+                data_list[i][field] = value
+
+        return data_list
+
+
+class ForeignKeyApiForm(BaseForeignKeyForm):
+
+    key = None
+
+    def retrieve_data(self, data):
+        return data[self.key]
+
+    @property
+    def sub_errors(self):
+        """
+        A property holding the errors of all forms.
+        """
+        return [f.errors for f in self.sub_forms]

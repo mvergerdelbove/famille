@@ -49,10 +49,8 @@
 
     // event handling
     $('[data-toggle="tooltip"]').tooltip();
-    initDatepicker($('.initial-date'));
 	if (forms.child && forms.planning){
         initSubForms("child");
-        initSubForms("planning");
 	}
     initSlider($("#id_tarif"));
     $(".slider").removeAttr("style");

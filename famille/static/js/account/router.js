@@ -3,6 +3,7 @@ module.exports = Backbone.Router.extend({
     serverRoutes: {
         toggleFavorite: "/favorite/",
         contactFavorite: "/contact-favorites/",
+        plannings: "/plannings/"
     },
 
     removeFavorite: function(options){
@@ -29,6 +30,28 @@ module.exports = Backbone.Router.extend({
             self.trigger("contact:success");
         }).fail(function(){
             self.trigger("contact:fail");
+        });
+    },
+
+    savePlannings: function (data) {
+        var self = this;
+        $.ajax({
+            type: "post",
+            data: JSON.stringify({"plannings": data}),
+            contentType: "application/json",
+            url: this.serverRoutes.plannings,
+            headers: {'X-CSRFToken': $.cookie('csrftoken')}
+        }).done(function(){
+            self.trigger("plannings:success");
+        }).fail(function(error){
+            var data;
+            try {
+                data = JSON.parse(error.responseText);
+                self.trigger("plannings:fail", data);
+            }
+            catch (e) {
+                console.log(error);
+            }
         });
     }
 });

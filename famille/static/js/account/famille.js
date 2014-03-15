@@ -1,5 +1,6 @@
 var Router = require("./router.js");
 var FavoriteView = require("./views/favorites");
+var PlanningView = require("./views/planning");
 
 (function($){
     function App () {
@@ -7,6 +8,10 @@ var FavoriteView = require("./views/favorites");
         this.favorites = new FavoriteView({
             el: $(".favorite-panel"),
             modalEl: $("#modal-contact-favorite"),
+            router: this.router
+        });
+        this.plannings = new PlanningView({
+            el: $("#planning"),
             router: this.router
         });
     }

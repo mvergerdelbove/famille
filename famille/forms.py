@@ -6,7 +6,7 @@ from localflavor.fr.forms import FRPhoneNumberField
 from famille.models import (
     Famille, Prestataire, Enfant, FamillePlanning, Reference, PrestatairePlanning
 )
-from famille.utils.forms import ForeignKeyForm
+from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 
 
 class RegistrationForm(forms.Form):
@@ -100,7 +100,7 @@ class PrestatairePlanningSubForm(PlanningSubForm):
         model = PrestatairePlanning
 
 
-class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
+class BaseFamillePlanningForm(object):
     foreign_model = FamillePlanning
     origin_model_name = "famille"
     related_name = "planning"
@@ -110,8 +110,7 @@ class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
         model = Famille
         fields = ()
 
-
-class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
+class BasePrestatairePlanningForm(ForeignKeyForm, forms.ModelForm):
     foreign_model = PrestatairePlanning
     origin_model_name = "prestataire"
     related_name = "planning"
@@ -120,6 +119,22 @@ class FamillePlanningForm(ForeignKeyForm, forms.ModelForm):
     class Meta:
         model = Prestataire
         fields = ()
+
+
+class FamillePlanningForm(BaseFamillePlanningForm, ForeignKeyForm, forms.ModelForm):
+    pass
+
+
+class PrestatairePlanningForm(BasePrestatairePlanningForm, ForeignKeyForm, forms.ModelForm):
+    pass
+
+
+class FamillePlanningApiForm(BaseFamillePlanningForm, ForeignKeyApiForm, forms.ModelForm):
+    key = "plannings"
+
+
+class PrestatairePlanningApiForm(BasePrestatairePlanningForm, ForeignKeyApiForm, forms.ModelForm):
+    key = "plannings"
 
 
 class FamilleForm(ForeignKeyForm, UserForm):

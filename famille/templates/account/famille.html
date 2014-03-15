@@ -137,7 +137,7 @@
                                 <div class="planning-form clearfix">
                                     <div class="form-group">
                                         {% bootstrap_label form.start_date.label_tag label_class="col-sm-5" %}
-                                        <div class="col-md-7 input-group date initial-date">
+                                        <div class="col-md-7 input-group date">
                                             {{ form.start_date }}
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
@@ -157,7 +157,10 @@
                         </div>
                     </div>
                     <div class="row"><div class="col-md-4 col-md-offset-5">
-                        <button type="submit" name="submit" value="planning" class="btn btn-success">Sauvegarder</button>
+                        <button type="submit" name="submit"
+                                value="planning" class="btn btn-success submit-planning">
+                            Sauvegarder
+                        </button>
                     </div></div>
                 </form>
                 <div class="empty-planning-form hidden">
