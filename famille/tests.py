@@ -75,6 +75,18 @@ class PythonTestCase(TestCase):
         self.assertEqual(json.dumps(data, cls=python.JSONEncoder), expected)
 
 
+class HttpTestCase(TestCase):
+
+    def test_jsonresponse(self):
+        resp = http.JsonResponse({"toto": "tata"})
+        self.assertEqual(resp.content, '{"toto": "tata"}')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp["Content-Type"], "application/json")
+
+        resp = http.JsonResponse({"toto": "tata"}, status=400)
+        self.assertEqual(resp.status_code, 400)
+
+
 class RegistrationFormTestCase(TestCase):
     def setUp(self):
         self.form = forms.RegistrationForm()
