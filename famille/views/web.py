@@ -111,18 +111,3 @@ def favorite(request):
     action(resource_uri)
 
     return HttpResponse()
-
-
-@require_related
-@require_POST
-@require_JSON
-@login_required
-def contact_favorites(request):
-    """
-    Contact favorites using mailer.
-    """
-    favorites = request.json["favorites"]
-    message = request.json["message"]
-
-    request.related_user.send_mail_to_favorites(message, favorites)
-    return HttpResponse()
