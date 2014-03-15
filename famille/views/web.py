@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth.decorators import login_required as django_login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
@@ -8,12 +7,10 @@ from django.views.decorators.http import require_POST
 from famille import forms
 from famille.models import Famille, Prestataire, get_user_related
 from famille.utils import get_context, get_result_template_from_user
-from famille.utils.http import require_JSON, require_related
+from famille.utils.http import require_related, login_required
 
 
-login_required = django_login_required(
-    redirect_field_name="s", login_url="auth_login"
-)
+__all__ = ["home", "search", "register", "account", "favorite"]
 
 
 def home(request):

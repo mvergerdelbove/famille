@@ -1,9 +1,16 @@
 import json
 
+from django.contrib.auth.decorators import login_required as django_login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest, Http404, HttpResponse
 
 from famille.models import get_user_related
+from famille.utils.python import JSONEncoder
+
+
+login_required = django_login_required(
+    redirect_field_name="s", login_url="auth_login"
+)
 
 
 def require_JSON(func):
