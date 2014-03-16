@@ -401,6 +401,16 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.famille_fav.get_user(), self.presta)
         self.assertEqual(self.prestataire_fav.get_user(), self.famille)
 
+    def test_create_user(self):
+        user = models.UserInfo.create_user(self.user3, "prestataire")
+        self.assertIsInstance(user, models.Prestataire)
+        self.assertEqual(user.email, self.user3.email)
+
+        user.delete()
+        user = models.UserInfo.create_user(self.user3, "famille")
+        self.assertIsInstance(user, models.Famille)
+        self.assertEqual(user.email, self.user3.email)
+
 
 class GeolocationTestCase(TestCase):
 

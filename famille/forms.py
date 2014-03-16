@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from localflavor.fr.forms import FRPhoneNumberField
 
 from famille.models import (
-    Famille, Prestataire, Enfant, FamillePlanning, Reference, PrestatairePlanning
+    Famille, Prestataire, Enfant, FamillePlanning, Reference, PrestatairePlanning, UserInfo
 )
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 
@@ -30,9 +30,7 @@ class RegistrationForm(forms.Form):
             self.cleaned_data["password"]
         )
         # Create famille / prestataire and link to user
-        UserType = Prestataire if self.data["type"] == "prestataire" else Famille
-        user = UserType(user=dj_user, email=self.cleaned_data["email"])
-        user.save()
+        UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
 
         # TODO: Send mail to verify user
         pass

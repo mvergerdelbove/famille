@@ -62,6 +62,20 @@ class UserInfo(BaseModel):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def create_user(self, dj_user, type):
+        """
+        Create a user from data. It distinguishes between
+        Famille and Prestataire types.
+
+        :param dj_user:      the auth.User to link to
+        :param type:         the type of user
+        """
+        UserType = Prestataire if type == "prestataire" else Famille
+        user = UserType(user=dj_user, email=dj_user.email)
+        user.save()
+        return user
+
     @property
     def is_geolocated(self):
         """
