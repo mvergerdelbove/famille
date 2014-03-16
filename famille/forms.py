@@ -108,7 +108,7 @@ class BaseFamillePlanningForm(object):
         model = Famille
         fields = ()
 
-class BasePrestatairePlanningForm(ForeignKeyForm, forms.ModelForm):
+class BasePrestatairePlanningForm(object):
     foreign_model = PrestatairePlanning
     origin_model_name = "prestataire"
     related_name = "planning"
