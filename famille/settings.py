@@ -41,7 +41,18 @@ INSTALLED_APPS = (
     'localflavor',
     'tastypie',
     'tinymce',
+    'social.apps.django_app.default',
     'famille',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.open_id.OpenIdAuth',
+    'social.backends.google.GoogleOpenId',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.google.GoogleOAuth',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.yahoo.YahooOpenId',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -99,6 +110,12 @@ STATICFILES_FINDERS = (
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, 'templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 for key in os.environ:

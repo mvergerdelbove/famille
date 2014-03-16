@@ -46,4 +46,5 @@ urlpatterns = patterns(
     # plugin urls
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli
     url(r'^tinymce/', include('tinymce.urls')),  # tinymce
+    url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
 )
