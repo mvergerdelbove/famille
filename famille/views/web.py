@@ -5,9 +5,9 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from famille import forms
-from famille.models import Famille, Prestataire, get_user_related
+from famille.models import Famille, Prestataire, get_user_related, UserInfo
 from famille.utils import get_context, get_result_template_from_user
-from famille.utils.http import require_related, login_required
+from famille.utils.http import require_related, login_required, assert_POST
 
 
 __all__ = ["home", "search", "register", "account", "favorite"]
@@ -62,18 +62,23 @@ def search(request):
     )
 
 
-@require_POST
-def register(request):
+def register(request, social, type):
     """
     Register view. Allow user creation.
     """
-    form = forms.RegistrationForm(request.POST)
-    if form.is_valid():
-        form.save()
-        return HttpResponseRedirect('/confirmation/')
+    if not social:
+        bad_response = assert_POST(request)
+        if bad_response:
+            return bad_response
+
+        form = forms.RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        UserInfo.create_user(dj_user=request.user, type=type)
 
     # TODO: error
-    pass
+    return HttpResponseRedirect('/confirmation/')
 
 
 # TODO: error handling for compte form

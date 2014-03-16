@@ -59,6 +59,19 @@
 	    {% bootstrap_field field %}
 	    {% endfor %}
 	    {% buttons %}
+            <!-- Social connect button -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-default btn-primary dropdown-toggle" data-toggle="dropdown">
+                Se connecter avec les réseaux sociaux <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/google/famille/">Google</a></li>
+                <!-- TODO: create apps on those networks -->
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/linkedin/famille/">LinkedIn</a></li>
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/facebook/famille/">Facebook</a></li>
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/twitter/famille/">Twitter</a></li>
+              </ul>
+            </div>
 	    {% endbuttons %}
 	  </div>
 	  <div class="modal-footer">
@@ -83,6 +96,19 @@
 	    {% bootstrap_field field %}
 	    {% endfor %}
 	    {% buttons %}
+            <!-- Social connect button -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-default btn-primary dropdown-toggle" data-toggle="dropdown">
+                Se connecter avec les réseaux sociaux <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/google/prestataire/">Google</a></li>
+                <!-- TODO: create apps on those networks -->
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/linkedin/prestataire/">LinkedIn</a></li>
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/facebook/prestataire/">Facebook</a></li>
+                <li><a href="{% url 'social:begin' 'google' %}?next=/register/twitter/prestataire/">Twitter</a></li>
+              </ul>
+            </div>
 	    {% endbuttons %}
 	  </div>
 	  <div class="modal-footer">

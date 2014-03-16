@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required as django_login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest, Http404, HttpResponse
+from django.views.decorators.http import require_POST
 
 from famille.models import get_user_related
 from famille.utils.python import JSONEncoder
@@ -41,6 +42,14 @@ def require_related(func):
             raise Http404
         return func(request, *args, **kwargs)
     return wrapped
+
+
+@require_POST
+def assert_POST(request):
+    """
+    Assert that a request is a POST request.
+    """
+    pass
 
 
 class JsonResponse(HttpResponse):
