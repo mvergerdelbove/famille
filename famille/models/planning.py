@@ -6,6 +6,10 @@ from famille.models.base import BaseModel
 from famille.models.users import Famille, Prestataire
 
 
+__all__ = [
+    "FamillePlanning", "PrestatairePlanning"
+]
+
 class Weekday(models.Model):
     name = models.CharField(max_length=15)
 

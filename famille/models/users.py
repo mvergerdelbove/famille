@@ -10,6 +10,11 @@ from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
 
 
+__all__ = [
+    "Famille", "Prestataire", "Enfant",
+    "get_user_related", "Reference", "UserInfo"
+]
+
 class Geolocation(BaseModel):
     """
     A model that represent a geolocation
