@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from famille import forms
-from famille.models import Famille, Prestataire, get_user_related, UserInfo
+from famille.models import Famille, Prestataire, get_user_related, UserInfo, has_user_related
 from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
@@ -62,20 +62,23 @@ def search(request):
     )
 
 
-def register(request, social, type):
+def register(request, social=None, type=None):
     """
     Register view. Allow user creation.
     """
-    if not social:
-        bad_response = assert_POST(request)
-        if bad_response:
-            return bad_response
-
-        form = forms.RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+    if not type:
+        if request.method == "POST":
+            form = forms.RegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+        else:
+            form = forms.RegistrationForm()
+            return render(request, "registration/register.html", get_context(social=social, form=form))
     else:
-        UserInfo.create_user(dj_user=request.user, type=type)
+        if not has_user_related(request.user):
+            UserInfo.create_user(dj_user=request.user, type=type)
+        else:
+            return redirect('account')
 
     # TODO: error
     return HttpResponseRedirect('/confirmation/')

@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from famille.models.base import BaseModel
@@ -12,7 +13,8 @@ from famille.utils.python import pick
 
 __all__ = [
     "Famille", "Prestataire", "Enfant",
-    "get_user_related", "Reference", "UserInfo"
+    "get_user_related", "Reference", "UserInfo",
+    "has_user_related"
 ]
 
 class Geolocation(BaseModel):
@@ -26,6 +28,7 @@ class Geolocation(BaseModel):
     class Meta:
         app_label = 'famille'
 
+
 def get_user_related(user):
     """
     Return the user related model. Either
@@ -37,6 +40,19 @@ def get_user_related(user):
         return user.famille
     except Famille.DoesNotExist:
         return user.prestataire
+
+
+def has_user_related(user):
+    """
+    Find out if a user is related to a UserInfo subclass.
+
+    :param user:      Django user
+    """
+    try:
+        get_user_related(user)
+        return True
+    except (ObjectDoesNotExist, AttributeError):
+        return False
 
 
 class UserInfo(BaseModel):

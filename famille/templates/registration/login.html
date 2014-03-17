@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% load bootstrap3 %}
 
 {% block title %}Connexion{% endblock %}
@@ -6,13 +7,20 @@
 {% block content %}
 {% url 'auth_login' as login_url %}
 <div class="row">
-    <div class="col-md-offset-3">
+    <div class="col-md-offset-4">
+        <h1>{% block h1 %}Connexion{% endblock %}</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-offset-1 col-md-5">
         <form action="{{ login_url }}" method="post" class="form-horizontal" role="form">
+            <h2>{% block h2 %}Connexion manuelle{% endblock %}</h2>
             {% csrf_token %}
-            <h1>Connexion</h1>
-            {% bootstrap_form form layout="horizontal" field_class="col-md-3"%}
+            {% block form %}
+                {% bootstrap_form form layout="horizontal" field_class="col-md-5" label_class="col-md-4" %}
+            {% endblock %}
             <div class="form-group">
-                <div class="col-md-2 col-md-offset-3">
+                <div class="col-md-2 col-md-offset-6">
                     <input type="submit" class="btn btn-success" value="Connexion"/>
                 </div>
             </div>
@@ -23,5 +31,35 @@
             {% endif %}
         </form>
     </div>
+    <div class="col-md-5">
+        <form class="form-horizontal" role="form">
+            <h2>{% block h2bis %}Connexion via les réseaux sociaux{% endblock %}</h2>
+            <div class="form-group">
+                <div class="radio col-md-3 col-md-offset-1">
+                    <label>
+                        <input type="radio" name="social_type" id="id_type_famille" value="famille" checked>
+                        Famille
+                    </label>
+                </div>
+                <div class="radio col-md-3">
+                    <label>
+                        <input type="radio" name="social_type" id="id_type_prestataire" value="prestataire">
+                        Prestataire
+                    </label>
+                </div>
+            </div>
+            {% block social_auth %}
+                {% buttons %}
+                    {% with action="register" type="famille" class="col-md-offset-2"%}
+                        {% include 'helpers/social_auth.html' %}
+                    {% endwith %}
+                {% endbuttons %}
+            {% endblock %}
+        </form>
+    </div>
 </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static "js/register.js" %}"></script>
 {% endblock %}

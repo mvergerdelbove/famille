@@ -1,0 +1,40 @@
+{% extends "registration/login.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Je créée mon compte{% endblock %}
+
+{% block h1 %}Je créée mon compte{% endblock %}
+{% block h2 %}Enregistrement manuel{% endblock %}
+{% block h2bis %}Enregistrement via les réseaux sociaux{% endblock %}
+
+
+{% block form %}
+    {% bootstrap_form form layout="horizontal" field_class="col-md-5" label_class="col-md-4" %}
+    <div class="form-group">
+        <div class="radio col-md-2 col-md-offset-2">
+            <label>
+                <input type="radio" name="type" id="id_type_famille" value="famille" checked>
+                Famille
+            </label>
+        </div>
+        <div class="radio col-md-2">
+            <label>
+                <input type="radio" name="type" id="id_type_prestataire" value="prestataire">
+                Prestataire
+            </label>
+        </div>
+    </div>
+{% endblock %}
+
+{% block social_auth %}
+    {% buttons %}
+        {% with action="register" type="famille" class="col-md-offset-2" %}
+            {% include 'helpers/social_auth.html' %}
+        {% endwith %}
+    {% endbuttons %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static "js/register.js" %}"></script>
+{% endblock %}

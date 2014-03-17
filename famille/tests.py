@@ -2,7 +2,7 @@ from datetime import date, datetime
 import json
 import types
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
 from django.http import HttpResponseBadRequest, Http404
@@ -304,6 +304,14 @@ class ModelsTestCase(TestCase):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
         self.assertIsInstance(models.get_user_related(self.user2), models.Prestataire)
         self.assertRaises(ObjectDoesNotExist, models.get_user_related, self.user3)
+
+    def test_has_user_related(self):
+        self.assertTrue(models.has_user_related(self.user1))
+        self.assertTrue(models.has_user_related(self.user2))
+        self.assertFalse(models.has_user_related(self.user3))
+
+        anonymous = AnonymousUser()
+        self.assertFalse(models.has_user_related(anonymous))
 
     def test_is_geolocated(self):
         geoloc = Geolocation(lat=33.01, lon=2.89)
