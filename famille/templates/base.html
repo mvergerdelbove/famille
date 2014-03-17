@@ -66,20 +66,10 @@
 	      <li><a href="{% url 'auth_logout' %}">Déconnexion</a></li>
       </ul>
       {% else %}
-      {% url 'auth_login' as login_url %}
-      <form class="navbar-form navbar-right" role="login"
-	    action="{{ login_url }}" method="post">{% csrf_token %}
-	<div class="form-group">
-	  <div class="col-md-6">
-            <input type="text" class="form-control" name="username" placeholder="Identifiant">
-	  </div>
-	  <div class="col-md-6">
-	    <input type="password" class="form-control" name="password" placeholder="Mot de passe">
-	  </div>
-	  <input type="hidden" name="next" value="/mon-compte/" />
-	</div>
-	<button type="submit" class="btn btn-primary">Connexion</button>
-      </form>
+      <ul class="nav navbar-nav navbar-right">
+	      <li><a href="{% url 'auth_login' %}">Se connecter</a></li>
+	      <li><a href="{% url 'register' %}">Créer un compte</a></li>
+      </ul>
       {% endif %}
     </div><!-- /.navbar-collapse -->
   </nav>
