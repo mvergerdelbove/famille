@@ -13,7 +13,7 @@
 </div>
 <div class="row">
     <div class="col-md-offset-1 col-md-5">
-        <form action="{{ login_url }}" method="post" class="form-horizontal" role="form">
+        <form action="{% block action %}{{ login_url }}{% endblock %}" method="post" class="form-horizontal" role="form">
             <h2>{% block h2 %}Connexion manuelle{% endblock %}</h2>
             {% csrf_token %}
             {% block form %}
