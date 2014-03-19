@@ -101,6 +101,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),
 )
 
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 
 STATICFILES_FINDERS = (
@@ -120,6 +121,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 for key in os.environ:
     globals()[key] = os.environ[key]
+
 
 NB_SEARCH_RESULTS = 5
 

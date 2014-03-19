@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load static %}
 {% load helpers %}
 
 {% block title %} - Mon compte{% endblock %}
@@ -84,7 +85,11 @@
                 <div id="profile-pic-container" class="row">
                     <div class="col-md-2">
                         <a href="#" class="thumbnail profile-pic">
-                            <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
+                            {% if profil.instance.profile_pic %}
+                                <img src="{% get_media_prefix %}{{ profil.instance.profile_pic.name }}" alt="Photo de profil">
+                            {% else %}
+                                <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
+                            {% endif %}
                         </a>
                     </div>
                     <div class="col-md-4">

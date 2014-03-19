@@ -50,5 +50,16 @@ def profile_pic(request):
     """
     Manage planning updates for a given user.
     """
-    import pdb; pdb.set_trace()
-    return JsonResponse({})
+    if isinstance(request.related_user, models.Famille):
+        FormClass = forms.ProfilePicFamilleForm
+    else:
+        FormClass = forms.ProfilePicPrestataireForm
+
+    form = FormClass(instance=request.related_user, files=request.FILES)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({
+            "profile_pic": form.instance.profile_pic.name
+        })
+
+    return JsonResponse(form.errors, status=403)

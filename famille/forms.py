@@ -388,3 +388,20 @@ class FamilleSearchForm(forms.Form):
         label=u"Sortie d'école", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
+
+class ProfilePicBaseForm(forms.ModelForm):
+
+    class Meta:
+        fields = ("profile_pic", )
+
+
+class ProfilePicFamilleForm(ProfilePicBaseForm):
+
+    class Meta(ProfilePicBaseForm.Meta):
+        model = Famille
+
+
+class ProfilePicPrestataireForm(ProfilePicBaseForm):
+
+    class Meta(ProfilePicBaseForm.Meta):
+        model = Prestataire
