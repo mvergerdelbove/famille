@@ -1,6 +1,7 @@
 var Shared = require("./account/shared.js");
 var Router = require("./account/router.js");
 var PlanningView = require("./account/views/planning.js");
+var ProfilePic = require("./account/views/picture.js");
 
 (function($){
     Shared();
@@ -188,6 +189,10 @@ var PlanningView = require("./account/views/planning.js");
     famille.router = new Router();
     famille.plannings = new PlanningView({
         el: $("#planning"),
+        router: famille.router
+    });
+    famille.profilePic = new ProfilePic({
+        el: $("#profile-pic-container"),
         router: famille.router
     });
 
