@@ -34,3 +34,17 @@ def parse_resource_uri(resource_uri):
         raise ValueError("Value %s is not a resource uri." % resource_uri)
 
     return match.group(1), match.group(2)
+
+
+IMAGE_TYPES = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png"
+}
+
+DOCUMENT_TYPES = {
+    ".doc": "application/msword",
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".pages": "application/x-iwork-pages-sffpages"
+}

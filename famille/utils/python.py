@@ -1,6 +1,7 @@
 import datetime
 from itertools import islice
 import json
+import time
 
 
 def pick(d, *args):
@@ -56,3 +57,10 @@ class JSONEncoder(json.JSONEncoder):
         if isinstance(obj, datetime.date):
             return obj.isoformat()
         return super(JSONEncoder, self).default(obj)
+
+
+def generate_timestamp():
+    """
+    Generate a timestamp. Useful for FileField's upload_to parameter.
+    """
+    return int(time.time())

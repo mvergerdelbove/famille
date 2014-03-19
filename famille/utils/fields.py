@@ -6,6 +6,8 @@ from django.forms import forms
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
 
+from famille.utils.python import generate_timestamp
+
 
 class ContentTypeRestrictedFileField(FileField):
     """
@@ -45,6 +47,21 @@ class ContentTypeRestrictedFileField(FileField):
             raise forms.ValidationError('Fichier trop volumineux (max %s)' % filesizeformat(self.max_upload_size))
 
         return data
+
+
+def upload_to_timestamp(basedir):
+    """
+    Generate a filename method. Useful for FileField's upload_to parameter.
+
+    :param basedir:        the basedir in which to save the file
+    """
+    def wrapped(instance, filename):
+        _, ext = os.path.splitext(filename)
+        time_filename = "%s%s" % (generate_timestamp(), ext)
+        return os.path.join(basedir, time_filename)
+
+    return wrapped
+
 
 content_type_restricted_file_field_rules = [
     ([ContentTypeRestrictedFileField, ], [],{})

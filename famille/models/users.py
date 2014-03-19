@@ -6,7 +6,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from famille.models.base import BaseModel
-from famille.utils import parse_resource_uri, geolocation, fields as extra_fields
+from famille.utils import (
+    parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES, fields as extra_fields
+)
 from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
 
@@ -72,6 +74,11 @@ class UserInfo(BaseModel):
     country = models.CharField(blank=True, max_length=20, default="France")
     tel = models.CharField(blank=True, null=True, max_length=15)
     tel_visible = models.BooleanField(blank=True, default=False)
+    profile_pic = extra_fields.ContentTypeRestrictedFileField(
+        upload_to=extra_fields.upload_to_timestamp("profile_pic"), blank=True, null=True,
+        content_types=IMAGE_TYPES.values(), extensions=IMAGE_TYPES.keys(),
+        max_upload_size=2621440  # 2.5MB
+    )
 
 
     class Meta:
@@ -244,12 +251,6 @@ class Prestataire(Criteria):
         "pro": u"Maîtrisé",
         "bil": "Bilingue"
     }
-    RESUME_TYPES = {
-        ".doc": "application/msword",
-        ".pdf": "application/pdf",
-        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ".pages": "application/x-iwork-pages-sffpages"
-    }
 
     type = models.CharField(max_length=40, choices=TYPES.items())
     sub_types = models.CharField(max_length=40) # TODO choices
@@ -261,8 +262,8 @@ class Prestataire(Criteria):
     level_it = models.CharField(**language_kw)
     other_language = models.CharField(blank=True, null=True, max_length=50)
     resume = extra_fields.ContentTypeRestrictedFileField(
-        upload_to="resume", blank=True, null=True,
-        content_types=RESUME_TYPES.values(), extensions=RESUME_TYPES.keys(),
+        upload_to=extra_fields.upload_to_timestamp("resume"), blank=True, null=True,
+        content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
         max_upload_size=2621440  # 2.5MB
     )
 

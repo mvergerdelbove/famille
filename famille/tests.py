@@ -1,5 +1,6 @@
 from datetime import date, datetime
 import json
+import re
 import types
 
 from django.contrib.auth.models import User, AnonymousUser
@@ -13,7 +14,7 @@ from mock import MagicMock, patch
 from famille import forms, models, utils
 from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
 from famille.templatetags import helpers
-from famille.utils import geolocation, http, python, mail
+from famille.utils import geolocation, http, python, mail, fields
 
 
 # disconnecting signal to not alter testing and flooding google
@@ -73,6 +74,10 @@ class PythonTestCase(TestCase):
         data = {"date": d, "datetime": dt}
         expected  = '{"date": "%s", "datetime": "%s"}' % (d.isoformat(), dt.isoformat())
         self.assertEqual(json.dumps(data, cls=python.JSONEncoder), expected)
+
+    def test_generate_timestamp(self):
+        t = python.generate_timestamp()
+        self.assertIsInstance(t, int)
 
 
 class RegistrationFormTestCase(TestCase):
@@ -499,3 +504,13 @@ class TemplateTagsTestCase(TestCase):
 
         obj = models.Famille()
         self.assertEqual(helpers.get_class_name(obj), "Famille")
+
+
+class FieldsTestCase(TestCase):
+
+    def test_upload_to_timestamp(self):
+        func = fields.upload_to_timestamp("folder")
+        filename = func(None, "myfile.txt")
+        self.assertTrue(filename.startswith("folder/"))
+        p = re.compile("folder/\d+\.txt")
+        self.assertTrue(p.match(filename))
