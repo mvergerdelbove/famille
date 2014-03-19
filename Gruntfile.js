@@ -34,7 +34,7 @@ module.exports = function(grunt) {
             },
             prestataire_account: {
                 dest: BUILD_ROOT + "prestataire_account.js",
-                src: [JS_ROOT + "prestataire_account.js"]
+                src: [JS_ROOT + "account/prestataire.js"]
             }
         },
         watch: {
