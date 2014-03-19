@@ -1,6 +1,8 @@
 var Router = require("./router.js");
-var FavoriteView = require("./views/favorites");
-var PlanningView = require("./views/planning");
+var FavoriteView = require("./views/favorites.js");
+var PlanningView = require("./views/planning.js");
+var Shared = require("./shared.js");
+
 
 (function($){
     function App () {
@@ -16,6 +18,7 @@ var PlanningView = require("./views/planning");
         });
     }
 
+    Shared();
     window.famille = new App();
 
 })(jQuery);

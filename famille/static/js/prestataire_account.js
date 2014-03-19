@@ -1,4 +1,9 @@
+var Shared = require("./account/shared.js");
+var Router = require("./account/router.js");
+var PlanningView = require("./account/views/planning.js");
+
 (function($){
+    Shared();
     window.famille = window.famille || {};
 
     // FIXME: factorize
@@ -178,6 +183,12 @@
     famille.mainView.initializeFromHTML();
     famille.modalView = new ReferenceEditionView({
         el: $("#referenceModal")
+    });
+
+    famille.router = new Router();
+    famille.plannings = new PlanningView({
+        el: $("#planning"),
+        router: famille.router
     });
 
 })(jQuery);

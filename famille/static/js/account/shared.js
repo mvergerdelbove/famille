@@ -1,4 +1,4 @@
-(function($){
+function App (){
     var containers = {child: $(".child-container"), planning: $(".planning-container")},
 	forms = {child: $(".empty-child-form .child-form"), planning: $(".empty-planning-form .planning-form")},
 	no = {child: $(".no-child"), planning: $(".no-planning")};
@@ -64,4 +64,6 @@
 		$('html,body').scrollTop(scrollmem);
     });
 
-})(jQuery);
+}
+
+module.exports = App;
