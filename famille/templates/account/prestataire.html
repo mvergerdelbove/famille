@@ -127,7 +127,17 @@
                       </div>
                 </div>
             </div>
-			<div class="tab-pane fade in" id="profil">
+            <div class="tab-pane fade in" id="profil">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="#" class="thumbnail profil-pic">
+                            <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>{{ profil.instance.first_name }} {{ profil.instance.name|slice:":1" }}.</h3>
+                    </div>
+                </div>
 				<form method="post" action="{% url "account" %}">
 					{% csrf_token %}
 					<div class="row">
