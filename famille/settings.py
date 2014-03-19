@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'south',
     'localflavor',
+    'storages',
     'tastypie',
     'tinymce',
     'social.apps.django_app.default',
