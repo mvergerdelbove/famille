@@ -3,7 +3,8 @@ module.exports = Backbone.Router.extend({
     serverRoutes: {
         toggleFavorite: "/favorite/",
         contactFavorite: "/contact-favorites/",
-        plannings: "/plannings/"
+        plannings: "/plannings/",
+        profilePic: "/profile-pic/"
     },
 
     removeFavorite: function(options){
@@ -48,6 +49,29 @@ module.exports = Backbone.Router.extend({
             try {
                 data = JSON.parse(error.responseText);
                 self.trigger("plannings:fail", data);
+            }
+            catch (e) {
+                console.log(error);
+            }
+        });
+    },
+
+    saveProfilePic: function (data) {
+        var self = this;
+        $.ajax({
+            type: "post",
+            url: this.serverRoutes.profilePic,
+            data: data,
+            contentType: false,
+            processData: false,
+            headers: {'X-CSRFToken': $.cookie('csrftoken')}
+        }).done(function (data) {
+            self.trigger("profilePic:success", data);
+        }).fail(function (error) {
+            var data;
+            try {
+                data = JSON.parse(error.responseText);
+                self.trigger("profilePic:fail", data);
             }
             catch (e) {
                 console.log(error);

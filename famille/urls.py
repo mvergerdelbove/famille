@@ -26,6 +26,7 @@ urlpatterns = patterns(
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
     url(r'^contact-favorites/$', 'famille.views.contact_favorites', name="contact_favorites"),
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
+    url(r'^profile-pic/$', 'famille.views.profile_pic', name="profile_pic"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(api.urls)),
 

@@ -4,7 +4,7 @@ from famille import forms, models
 from famille.utils.http import require_JSON, require_related, login_required, JsonResponse
 
 
-__all__ = ["contact_favorites", "plannings"]
+__all__ = ["contact_favorites", "plannings", "profile_pic"]
 
 
 @require_related
@@ -41,3 +41,14 @@ def plannings(request):
         return JsonResponse()
 
     return JsonResponse(form.sub_errors, status=400)
+
+
+@require_related
+@require_POST
+@login_required
+def profile_pic(request):
+    """
+    Manage planning updates for a given user.
+    """
+    import pdb; pdb.set_trace()
+    return JsonResponse({})

@@ -81,14 +81,45 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="profil">
-                <div class="row">
+                <div id="profile-pic-container" class="row">
                     <div class="col-md-2">
-                        <a href="#" class="thumbnail profil-pic">
+                        <a href="#" class="thumbnail profile-pic">
                             <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
                         </a>
                     </div>
                     <div class="col-md-4">
                         <h3>{{ profil.instance.first_name }} {{ profil.instance.name|slice:":1" }}.</h3>
+                    </div>
+                    <div class="modal fade" id="modal-pic" tabindex="-1"
+                         role="dialog" aria-labelledby="modalPic" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close"
+                                            data-dismiss="modal" aria-hidden="true">
+                                        &times;
+                                    </button>
+                                    <h4 class="modal-title" id="modalPic">Photo de profil: édition</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal form-pic"
+                                          action="{% url 'profile_pic' %}" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label for="picFile" class="col-md-5">Télécharger une photo de profil</label>
+                                            <div class="col-md-3">
+                                                <input type="file" id="picFile" name="profile_pic" required>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="errorblock text-danger">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                                    <button type="button" class="btn btn-primary save">Enregistrer</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <form method="post" action="{% url "account" %}">
