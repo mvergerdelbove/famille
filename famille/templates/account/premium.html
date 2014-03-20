@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+<!-- TODO: feedback on cancel -->
 {% block content %}
 <div class="row">
     <div class="col-md-offset-1 col-md-7">
         <div class="jumbotron">
             <h1>Expliquer pourquoi c'est bien d'être premium <small>En mode swag</small></h1>
         </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        {{ form.render }}
     </div>
 </div>
 {% endblock %}

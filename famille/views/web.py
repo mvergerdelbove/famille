@@ -1,8 +1,12 @@
+import time
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
+from paypal.standard.forms import PayPalPaymentsForm
 
 from famille import forms
 from famille.models import Famille, Prestataire, get_user_related, UserInfo, has_user_related
@@ -133,9 +137,23 @@ def profile(request, type, uid):
     return render(request, "profile/base.html", get_context(user=user))
 
 
+premium_dict = {
+    "business": settings.PAYPAL_RECEIVER_EMAIL,
+    "amount": "10.00",
+    "item_name": "Compte premium",
+}
+
 @require_GET
-def premium(request):
+def premium(request, cancel=None):
     """
     Page to become premium.
     """
-    return render(request, "account/premium.html", get_context())
+    data = premium_dict.copy()
+    data.update(
+        invoice="premium-uneviedefamille%s" % int(time.time()),
+        notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
+        return_url=request.build_absolute_uri(reverse('premium')),
+        cancel_return=request.build_absolute_uri('/devenir-premium/annuler')
+    )
+    form = PayPalPaymentsForm(initial=data)
+    return render(request, "account/premium.html", get_context(form=form, cancel=bool(cancel)))

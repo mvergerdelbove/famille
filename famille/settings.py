@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'south',
     'localflavor',
+    'paypal.standard.ipn',
     'storages',
     'tastypie',
     'tinymce',
@@ -141,4 +142,8 @@ TINYMCE_DEFAULT_CONFIG = {
 TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = True
 
+# social auth
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/mon-compte/"
+
+# paypal
+PAYPAL_RECEIVER_EMAIL = "getmax0@gmail.com"
