@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %} - Mon compte{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static "lib/bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}" media="all"/>
+<link rel="stylesheet" href="{% static "lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" %}" media="all"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% block mainContent %}{% endblock %}
+    <div class="col-md-offset-1 col-md-3 margin-top-2">
+        <div class="list-group">
+          <a href="{% url 'account' %}" class="list-group-item {% if request.path_info == '/mon-compte/' %}active{% endif %}">
+              <i class="glyphicon glyphicon-user"></i> Mon compte
+          </a>
+          <a href="#" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium</a>
+          <a href="{% url 'visibility' %}"
+             class="list-group-item {% if request.path_info == '/mon-compte/visibilite/' %}active{% endif %}">
+              <i class="glyphicon glyphicon-eye-open"></i> Gérer ma visibilité
+          </a>
+          <a href="{% url 'stats' %}" class="list-group-item {% if request.path_info == '/mon-compte/stats/' %}active{% endif %}">
+              <i class="glyphicon glyphicon-stats"></i> Statistiques
+          </a>
+        </div>
+    </div>
+</div>
+<input type="hidden" class="url-hash" value="#{{ url_hash }}">
+{% endblock %}
+
+{% block script %}
+<script src="{% static "lib/underscore/underscore-min.js" %}"></script>
+<script src="{% static "lib/backbone/backbone-min.js" %}"></script>
+<script src="{% static "lib/moment/min/moment.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
+<script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
+{% block extraScript %}{% endblock %}
+{% endblock %}

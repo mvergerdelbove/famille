@@ -23,6 +23,8 @@ urlpatterns = patterns(
         'extra_context': {'action': 'logged_out'}
     }, name='auth_logout'),
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
+    url(r'^mon-compte/visibilite/$', TemplateView.as_view(template_name="account/visibility.html"), name="visibility"),
+    url(r'^mon-compte/stats/$', TemplateView.as_view(template_name="account/stats.html"), name="stats"),
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register(?:/(?P<social>[a-zA-Z]+)/((?P<type>[a-zA-Z]+)))?/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
