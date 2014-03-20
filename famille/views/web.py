@@ -127,7 +127,7 @@ def profile(request, type, uid):
     """
     Display the profile of a user.
     """
-    ModelClass = Famille if type == "famille" else "prestataire"
+    ModelClass = Famille if type == "famille" else Prestataire
     user = get_object_or_404(ModelClass, pk=uid)
 
     return render(request, "profile/base.html", get_context(user=user))
