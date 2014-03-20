@@ -15,7 +15,7 @@
           <a href="{% url 'account' %}" class="list-group-item {% if request.path_info == '/mon-compte/' %}active{% endif %}">
               <i class="glyphicon glyphicon-user"></i> Mon compte
           </a>
-          <a href="#" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium</a>
+          <a href="{% url 'premium' %}" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium</a>
           <a href="{% url 'visibility' %}"
              class="list-group-item {% if request.path_info == '/mon-compte/visibilite/' %}active{% endif %}">
               <i class="glyphicon glyphicon-eye-open"></i> Gérer ma visibilité

@@ -10,7 +10,7 @@ from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
 
-__all__ = ["home", "search", "register", "account", "favorite", "profile"]
+__all__ = ["home", "search", "register", "account", "favorite", "profile", "premium"]
 
 
 def home(request):
@@ -131,3 +131,11 @@ def profile(request, type, uid):
     user = get_object_or_404(ModelClass, pk=uid)
 
     return render(request, "profile/base.html", get_context(user=user))
+
+
+@require_GET
+def premium(request):
+    """
+    Page to become premium.
+    """
+    return render(request, "account/premium.html", get_context())
