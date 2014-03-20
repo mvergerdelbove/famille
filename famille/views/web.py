@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST, require_GET
 
 from famille import forms
 from famille.models import Famille, Prestataire, get_user_related, UserInfo, has_user_related
@@ -10,7 +10,7 @@ from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
 
-__all__ = ["home", "search", "register", "account", "favorite"]
+__all__ = ["home", "search", "register", "account", "favorite", "profile"]
 
 
 def home(request):
@@ -119,3 +119,15 @@ def favorite(request):
     action(resource_uri)
 
     return HttpResponse()
+
+
+# FIXME: view modified when user is logged / not / premium + user visibility
+@require_GET
+def profile(request, type, uid):
+    """
+    Display the profile of a user.
+    """
+    ModelClass = Famille if type == "famille" else "prestataire"
+    user = get_object_or_404(ModelClass, pk=uid)
+
+    return render(request, "profile/base.html", get_context(user=user))
