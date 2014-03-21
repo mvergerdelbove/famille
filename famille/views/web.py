@@ -1,10 +1,11 @@
+import hashlib
 import time
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.views.decorators.http import require_POST, require_GET
 from paypal.standard.forms import PayPalPaymentsForm
 
@@ -137,23 +138,37 @@ def profile(request, type, uid):
     return render(request, "profile/base.html", get_context(user=user))
 
 
+# TODO: might be a subscription
 premium_dict = {
     "business": settings.PAYPAL_RECEIVER_EMAIL,
     "amount": "10.00",
     "item_name": "Compte premium",
+    "item_number": "TODO",
+    "src": "1"
 }
 
+# TODO: distinguish between logged and not logged user
+@require_related
 @require_GET
-def premium(request, cancel=None):
+@login_required
+def premium(request, action=None):
     """
     Page to become premium.
     """
+    if request.related_user.is_premium:
+        return render_to_response("account/already_premium.html")
+
+    if action == "valider":
+        # TODO: make sure that the payment has been received. how ?
+        #       invoice should be something related to the user
+        return render(request, "account/premium.html", get_context(form=form, action=action))
+
     data = premium_dict.copy()
     data.update(
-        invoice="premium-uneviedefamille%s" % int(time.time()),
+        invoice="PREMIUM_VDF__%s__%s" % (int(time.time()), hashlib.md5(str(request.related_user.pk)).hexdigest()),
         notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
-        return_url=request.build_absolute_uri(reverse('premium')),
-        cancel_return=request.build_absolute_uri('/devenir-premium/annuler')
+        return_url=request.build_absolute_uri('/devenir-premium/valider/'),
+        cancel_return=request.build_absolute_uri('/devenir-premium/annuler/')
     )
-    form = PayPalPaymentsForm(initial=data)
-    return render(request, "account/premium.html", get_context(form=form, cancel=bool(cancel)))
+    form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
+    return render(request, "account/premium.html", get_context(form=form, action=action))
