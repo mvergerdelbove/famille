@@ -62,6 +62,10 @@ class UserInfo(BaseModel):
     The common user info that a Famille and
     a Prestataire need.
     """
+    PLANS = {
+        "premium": "premium",
+        "basic": "basic"
+    }
     user = models.OneToOneField(User)
     geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
     name = models.CharField(blank=True, max_length=50)
@@ -79,6 +83,7 @@ class UserInfo(BaseModel):
         content_types=IMAGE_TYPES.values(), extensions=IMAGE_TYPES.keys(),
         max_upload_size=2621440  # 2.5MB
     )
+    plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
 
 
     class Meta:
@@ -110,6 +115,13 @@ class UserInfo(BaseModel):
         A property to check if a user is geolocated.
         """
         return bool(self.geolocation)
+
+    @property
+    def is_premium(self):
+        """
+        Return True if user is premium.
+        """
+        return self.plan == self.PLANS["premium"]
 
     def geolocate(self):
         """
