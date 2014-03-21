@@ -122,8 +122,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 )
 
+bools = {
+    "True": True,
+    "False": False
+}
+
 for key in os.environ:
-    globals()[key] = os.environ[key]
+    value = os.environ[key]
+    globals()[key] = bools.get(value, value)
 
 
 NB_SEARCH_RESULTS = 5
