@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load static %}
+{% load helpers %}
 
 {% block title %} - Profil{% endblock %}
 
@@ -19,11 +20,16 @@
         </div>
         <h1>{{ user.first_name }} {{ user.name|slice:":1" }}. <small>{{ user.city }}</small></h1>
         <p>
-            <i class="glyphicon glyphicon-star"></i>
-            <i class="glyphicon glyphicon-star"></i>
-            <i class="glyphicon glyphicon-star"></i>
-            <i class="glyphicon glyphicon-star-empty"></i>
-            <i class="glyphicon glyphicon-star-empty"></i>
+            {% with ratings=user.total_ratings %}
+                {% for i in ratings|get_range %}
+                    <i class="glyphicon glyphicon-star"></i>
+                {% endfor %}
+                {% with remaining=5|substract:ratings|get_range %}
+                    {% for i in remaining %}
+                        <i class="glyphicon glyphicon-star-empty"></i>
+                    {% endfor %}
+                {% endwith %}
+            {% endwith %}
         </p>
     </div>
 </div>
