@@ -123,6 +123,23 @@ class UserInfo(BaseModel):
         """
         return self.plan == self.PLANS["premium"]
 
+    @property
+    def nb_ratings(self):
+        """
+        Return the number of total ratings the user received.
+        """
+        return self.ratings.all().count()
+
+    @property
+    def total_rating(self):
+        """
+        A property that computes the overall rating of a given user.
+        """
+        nb_ratings = self.nb_ratings
+        if not nb_ratings:
+            return 0
+        return sum(rating.average for rating in self.ratings.all()) / float(nb_ratings)
+
     def geolocate(self):
         """
         Geolocate a user, using google geolocation.

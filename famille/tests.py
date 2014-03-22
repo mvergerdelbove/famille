@@ -514,3 +514,46 @@ class FieldsTestCase(TestCase):
         self.assertTrue(filename.startswith("folder/"))
         p = re.compile("folder/\d+\.txt")
         self.assertTrue(p.match(filename))
+
+
+class RatingTestCase(TestCase):
+
+    def setUp(self):
+        self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
+        self.famille.save()
+
+    def tearDown(self):
+        User.objects.all().delete()
+        models.Famille.objects.all().delete()
+        models.FamilleRatings.objects.all().delete()
+
+    def test_average(self):
+        rating = models.FamilleRatings(famille=self.famille)
+        self.assertEqual(rating.average, 0)
+
+        rating.reliability = 4
+        self.assertEqual(rating.average, 1)
+
+        rating.amability = 2
+        rating.serious = 1
+        rating.ponctuality = 3
+        self.assertEqual(rating.average, 2.5)
+
+    def test_user_nb_ratings(self):
+        self.assertEqual(self.famille.nb_ratings, 0)
+        models.FamilleRatings(famille=self.famille).save()
+        models.FamilleRatings(famille=self.famille).save()
+        self.assertEqual(self.famille.nb_ratings, 2)
+
+    def test_user_rating(self):
+        self.assertEqual(self.famille.total_rating, 0)
+        models.FamilleRatings(
+            famille=self.famille, reliability=4, amability=2,
+            serious=1, ponctuality=3
+        ).save()
+        models.FamilleRatings(
+            famille=self.famille, reliability=1, amability=3,
+            serious=5, ponctuality=0
+        ).save()
+        self.assertEqual(self.famille.total_rating, 2.375)
