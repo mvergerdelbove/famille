@@ -1,0 +1,22 @@
+{% load bootstrap3 %}
+
+<div id="ratings">
+    <button type="button" class="btn btn-info btn-xs popover-rating" data-title="Noter {{ profile.first_name }}"
+            data-container=".popover-rating-container" data-toggle="popover" data-placement="bottom" data-html="true">
+        Noter cet utilisateur
+    </button>
+    <div class="popover-rating-container"></div>
+    <div class="hide rating-form">
+        <form class="form-horizontal form-rating">
+            {% for field in rating_form %}
+                <div class="form-group">
+                    {% if field.html_name != "by" %}
+                        {% bootstrap_label field.label_tag %}
+                    {% endif %}
+                    {{ field|safe }}
+                </div>
+            {% endfor %}
+            <button type="button" class="btn btn-success submit-rating">Valider</button>
+        </form>
+    </div>
+</div>

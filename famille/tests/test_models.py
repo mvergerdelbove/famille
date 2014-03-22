@@ -32,6 +32,10 @@ class ModelsTestCase(TestCase):
         )
         self.prestataire_fav.save()
 
+    def test_simple_id(self):
+        self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
+        self.assertEqual(self.presta.simple_id, "prestataire__%s" % self.presta.pk)
+
     def tearDown(self):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
@@ -181,7 +185,7 @@ class RatingTestCase(TestCase):
         models.FamilleRatings.objects.all().delete()
 
     def test_average(self):
-        rating = models.FamilleRatings(famille=self.famille)
+        rating = models.FamilleRatings(user=self.famille)
         self.assertEqual(rating.average, 0)
 
         rating.reliability = 4
@@ -194,18 +198,18 @@ class RatingTestCase(TestCase):
 
     def test_user_nb_ratings(self):
         self.assertEqual(self.famille.nb_ratings, 0)
-        models.FamilleRatings(famille=self.famille).save()
-        models.FamilleRatings(famille=self.famille).save()
+        models.FamilleRatings(user=self.famille).save()
+        models.FamilleRatings(user=self.famille).save()
         self.assertEqual(self.famille.nb_ratings, 2)
 
     def test_user_rating(self):
         self.assertEqual(self.famille.total_rating, 0)
         models.FamilleRatings(
-            famille=self.famille, reliability=4, amability=2,
+            user=self.famille, reliability=4, amability=2,
             serious=1, ponctuality=3
         ).save()
         models.FamilleRatings(
-            famille=self.famille, reliability=1, amability=3,
+            user=self.famille, reliability=1, amability=3,
             serious=5, ponctuality=0
         ).save()
         self.assertEqual(self.famille.total_rating, 2.375)

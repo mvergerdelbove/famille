@@ -49,3 +49,15 @@
 .search-header {
     margin-bottom: 20px;
 }
+
+.popover-rating-container .popover-content {
+    padding: 15px 60px;
+}
+
+.popover-rating-container .popover {
+    max-width: none;
+}
+
+.star-control {
+    cursor: pointer;
+}

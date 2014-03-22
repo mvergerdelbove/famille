@@ -10,7 +10,10 @@ from django.views.decorators.http import require_POST, require_GET
 from paypal.standard.forms import PayPalPaymentsForm
 
 from famille import forms
-from famille.models import Famille, Prestataire, get_user_related, UserInfo, has_user_related
+from famille.models import (
+    Famille, Prestataire, get_user_related, UserInfo,
+    has_user_related, FamilleRatings, PrestataireRatings
+)
 from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
@@ -132,10 +135,23 @@ def profile(request, type, uid):
     """
     Display the profile of a user.
     """
-    ModelClass = Famille if type == "famille" else Prestataire
-    user = get_object_or_404(ModelClass, pk=uid)
+    context = {}
+    if type == "famille":
+        ModelClass = Famille
+        RatingClass = FamilleRatings
+        RatingFormClass = forms.RatingFamilleForm
+    else:
+        ModelClass = Prestataire
+        RatingClass = PrestataireRatings
+        RatingFormClass = forms.RatingPrestataireForm
 
-    return render(request, "profile/base.html", get_context(user=user))
+    user = get_object_or_404(ModelClass, pk=uid)
+    if has_user_related(request.user):
+        related_user = get_user_related(request.user)
+        rating = RatingClass(user=user, by=related_user.simple_id)
+        context["rating_form"] = RatingFormClass(instance=rating)
+
+    return render(request, "profile/base.html", get_context(profile=user, **context))
 
 
 # TODO: might be a subscription

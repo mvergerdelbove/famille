@@ -35,6 +35,10 @@ module.exports = function(grunt) {
             prestataire_account: {
                 dest: BUILD_ROOT + "prestataire_account.js",
                 src: [JS_ROOT + "account/prestataire.js"]
+            },
+            profile: {
+                dest: BUILD_ROOT + "profile.js",
+                src: [JS_ROOT + "profile/app.js"]
             }
         },
         watch: {
@@ -42,7 +46,11 @@ module.exports = function(grunt) {
                 atBegin: true
             },
             all: {
-                files: [JS_ROOT + 'search/**/*.js', JS_ROOT + 'account/**/*.js'],
+                files: [
+                    JS_ROOT + 'search/**/*.js',
+                    JS_ROOT + 'account/**/*.js',
+                    JS_ROOT + 'profile/**/*.js'
+                ],
                 tasks: ['build']
             }
         }
@@ -55,5 +63,10 @@ module.exports = function(grunt) {
     // grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
     // App tasks
-    grunt.registerTask('build', ['browserify:search', 'browserify:famille_account', 'browserify:prestataire_account']);
+    grunt.registerTask('build', [
+        'browserify:search',
+        'browserify:famille_account',
+        'browserify:prestataire_account',
+        'browserify:profile'
+    ]);
 };

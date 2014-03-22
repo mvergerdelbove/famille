@@ -4,9 +4,12 @@ from django.contrib.auth.models import User
 from localflavor.fr.forms import FRPhoneNumberField
 
 from famille.models import (
-    Famille, Prestataire, Enfant, FamillePlanning, Reference, PrestatairePlanning, UserInfo
+    Famille, Prestataire, Enfant, FamillePlanning,
+    Reference, PrestatairePlanning, UserInfo, FamilleRatings,
+    PrestataireRatings
 )
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
+from famille.utils.widgets import RatingWidget
 
 
 class RegistrationForm(forms.Form):
@@ -405,3 +408,34 @@ class ProfilePicPrestataireForm(ProfilePicBaseForm):
 
     class Meta(ProfilePicBaseForm.Meta):
         model = Prestataire
+
+
+class RatingBaseForm(forms.ModelForm):
+
+    class Meta:
+        labels = {
+            "reliability": u"Fiabilité",
+            "amability": u"Amabilité / Relationnel",
+            "serious": u"Sérieux",
+            "ponctuality": u"Ponctualité"
+        }
+        fields = labels.keys() + ["by", ]
+        widgets = {
+            "by": forms.HiddenInput(),
+            "reliability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "amability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "serious": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "ponctuality": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"})
+        }
+
+
+class RatingFamilleForm(RatingBaseForm):
+
+    class Meta(RatingBaseForm.Meta):
+        model = FamilleRatings
+
+
+class RatingPrestataireForm(RatingBaseForm):
+
+    class Meta(RatingBaseForm.Meta):
+        model = PrestataireRatings

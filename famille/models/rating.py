@@ -27,7 +27,7 @@ class BaseRatings(BaseModel):
 
 
 class FamilleRatings(BaseRatings):
-    famille = models.ForeignKey(Famille, related_name="ratings")
+    user = models.ForeignKey(Famille, related_name="ratings")
     by = models.CharField(max_length=50, null=True)
 
     class Meta:
@@ -35,7 +35,7 @@ class FamilleRatings(BaseRatings):
 
 
 class PrestataireRatings(BaseRatings):
-    prestataire = models.ForeignKey(Prestataire, related_name="ratings")
+    user = models.ForeignKey(Prestataire, related_name="ratings")
     by = models.CharField(max_length=50, null=True)
 
     class Meta:
