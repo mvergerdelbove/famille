@@ -15,3 +15,11 @@ class TemplateTagsTestCase(TestCase):
 
         obj = models.Famille()
         self.assertEqual(helpers.get_class_name(obj), "Famille")
+
+    def test_get_range(self):
+        self.assertEqual(helpers.get_range(""), [])
+        self.assertEqual(helpers.get_range("2"), [0, 1])
+
+    def test_subtract(self):
+        self.assertEqual(helpers.substract("5", ""), 5)
+        self.assertEqual(helpers.substract("5", "2"), 3)
