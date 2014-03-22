@@ -28,12 +28,15 @@ class BaseRatings(BaseModel):
 
 class FamilleRatings(BaseRatings):
     famille = models.ForeignKey(Famille, related_name="ratings")
+    by = models.CharField(max_length=50, null=True)
 
     class Meta:
         app_label = 'famille'
 
+
 class PrestataireRatings(BaseRatings):
     prestataire = models.ForeignKey(Prestataire, related_name="ratings")
+    by = models.CharField(max_length=50, null=True)
 
     class Meta:
         app_label = 'famille'
