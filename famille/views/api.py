@@ -83,6 +83,9 @@ def submit_rating(request, type, uid):
         RatingFormClass = forms.RatingPrestataireForm
 
     user = get_object_or_404(ModelClass, pk=uid)
+    if RatingClass.user_has_voted_for(request.related_user, user):
+        return JsonResponse(status=401)
+
     rating = RatingClass(user=user, by=request.related_user.simple_id)
     form = RatingFormClass(instance=rating, data=request.POST)
 

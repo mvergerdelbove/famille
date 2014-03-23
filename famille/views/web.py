@@ -146,10 +146,11 @@ def profile(request, type, uid):
         RatingFormClass = forms.RatingPrestataireForm
 
     user = get_object_or_404(ModelClass, pk=uid)
-    if has_user_related(request.user):  # TODO: make sure the user has never vote
+    if has_user_related(request.user):
         related_user = get_user_related(request.user)
-        rating = RatingClass(user=user, by=related_user.simple_id)
-        context["rating_form"] = RatingFormClass(instance=rating)
+        if not RatingClass.user_has_voted_for(related_user, user):
+            rating = RatingClass(user=user, by=related_user.simple_id)
+            context["rating_form"] = RatingFormClass(instance=rating)
 
     return render(request, "profile/base.html", get_context(profile=user, **context))
 

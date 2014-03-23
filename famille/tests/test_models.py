@@ -178,10 +178,14 @@ class RatingTestCase(TestCase):
         self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
         self.famille = models.Famille(user=self.user1, email="a@gmail.com")
         self.famille.save()
+        self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
+        self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
+        self.presta.save()
 
     def tearDown(self):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
+        models.Prestataire.objects.all().delete()
         models.FamilleRatings.objects.all().delete()
 
     def test_average(self):
@@ -213,3 +217,9 @@ class RatingTestCase(TestCase):
             serious=5, ponctuality=0
         ).save()
         self.assertEqual(self.famille.total_rating, 2.375)
+
+    def test_user_has_voted_for(self):
+        models.FamilleRatings(user=self.famille, by="??").save()
+        self.assertFalse(models.FamilleRatings.user_has_voted_for(self.presta, self.famille))
+        models.FamilleRatings(user=self.famille, by=self.presta.simple_id).save()
+        self.assertTrue(models.FamilleRatings.user_has_voted_for(self.presta, self.famille))
