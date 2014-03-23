@@ -19,24 +19,24 @@
                 </a>
             </div>
             <h1>{{ profile.first_name }} {{ profile.name|slice:":1" }}. <small>{{ profile.city }}</small></h1>
-            <p>
-                {% with ratings=profile.total_ratings %}
+            <div class="user-score">
+                {% with ratings=profile.total_rating %}
                     {% for i in ratings|get_range %}
-                        <i class="glyphicon glyphicon-star"></i>
+                        <i class="score-star glyphicon glyphicon-star"></i>
                     {% endfor %}
                     {% with remaining=5|substract:ratings|get_range %}
                         {% for i in remaining %}
-                            <i class="glyphicon glyphicon-star-empty"></i>
+                            <i class="score-star glyphicon glyphicon-star-empty"></i>
                         {% endfor %}
                     {% endwith %}
+                <strong class="rating-score">{{ ratings|floatformat:2 }}</strong>
                 {% endwith %}
-                <!-- TODO: display score -->
-            </p>
-            <p>
+            </div>
+            <div>
                 {% if rating_form %}
                     {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
                 {% endif %}
-            </p>
+            </div>
         </div>
     </div>
 </div>

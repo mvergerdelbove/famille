@@ -18,6 +18,9 @@ class BaseRatings(BaseModel):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return "by %s" % getattr(self, "by", "no one...")
+
     @property
     def average(self):
         """

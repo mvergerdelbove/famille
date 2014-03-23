@@ -146,7 +146,7 @@ def profile(request, type, uid):
         RatingFormClass = forms.RatingPrestataireForm
 
     user = get_object_or_404(ModelClass, pk=uid)
-    if has_user_related(request.user):
+    if has_user_related(request.user):  # TODO: make sure the user has never vote
         related_user = get_user_related(request.user)
         rating = RatingClass(user=user, by=related_user.simple_id)
         context["rating_form"] = RatingFormClass(instance=rating)
@@ -163,7 +163,6 @@ premium_dict = {
     "src": "1"
 }
 
-# TODO: distinguish between logged and not logged user
 @require_related
 @require_GET
 @login_required

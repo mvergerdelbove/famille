@@ -1,10 +1,11 @@
+from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 
 from famille import forms, models
 from famille.utils.http import require_JSON, require_related, login_required, JsonResponse
 
 
-__all__ = ["contact_favorites", "plannings", "profile_pic"]
+__all__ = ["contact_favorites", "plannings", "profile_pic", "submit_rating"]
 
 
 @require_related
@@ -60,6 +61,35 @@ def profile_pic(request):
         form.save()
         return JsonResponse({
             "profile_pic": form.instance.profile_pic.name
+        })
+
+    return JsonResponse(form.errors, status=403)
+
+
+@require_related
+@require_POST
+@login_required
+def submit_rating(request, type, uid):
+    """
+    A view to submit ratings for a user.
+    """
+    if type == "famille":
+        ModelClass = models.Famille
+        RatingClass = models.FamilleRatings
+        RatingFormClass = forms.RatingFamilleForm
+    else:
+        ModelClass = models.Prestataire
+        RatingClass = models.PrestataireRatings
+        RatingFormClass = forms.RatingPrestataireForm
+
+    user = get_object_or_404(ModelClass, pk=uid)
+    rating = RatingClass(user=user, by=request.related_user.simple_id)
+    form = RatingFormClass(instance=rating, data=request.POST)
+
+    if form.is_valid():
+        form.save()
+        return JsonResponse({
+            "total_rating": user.total_rating
         })
 
     return JsonResponse(form.errors, status=403)

@@ -13,8 +13,7 @@ module.exports = Backbone.View.extend({
                 el: el
             });
         });
-        this.listenTo("rating:success", this.router, this.onSuccess);
-        this.listenTo("rating:fail", this.router, this.onFailure);
+        this.listenTo(this.router, "rating:fail", this.onFailure);
     },
 
     submit: function (e) {
@@ -27,13 +26,6 @@ module.exports = Backbone.View.extend({
             var $el = $(el);
             return [$el.attr("name"), $el.val()];
         }));
-    },
-
-    onSuccess: function () {
-        // TODO:
-        // - close popover
-        // - trigger event that will remove the button from the DOM
-        // - this event will also update the notation of the user
     },
 
     onFailure: function () {

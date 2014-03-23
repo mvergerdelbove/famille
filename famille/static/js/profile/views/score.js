@@ -12,7 +12,8 @@ module.exports = Backbone.View.extend({
     compute: function (e) {
         var $el = $(e.target),
             ticked = this.isTicked($el),
-            idx = this.getStarIndex($el);
+            idx = this.getStarIndex($el),
+            score = this.$input.val();
 
         if (!ticked) {
             _.each(this.stars, function (star, i) {
@@ -21,7 +22,8 @@ module.exports = Backbone.View.extend({
             }, this);
         }
         else {
-            _.each(_.last(this.stars, this.stars.length - idx - 1), function (star) {
+            var lasts = (idx == 0 && score == 1) ? this.stars.length : this.stars.length - idx - 1;
+            _.each(_.last(this.stars, lasts), function (star) {
                 this._off(star);
             }, this);
         }

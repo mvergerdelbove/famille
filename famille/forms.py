@@ -419,9 +419,8 @@ class RatingBaseForm(forms.ModelForm):
             "serious": u"Sérieux",
             "ponctuality": u"Ponctualité"
         }
-        fields = labels.keys() + ["by", ]
+        fields = labels.keys()
         widgets = {
-            "by": forms.HiddenInput(),
             "reliability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
             "amability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
             "serious": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
