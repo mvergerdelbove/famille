@@ -313,6 +313,12 @@ class Famille(Criteria):
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
+    # visibility
+    visibility_family = models.BooleanField(default=False, blank=True)
+    visibility_prestataire = models.BooleanField(default=False, blank=True)
+    visibility_logged = models.BooleanField(default=False, blank=True)
+    visibility_global = models.BooleanField(default=False, blank=True)
+
     class Meta:
         app_label = 'famille'
 
