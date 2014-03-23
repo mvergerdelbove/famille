@@ -57,4 +57,4 @@ urlpatterns = patterns(
     url(r'^tinymce/', include('tinymce.urls')),  # tinymce
     url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
