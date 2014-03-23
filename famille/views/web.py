@@ -18,7 +18,10 @@ from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
 
-__all__ = ["home", "search", "register", "account", "favorite", "profile", "premium"]
+__all__ = [
+    "home", "search", "register", "account",
+    "favorite", "profile", "premium", "visibility",
+]
 
 
 def home(request):
@@ -188,3 +191,19 @@ def premium(request, action=None):
     )
     form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
     return render(request, "account/premium.html", get_context(form=form, action=action))
+
+
+@require_related
+@login_required
+def visibility(request):
+    """
+    Page to manage visibility on the website.
+    """
+    if request.method == "POST":
+        form = forms.VisibilityForm(instance=request.related_user, data=request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = forms.VisibilityForm(instance=request.related_user)
+
+    return render(request, "account/visibility.html", get_context(form=form))

@@ -438,3 +438,16 @@ class RatingPrestataireForm(RatingBaseForm):
 
     class Meta(RatingBaseForm.Meta):
         model = PrestataireRatings
+
+
+class VisibilityForm(forms.ModelForm):
+
+    class Meta:
+        model = Famille
+        labels = {
+            "visibility_family": u"Visible auprès des familles",
+            "visibility_prestataire": u"Visible auprès des prestataires",
+            "visibility_logged": u"Visible auprès des visiteurs sans compte",
+            "visibility_global": u"Visible globalement sur le site",
+        }
+        fields = labels.keys()
