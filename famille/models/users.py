@@ -314,10 +314,10 @@ class Famille(Criteria):
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
     # visibility
-    visibility_family = models.BooleanField(default=False, blank=True)
-    visibility_prestataire = models.BooleanField(default=False, blank=True)
-    visibility_logged = models.BooleanField(default=False, blank=True)
-    visibility_global = models.BooleanField(default=False, blank=True)
+    visibility_family = models.BooleanField(default=True, blank=True)
+    visibility_prestataire = models.BooleanField(default=True, blank=True)
+    visibility_logged = models.BooleanField(default=True, blank=True)
+    visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
         app_label = 'famille'
