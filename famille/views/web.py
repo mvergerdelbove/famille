@@ -149,6 +149,9 @@ def profile(request, type, uid):
         RatingFormClass = forms.RatingPrestataireForm
 
     user = get_object_or_404(ModelClass, pk=uid)
+    if not user.profile_access_is_authorized(request):
+        return render(request, "profile/404.html")
+
     if has_user_related(request.user):
         related_user = get_user_related(request.user)
         if not RatingClass.user_has_voted_for(related_user, user):
