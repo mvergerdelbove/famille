@@ -28,5 +28,5 @@ test:
 schemamigration:
 	foreman run ./manage.py schemamigration famille --auto
 
-migration:
-	./manage.py migrate famille
+migrate:
+	foreman run ./manage.py migrate famille || ./manage.py migrate famille
