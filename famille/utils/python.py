@@ -19,6 +19,20 @@ def pick(d, *args):
     return res
 
 
+def without(d, *args):
+    """
+    Remove some keys of a given dictionary.
+
+    :param d:       the dict
+    :param args:    the keys to remove
+    """
+    res = {}
+    for key in d:
+        if key not in args:
+            res[key] = d[key]
+    return res
+
+
 def repeat_lambda(func, times):
     """
     A variant of itertools.repeat that

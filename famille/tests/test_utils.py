@@ -57,6 +57,11 @@ class PythonTestCase(TestCase):
         out = {"a": ["1", "3"]}
         self.assertEqual(python.pick(_in, "a", "c"), out)
 
+    def test_without(self):
+        _in = {"a": "ok", "b": "ko"}
+        out = {"a": "ok"}
+        self.assertEqual(python.without(_in, "b", "c"), out)
+
     def test_repeat_lambda(self):
         out = list(python.repeat_lambda(dict, 2))
         self.assertEqual(len(out), 2)
