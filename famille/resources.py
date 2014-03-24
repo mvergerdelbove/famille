@@ -1,3 +1,4 @@
+from django.db.models import Q
 from tastypie.resources import ModelResource, ALL
 
 from famille import models, forms
@@ -24,3 +25,22 @@ class FamilleResource(ModelResource):
         filtering = dict(
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()]
         )
+
+    def get_object_list(self, request):
+        """
+        Filter allowed object given the HTTP request.
+
+        :param request:           the given HTTP request
+        """
+        filters = Q(visibility_global=True)
+
+        if not models.has_user_related(request.user):
+            filters = filters & Q(visibility_not_logged=True)
+        else:
+            user = models.get_user_related(request.user)
+            if isinstance(user, models.Famille):
+                filters = filters & Q(visibility_family=True)
+            else:
+                filters = filters & Q(visibility_prestataire=True)
+
+        return super(FamilleResource, self).get_object_list(request).filter(filters)

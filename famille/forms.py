@@ -447,7 +447,7 @@ class VisibilityForm(forms.ModelForm):
         labels = {
             "visibility_family": u"Visible auprès des familles",
             "visibility_prestataire": u"Visible auprès des prestataires",
-            "visibility_logged": u"Visible auprès des visiteurs sans compte",
+            "visibility_not_logged": u"Visible auprès des visiteurs sans compte",
             "visibility_global": u"Visible globalement sur le site",
         }
         fields = labels.keys()

@@ -316,7 +316,7 @@ class Famille(Criteria):
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
     visibility_prestataire = models.BooleanField(default=True, blank=True)
-    visibility_logged = models.BooleanField(default=True, blank=True)
+    visibility_not_logged = models.BooleanField(default=True, blank=True)
     visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
