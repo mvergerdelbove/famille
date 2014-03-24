@@ -179,11 +179,8 @@ class ModelsTestCase(TestCase):
         self.assertFalse(self.famille.profile_access_is_authorized(request))
 
         self.famille.visibility_global = True
-        self.famille.visibility_not_logged = False
         request.user = AnonymousUser()
         self.assertFalse(self.famille.profile_access_is_authorized(request))
-        self.famille.visibility_not_logged = True
-        self.assertTrue(self.famille.profile_access_is_authorized(request))
 
         self.famille.visibility_prestataire = False
         request.user = self.user2

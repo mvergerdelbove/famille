@@ -32,11 +32,10 @@ class FamilleResource(ModelResource):
 
         :param request:           the given HTTP request
         """
+        # TODO: make sure the API only retrieves the resource trimmed
         filters = Q(visibility_global=True)
 
-        if not models.has_user_related(request.user):
-            filters = filters & Q(visibility_not_logged=True)
-        else:
+        if models.has_user_related(request.user):
             user = models.get_user_related(request.user)
             if isinstance(user, models.Famille):
                 filters = filters & Q(visibility_family=True)

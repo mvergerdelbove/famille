@@ -325,7 +325,6 @@ class Famille(Criteria):
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
     visibility_prestataire = models.BooleanField(default=True, blank=True)
-    visibility_not_logged = models.BooleanField(default=True, blank=True)
     visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
@@ -337,14 +336,14 @@ class Famille(Criteria):
 
         :param request:            the request to be verified
         """
+        if not has_user_related(request.user):
+            return False
+
         if self.user == request.user:
             return True
 
         if not self.visibility_global:
             return False
-
-        if not has_user_related(request.user):
-            return self.visibility_not_logged
 
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
