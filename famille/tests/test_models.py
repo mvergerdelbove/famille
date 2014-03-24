@@ -171,6 +171,35 @@ class ModelsTestCase(TestCase):
         self.assertIsInstance(user, models.Famille)
         self.assertEqual(user.email, self.user3.email)
 
+    def test_profile_access_is_authorized(self):
+        request = MagicMock()
+        self.assertTrue(self.presta.profile_access_is_authorized(request))
+        # no global
+        self.famille.visibility_global = False
+        self.assertFalse(self.famille.profile_access_is_authorized(request))
+
+        self.famille.visibility_global = True
+        self.famille.visibility_not_logged = False
+        request.user = AnonymousUser()
+        self.assertFalse(self.famille.profile_access_is_authorized(request))
+        self.famille.visibility_not_logged = True
+        self.assertTrue(self.famille.profile_access_is_authorized(request))
+
+        self.famille.visibility_prestataire = False
+        request.user = self.user2
+        self.assertFalse(self.famille.profile_access_is_authorized(request))
+        self.famille.visibility_prestataire = True
+        self.assertTrue(self.famille.profile_access_is_authorized(request))
+
+        self.famille.visibility_family = False
+        request.user = self.famille.user
+        self.assertTrue(self.famille.profile_access_is_authorized(request))
+        request.user = User.objects.create_user("d", "d@gmail.com", "d")
+        models.Famille(user=request.user, email="d@gmail.com").save()
+        self.assertFalse(self.famille.profile_access_is_authorized(request))
+        self.famille.visibility_family = True
+        self.assertTrue(self.famille.profile_access_is_authorized(request))
+
 
 class RatingTestCase(TestCase):
 

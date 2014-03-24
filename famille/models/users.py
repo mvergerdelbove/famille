@@ -221,6 +221,15 @@ class UserInfo(BaseModel):
                 subject=message.get("subject", ""), recipient_list=emails
             )
 
+    def profile_access_is_authorized(self, request):
+        """
+        A method to tell if a given request/user can access to
+        the profile page of the user (self).
+
+        :param request:          the request to be verified
+        """
+        return True
+
 
 class Criteria(UserInfo):
     TYPES_GARDE_FAMILLE = {
@@ -321,6 +330,24 @@ class Famille(Criteria):
 
     class Meta:
         app_label = 'famille'
+
+    def profile_access_is_authorized(self, request):
+        """
+        Athorize profile access only if request has the right to.
+
+        :param request:            the request to be verified
+        """
+        if self.user == request.user:
+            return True
+
+        if not self.visibility_global:
+            return False
+
+        if not has_user_related(request.user):
+            return self.visibility_not_logged
+
+        user = get_user_related(request.user)
+        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Enfant(BaseModel):
