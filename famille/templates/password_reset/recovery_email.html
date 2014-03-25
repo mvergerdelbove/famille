@@ -1,0 +1,27 @@
+{% load url from future %}
+
+<p>Bonjour,</p>
+
+
+<p>Une demande a été envoyée récemment pour réinitialiser le mot de passe de votre compte.</p>
+
+<p>Si vous êtes à l'origine de cette demande, veuiller définir un nouveau mot de passe en cliquant sur le lien ci-dessous :</p>
+
+<p>
+    <a href="http{% if secure %}s{% endif %}://{{ site.domain }}{% url "password_reset_reset" token %}">
+        Réinitialiser mon mot de passe
+    </a>
+</p>
+
+<p>
+    Si vous ne souhaitez pas modifier votre mot de passe, ignorez simplement ce message.
+</p>
+
+<p>
+    Merci,
+</p>
+
+<p>
+    L'équipe d'une vie de famille.
+</p>
+<!--TODO: image -->

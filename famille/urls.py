@@ -32,7 +32,10 @@ urlpatterns = patterns(
     url(r'^register(?:/(?P<social>[a-zA-Z]+)/((?P<type>[a-zA-Z]+)))?/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^recover/$', Recover.as_view(search_fields=["email"]), name='password_reset_recover'),
+    url(r'^recover/$', Recover.as_view(
+        search_fields=["email"], email_template_name="password_reset/recovery_email.html",
+        email_subject_template_name="password_reset/recovery_email_subject.txt"
+    ), name='password_reset_recover'),
     # api
     url(r'^contact-favorites/$', 'famille.views.contact_favorites', name="contact_favorites"),
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
