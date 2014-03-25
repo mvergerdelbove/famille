@@ -2,11 +2,11 @@
 import os
 
 from django.db.models import FileField
-from django.forms import forms
+from django.forms import forms, MultiValueField, CharField
 from django.template.defaultfilters import filesizeformat
-from django.utils.translation import ugettext_lazy as _
 
 from famille.utils.python import generate_timestamp
+from famille.utils.widgets import RangeWidget
 
 
 class ContentTypeRestrictedFileField(FileField):
@@ -66,3 +66,30 @@ def upload_to_timestamp(basedir):
 content_type_restricted_file_field_rules = [
     ([ContentTypeRestrictedFileField, ], [],{})
 ]
+
+
+class RangeField(MultiValueField):
+    default_error_messages = {} # TODO
+    default_min = 0
+    default_max = 10
+
+    def __init__(self, field_class=CharField, min_value=None, max_value=None, *args, **kwargs):
+        self.min_value = min_value or self.default_min
+        self.max_value = max_value or self.default_max
+        self.fields = (field_class(), field_class()) # TODO
+
+        if not 'initial' in kwargs:
+            kwargs['initial'] = [self.min_value, self.min_value]
+
+        super(RangeField, self).__init__(
+            fields=self.fields, widget=RangeWidget(self.min_value, self.max_value), *args, **kwargs
+        )
+
+    def compress(self, data_list):
+        if data_list: # TODO
+            return [
+                self.fields[0].clean(data_list[0]),
+                self.fields[1].clean(data_list[1])
+            ]
+
+        return None

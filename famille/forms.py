@@ -8,6 +8,7 @@ from famille.models import (
     Reference, PrestatairePlanning, UserInfo, FamilleRatings,
     PrestataireRatings
 )
+from famille.utils.fields import RangeField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget
 
@@ -320,16 +321,7 @@ class PrestataireSearchForm(forms.Form):
     language = forms.MultipleChoiceField(
         label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
     )
-    tarif = forms.CharField(
-        label=u"Tarif horaire (€/h)", widget=forms.TextInput(
-            attrs={
-                'type': 'text',
-                'data-slider-min': '0',
-                'data-slider-max': '80',
-                'data-slider-step': '0.5'
-            }
-        ), required=False
-    ) # TODO: range, not slider
+    tarif = RangeField(label=u"Tarif horaire (€/h)", min_value=5, max_value=100)
     # extra 1
     cdt_periscolaire = forms.BooleanField(
         label=u"Conduite périscolaire", required=False,

@@ -28,3 +28,23 @@ class RatingWidget(widgets.HiddenInput):
         attrs = self.star_attrs.copy()
         attrs["class"] += html_class
         return format_html('<i {0}></i>', flatatt(attrs))
+
+
+class RangeWidget(widgets.TextInput):
+
+    def __init__(self, min_value, max_value, attrs=None):
+        super(RangeWidget, self).__init__(attrs)
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def decompress(self, value):
+        return value
+
+    def render(self, name, value, attrs=None):
+        attrs = attrs or {}
+        value = value or [self.min_value, self.max_value]
+        attrs["data-slider-value"] = str(value)
+        attrs["data-slider-min"] = self.min_value
+        attrs["data-slider-max"]= self.max_value
+
+        return super(RangeWidget, self).render(name, value, attrs)
