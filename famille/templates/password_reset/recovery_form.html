@@ -1,0 +1,24 @@
+{% extends "password_reset/base.html" %}
+{% load url from future %}
+{% load bootstrap3 %}
+
+{% block title %}Mot de passe oublié ?{% endblock %}
+
+{% block content %}
+<div class="row"><div class="col-md-offset-3 col-md-6">
+    <h1>Mot de passe oublié ?</h1>
+	<form method="post" class="form-horizontal" action="{{ url }}">
+		{% csrf_token %}
+        <div class="form-group">
+		    <label for="id_username_or_email" class="col-sm-3">Email</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="id_username_or_email" name="username_or_email"
+                       placeholder="Email" required title="Email" type="text">
+            </div>
+        </div>
+        {% buttons %}
+		    <input type="submit" class="btn btn-primary" value="Récupérer mon mot de passe">
+        {% endbuttons %}
+	</form>
+</div></div>
+{% endblock %}

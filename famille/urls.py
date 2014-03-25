@@ -3,6 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
+from password_reset.views import Recover
 from tastypie.api import Api
 
 from famille import resources
@@ -31,6 +32,7 @@ urlpatterns = patterns(
     url(r'^register(?:/(?P<social>[a-zA-Z]+)/((?P<type>[a-zA-Z]+)))?/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^recover/$', Recover.as_view(search_fields=["email"]), name='password_reset_recover'),
     # api
     url(r'^contact-favorites/$', 'famille.views.contact_favorites', name="contact_favorites"),
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
@@ -57,4 +59,5 @@ urlpatterns = patterns(
     url(r'^tinymce/', include('tinymce.urls')),  # tinymce
     url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
+    url(r'', include('password_reset.urls')),  # password reset
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

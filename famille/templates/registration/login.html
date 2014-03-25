@@ -18,6 +18,11 @@
             {% csrf_token %}
             {% block form %}
                 {% bootstrap_form form layout="horizontal" field_class="col-md-5" label_class="col-md-4" %}
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-6">
+                        <a href="{% url "password_reset_recover" %}">Mot de passe oublié ?</a>
+                    </div>
+                </div>
             {% endblock %}
             <div class="form-group">
                 <div class="col-md-2 col-md-offset-6">

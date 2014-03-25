@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'south',
     'localflavor',
+    'password_reset',
     'paypal.standard.ipn',
     'storages',
     'tastypie',
@@ -122,6 +123,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 )
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 bools = {
     "True": True,
     "False": False
@@ -130,7 +133,6 @@ bools = {
 for key in os.environ:
     value = os.environ[key]
     globals()[key] = bools.get(value, value)
-
 
 NB_SEARCH_RESULTS = 5
 
