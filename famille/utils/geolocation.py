@@ -10,7 +10,7 @@ def geolocate(address):
     """
     Geolocate an address, i.e. return its
     GPS coordinates.
-    
+
     :param address:         the address to geolocalize
     """
     return Geocoder.geocode(address)[0].coordinates

@@ -44,14 +44,6 @@ class ModelsTestCase(TestCase):
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
 
-    def mock_process(self, target, args, kwargs, *_, **__):
-        """
-        Mocking multiprocessing.Process in order to test.
-        """
-        def start():
-            target(*args, **kwargs)
-        return MagicMock(start=start)
-
     def test_get_user_related(self):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
         self.assertIsInstance(models.get_user_related(self.user2), models.Prestataire)
@@ -90,33 +82,23 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.famille.geolocation.lat, 48.895603)
         self.assertEqual(self.famille.geolocation.lon, 2.322858)
 
-    @patch("multiprocessing.Process")
     @patch("famille.models.users.UserInfo.geolocate")
-    def test_signal(self, mock, process):
-        process.side_effect = self.mock_process
-        pre_save.connect(UserInfo._geolocate, sender=models.Famille, dispatch_uid="famille_geolocate")
-        pre_save.connect(UserInfo._geolocate, sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
-
+    def test_manage_geolocation(self, mock):
         self.famille.country = "France"  # not enough
         self.famille.save()
+        self.famille.manage_geolocation(["country"])
         self.assertFalse(mock.called)
 
         self.famille.street = "32 rue des Epinettes"  # not enough
         self.famille.save()
+        self.famille.manage_geolocation(["street"])
         self.assertFalse(mock.called)
 
         self.famille.city = "Paris"  # enough info to geolocate
         self.famille.save()
+        self.famille.manage_geolocation(["city"])
         self.assertTrue(mock.called)
         mock.reset_mock()
-
-        self.famille.geolocation = Geolocation(lat=1.2091, lon=2.289791)  # already geolocated
-        self.famille.geolocation.save()
-        self.famille.save()
-        self.assertFalse(mock.called)
-
-        pre_save.disconnect(sender=models.Famille, dispatch_uid="famille_geolocate")
-        pre_save.disconnect(sender=models.Prestataire, dispatch_uid="prestataire_geolocate")
 
     def test_add_favorite(self):
         uri = "/api/v1/prestataires/%s" % self.presta.pk

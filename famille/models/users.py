@@ -140,6 +140,7 @@ class UserInfo(BaseModel):
             return 0
         return sum(rating.average for rating in self.ratings.all()) / float(nb_ratings)
 
+    # FIXME: can be async
     def geolocate(self):
         """
         Geolocate a user, using google geolocation.
@@ -157,17 +158,30 @@ class UserInfo(BaseModel):
             self.country or ""
         )
         lat, lon = geolocation.geolocate(address)
-        self.geolocation = Geolocation(lat=lat, lon=lon)
-        self.geolocation.save()
 
-    @staticmethod
-    def _geolocate(sender, instance, **kwargs):
+        geo = self.geolocation
+        if not geo:
+            geo = Geolocation()
+        geo.lat = lat
+        geo.lon = lon
+        geo.save()
+        self.geolocation = geo
+        self.save()
+
+    def manage_geolocation(self, changed_data):
         """
-        A signal receiver to geolocate a user whenever its
-        data is saved.
+        Manage the user geolocation. If street / postal code /
+        city / country is in changed data, and if city / country
+        at least is not None, the geolocation will be triggered.
+
+        :param changed_data:        the data that changed on the model
         """
-        if not instance.geolocation and any((instance.postal_code, instance.city)):
-            instance.geolocate()
+        condition = (
+            any(field in changed_data for field in ("street", "postal_code", "city", "country"))
+            and self.city and self.country
+        )
+        if condition:
+            self.geolocate()
 
     def add_favorite(self, resource_uri):
         """
@@ -428,11 +442,6 @@ class Reference(BaseModel):
 
     class Meta:
         app_label = 'famille'
-
-
-# signals
-models.signals.pre_save.connect(UserInfo._geolocate, sender=Famille, dispatch_uid="famille_geolocate")
-models.signals.pre_save.connect(UserInfo._geolocate, sender=Prestataire, dispatch_uid="prestataire_geolocate")
 
 # consts
 USER_CLASSES = {

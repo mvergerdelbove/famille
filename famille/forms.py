@@ -60,6 +60,15 @@ class UserForm(forms.ModelForm):
             "tel_visible": u"Téléphone visible",
         }
 
+    def save(self, commit=True):
+        """
+        Override save method to trigger geolocation if needed.
+        """
+        instance = super(UserForm, self).save(commit)
+        if commit:
+            instance.manage_geolocation(self.changed_data)
+        return instance
+
 
 class EnfantForm(forms.ModelForm):
     class Meta:
