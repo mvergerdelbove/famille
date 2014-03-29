@@ -1,23 +1,57 @@
+from django.conf import settings
 from django.db.models import Q
 from tastypie.resources import ModelResource, ALL
 
-from famille import models, forms
+from famille import models, forms, errors
 from famille.utils.python import pick, without
-from famille.utils.geolocation import is_close_enough
+from famille.utils.geolocation import is_close_enough, geolocate
 
 
 class SearchResource(object):
 
     def apply_filters(self, request, applicable_filters):
         distance = request.GET.get("distance")
+        postal_code = request.GET.get("pc")
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
+
+        if postal_code:
+            return self.filter_postal_code(postal_code, qs)
 
         if not distance or not models.user_is_located(request.user):
             return qs
 
-        distance = float(distance)  # distance in km
         related = models.get_user_related(request.user)
-        return [o for o in qs if not o.geolocation or is_close_enough(related.geolocation, o.geolocation, distance)]
+        return self.filter_distance(distance, related.geolocation, qs)
+
+
+    def filter_distance(self, distance, geoloc, queryset):
+        """
+        Filter the queryset using distance and the user that is querying.
+
+        :param distance:        the distance to look for
+        :param geoloc:          the user geolocation that does the query
+        :param queryset:        the queryset
+        """
+        distance = float(distance)  # distance in km
+        condition = lambda o: not o.geolocation or o.geolocation.has_error or is_close_enough(geoloc, o.geolocation, distance)
+        return [o for o in queryset if condition(o)]
+
+
+    def filter_postal_code(self, postal_code, queryset):
+        """
+        Fitler the queryset using a postal code. It will geolocate the postal code
+        and call filter_distance. If it fails to geolocate the postal code, it will
+        return the queryset unchanged.
+
+        :param postal_code:        the postal code to geolocate
+        :param queryset:           the queryset
+        """
+        try:
+            geoloc = models.Geolocation(postal_code)
+        except errors.GeolocationError:
+            return queryset
+
+        return self.filter_distance(settings.POSTAL_CODE_DISTANCE, geoloc, queryset)
 
 
 class PrestataireResource(SearchResource, ModelResource):

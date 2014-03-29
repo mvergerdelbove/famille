@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict
 from django.test import TestCase
-from mock import MagicMock
+from mock import MagicMock, patch
 
-from famille import utils, models
+from famille import utils, models, errors
 from famille.models.users import Geolocation
 from famille.utils import geolocation, http, python, mail
 
@@ -55,6 +55,11 @@ class GeolocationTestCase(TestCase):
         to = Geolocation(lat=48.883588, lon=2.327195)  # place de clichy
         self.assertTrue(geolocation.is_close_enough(origin, to, 1.4))  # ~ 1.373 km
         self.assertFalse(geolocation.is_close_enough(origin, to, 1.3))  # ~ 1.373 km
+
+    @patch("pygeocoder.Geocoder.geocode")
+    def test_geolocate(self, mock):
+        mock.return_value = []
+        self.assertRaises(errors.GeolocationError, geolocation.geolocate, "")
 
 
 class PythonTestCase(TestCase):

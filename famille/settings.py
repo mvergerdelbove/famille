@@ -135,6 +135,7 @@ for key in os.environ:
     globals()[key] = bools.get(value, value)
 
 NB_SEARCH_RESULTS = 5
+POSTAL_CODE_DISTANCE = 20.0
 
 ################################################################################
 #                         Plugins settings                                     #

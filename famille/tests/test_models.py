@@ -192,6 +192,10 @@ class ModelsTestCase(TestCase):
         self.famille.save()
         self.assertTrue(models.user_is_located(user))
 
+        geoloc.has_error = True
+        geoloc.save()
+        self.assertFalse(models.user_is_located(user))
+
 
 class RatingTestCase(TestCase):
 

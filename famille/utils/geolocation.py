@@ -2,6 +2,8 @@ from math import acos, cos, sin, radians
 
 from pygeocoder import Geocoder
 
+from famille import errors
+
 
 EARTH_RADIUS =  6371.0  # in km
 
@@ -13,7 +15,10 @@ def geolocate(address):
 
     :param address:         the address to geolocalize
     """
-    return Geocoder.geocode(address)[0].coordinates
+    try:
+        return Geocoder.geocode(address)[0].coordinates
+    except (IndexError, AttributeError):
+        raise errors.GeolocationError("Address '%s' cannot be geolocated" % address)
 
 
 def geodistance(origin, to):

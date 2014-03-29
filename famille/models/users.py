@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
+from famille import errors
 from famille.models.base import BaseModel
 from famille.utils import (
     parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES, fields as extra_fields
@@ -16,7 +17,7 @@ from famille.utils.python import pick
 __all__ = [
     "Famille", "Prestataire", "Enfant",
     "get_user_related", "Reference", "UserInfo",
-    "has_user_related", "user_is_located"
+    "has_user_related", "user_is_located", "Geolocation"
 ]
 
 class Geolocation(BaseModel):
@@ -24,11 +25,25 @@ class Geolocation(BaseModel):
     A model that represent a geolocation
     of a user.
     """
-    lat = models.FloatField()
-    lon = models.FloatField()
+    lat = models.FloatField(null=True)
+    lon = models.FloatField(null=True)
+    has_error = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'famille'
+
+    @classmethod
+    def from_postal_code(cls, postal_code):
+        """
+        Geolocation user from postal code. This is useful
+        for search using postal code.
+        """
+        try:
+            lat, lon = geolocation.geolocate("%s France" % postal_code)  # FIXME: this will obviously only work in France
+        except errors.GeolocationError:
+            return None
+
+        return cls(lat=lat, lon=lon)
 
 
 def get_user_related(user):
@@ -67,7 +82,7 @@ def user_is_located(user):
         return False
 
     related = get_user_related(user)
-    return bool(related.geolocation)
+    return related.geolocation and not related.geolocation.has_error
 
 
 class UserInfo(BaseModel):
@@ -170,13 +185,21 @@ class UserInfo(BaseModel):
             self.city or "",
             self.country or ""
         )
-        lat, lon = geolocation.geolocate(address)
-
         geo = self.geolocation
         if not geo:
             geo = Geolocation()
-        geo.lat = lat
-        geo.lon = lon
+
+        try:
+            lat, lon = geolocation.geolocate(address)
+        except errors.GeolocationError:
+            geo.has_error = True
+            geo.lat = None
+            geo.lon = None
+        else:
+            geo.has_error = False
+            geo.lat = lat
+            geo.lon = lon
+
         geo.save()
         self.geolocation = geo
         self.save()
