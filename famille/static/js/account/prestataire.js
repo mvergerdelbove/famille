@@ -32,6 +32,12 @@ var templateOutsideReference = '\
     Shared();
     window.famille = window.famille || {};
 
+    var $otherTypeContainer = $(".other-type"), $typeSelect = $("#id_type");
+    $typeSelect.change(function () {
+        var val = $(this).val();
+        if (val == "other") $otherTypeContainer.removeClass("hide");
+        else $otherTypeContainer.addClass("hide");
+    });
     var $hiddenFormEl = $(".empty-real-form .reference-form");
     var settings = {
         templates: {
