@@ -59,54 +59,61 @@
     "model": "famille.schedule",
     "pk": 2,
     "fields": {
-      "name": "Tôt le matin (6h-9h)"
+      "name": "Horaires décalés"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 3,
     "fields": {
-      "name": "Matin (9h-12h)"
+      "name": "Tôt le matin (6h-9h)"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 4,
     "fields": {
-      "name": "Entre midi et deux"
+      "name": "Matin (9h-12h)"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 5,
     "fields": {
-      "name": "L'après-midi (14h-16h)"
+      "name": "Entre midi et deux"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 6,
     "fields": {
-      "name": "Fin d'après-midi (16h-19h)"
+      "name": "L'après-midi (14h-16h)"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 7,
     "fields": {
-      "name": "Début de soirée (19h-21h)"
+      "name": "Fin d'après-midi (16h-19h)"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 8,
     "fields": {
-      "name": "Fin de soirée (21h-minuit)"
+      "name": "Début de soirée (19h-21h)"
     }
   },
   {
     "model": "famille.schedule",
     "pk": 9,
+    "fields": {
+      "name": "Fin de soirée (21h-minuit)"
+    }
+  },
+  {
+    "model": "famille.schedule",
+    "pk": 10,
     "fields": {
       "name": "Nuit"
     }
