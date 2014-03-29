@@ -1,5 +1,7 @@
 from django import template
 
+from famille.models import get_user_related, has_user_related
+
 
 register = template.Library()
 
@@ -28,3 +30,14 @@ def get_range(value):
 @register.filter(name="substract")
 def substract(value, arg):
     return int(value or 0) - int(arg or 0)
+
+
+@register.filter(name="user_type")
+def user_type(value):
+    """
+    Return the user type of a request.user object.
+    """
+    if not has_user_related(value):
+        return False
+
+    return get_user_related(value).__class__.__name__
