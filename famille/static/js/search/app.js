@@ -31,7 +31,7 @@ App.prototype.initEvents = function(){
     $('[data-toggle="tooltip"]').tooltip();
     if ($("#id_tarif").length){
         this.initSlider($("#id_tarif"));
-        $(".slider").removeAttr("style").css("width", "100%");
+        $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
 };

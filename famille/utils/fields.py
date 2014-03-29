@@ -70,19 +70,18 @@ content_type_restricted_file_field_rules = [
 
 class RangeField(MultiValueField):
     default_error_messages = {} # TODO
-    default_min = 0
-    default_max = 10
 
-    def __init__(self, field_class=CharField, min_value=None, max_value=None, *args, **kwargs):
-        self.min_value = min_value or self.default_min
-        self.max_value = max_value or self.default_max
+    def __init__(self, field_class=CharField, min_value=None, max_value=None, widget=None, *args, **kwargs):
         self.fields = (field_class(), field_class()) # TODO
+        if widget:
+            min_value, max_value = widget.min_value, widget.max_value
 
         if not 'initial' in kwargs:
-            kwargs['initial'] = [self.min_value, self.min_value]
+            kwargs['initial'] = [min_value, max_value]
 
+        widget = widget or RangeWidget(min_value, max_value)
         super(RangeField, self).__init__(
-            fields=self.fields, widget=RangeWidget(self.min_value, self.max_value), *args, **kwargs
+            fields=self.fields, widget=widget, *args, **kwargs
         )
 
     def compress(self, data_list):

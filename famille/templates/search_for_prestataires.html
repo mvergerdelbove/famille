@@ -16,7 +16,12 @@
                 <form class="form form-search">
                     {% bootstrap_field search_form.city %}
                     {% bootstrap_field search_form.postal_code %}
-                    {% bootstrap_field search_form.tarif %}
+                    <div class="form-group">
+                        {% bootstrap_label search_form.tarif.label %}<br/>
+                        <b>5€</b>
+                        {{ search_form.tarif }}
+                        <b>100€</b>
+                    </div>
                     {% bootstrap_field search_form.type_garde %}
                     {% bootstrap_field search_form.diploma %}
                     {% bootstrap_field search_form.language %}

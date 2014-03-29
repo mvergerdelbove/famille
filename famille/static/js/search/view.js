@@ -6,7 +6,8 @@ module.exports = Backbone.View.extend({
         "click .choose-search": "switchSearch",
         "change .form-control": "doSearch",
         "click [type=checkbox]": "doSearch",
-        "onkeyup [type=text]": "doSearch"
+        "onkeyup [type=text]": "doSearch",
+        "slideStop #id_tarif": "doSearch"
     },
 
     initialize: function(options){

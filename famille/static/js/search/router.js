@@ -13,6 +13,14 @@ var constructLanguageFilter = function(name, value){
     }).join("&");
 };
 
+var constructTarifFilter = function (name, value) {
+    var min = value[0];
+    var max = value[1];
+    if(min !== max) {
+        return "tarif__gte="+ min +"&tarif__lte=" + max;
+    }
+}
+
 var sortedQueryString = function(uri){
     return uri.substring(uri.indexOf('?') + 1).split("&").sort().join("&");
 };
@@ -44,6 +52,7 @@ module.exports = Backbone.Router.extend({
                 query = $this.data("api");
             if (value && query) return constructFilter(name, query, value);
             if (value && name == "language") return constructLanguageFilter(name, value);
+            if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });
         return _.compact(filters).join("&") + "&limit=" + this.limit + "&offset=0";
     },

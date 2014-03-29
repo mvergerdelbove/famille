@@ -10,7 +10,7 @@ from famille.models import (
 )
 from famille.utils.fields import RangeField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
-from famille.utils.widgets import RatingWidget
+from famille.utils.widgets import RatingWidget, RangeWidget
 
 
 class RegistrationForm(forms.Form):
@@ -321,7 +321,10 @@ class PrestataireSearchForm(forms.Form):
     language = forms.MultipleChoiceField(
         label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
     )
-    tarif = RangeField(label=u"Tarif horaire (€/h)", min_value=5, max_value=100)
+    tarif = RangeField(
+        label=u"Tarif horaire (€/h)",
+        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
+    )
     # extra 1
     cdt_periscolaire = forms.BooleanField(
         label=u"Conduite périscolaire", required=False,
