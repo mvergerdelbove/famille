@@ -291,7 +291,6 @@ class Prestataire(Criteria):
     }
 
     type = models.CharField(max_length=40, choices=TYPES.items())
-    sub_types = models.CharField(max_length=40) # TODO choices
 
     language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())
     level_en = models.CharField(**language_kw)

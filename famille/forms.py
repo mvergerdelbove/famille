@@ -201,7 +201,7 @@ class FamilleCriteriaForm(CriteriaForm):
 class PrestataireForm(UserForm):
     class Meta(UserForm.Meta):
         model = Prestataire
-        fields = UserForm.Meta.fields + ("type", "sub_types")
+        fields = UserForm.Meta.fields + ("type", )
         labels = dict(UserForm.Meta.labels, type="Type de prestataire")
 
 
