@@ -179,6 +179,19 @@ class ModelsTestCase(TestCase):
         self.famille.visibility_family = True
         self.assertTrue(self.famille.profile_access_is_authorized(request))
 
+    def test_user_is_located(self):
+        user = AnonymousUser()
+        self.assertFalse(models.user_is_located(user))
+
+        user = self.user1
+        self.assertFalse(models.user_is_located(user))
+
+        geoloc = Geolocation(lat=12.2, lon=12.2)
+        geoloc.save()
+        self.famille.geolocation = geoloc
+        self.famille.save()
+        self.assertTrue(models.user_is_located(user))
+
 
 class RatingTestCase(TestCase):
 

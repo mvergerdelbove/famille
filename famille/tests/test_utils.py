@@ -8,6 +8,7 @@ from django.test import TestCase
 from mock import MagicMock
 
 from famille import utils, models
+from famille.models.users import Geolocation
 from famille.utils import geolocation, http, python, mail
 
 
@@ -37,13 +38,23 @@ class UtilsTestCase(TestCase):
 class GeolocationTestCase(TestCase):
 
     def test_geodistance(self):
-        origin = (12.2, 1.0)
+        origin = Geolocation(lat=12.2, lon=1.0)
         to = origin
         self.assertEqual(geolocation.geodistance(origin, to), 0)
 
-        origin = (48.895603, 2.322858)  # 32 rue des epinettes
-        to = (48.883588, 2.327195)  # place de clichy
-        self.assertLessEqual(geolocation.geodistance(origin, to), 1400)  # ~ 1.373 km
+        origin = Geolocation(lat=48.895603, lon=2.322858)  # 32 rue des epinettes
+        to = Geolocation(lat=48.883588, lon=2.327195)  # place de clichy
+        self.assertLessEqual(geolocation.geodistance(origin, to), 1.4)  # ~ 1.373 km
+
+    def test_is_close_enough(self):
+        origin = Geolocation(lat=12.2, lon=1.0)
+        to = origin
+        self.assertTrue(geolocation.is_close_enough(origin, to, 0))
+
+        origin = Geolocation(lat=48.895603, lon=2.322858)  # 32 rue des epinettes
+        to = Geolocation(lat=48.883588, lon=2.327195)  # place de clichy
+        self.assertTrue(geolocation.is_close_enough(origin, to, 1.4))  # ~ 1.373 km
+        self.assertFalse(geolocation.is_close_enough(origin, to, 1.3))  # ~ 1.373 km
 
 
 class PythonTestCase(TestCase):

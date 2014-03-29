@@ -132,7 +132,6 @@ def favorite(request):
     return HttpResponse()
 
 
-# FIXME: view modified when user is logged / not / premium + user visibility
 @require_GET
 def profile(request, type, uid):
     """

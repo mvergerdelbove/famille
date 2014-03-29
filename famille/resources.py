@@ -3,9 +3,24 @@ from tastypie.resources import ModelResource, ALL
 
 from famille import models, forms
 from famille.utils.python import pick, without
+from famille.utils.geolocation import is_close_enough
 
 
-class PrestataireResource(ModelResource):
+class SearchResource(object):
+
+    def apply_filters(self, request, applicable_filters):
+        distance = request.GET.get("distance")
+        qs = super(SearchResource, self).apply_filters(request, applicable_filters)
+
+        if not distance or not models.user_is_located(request.user):
+            return qs
+
+        distance = float(distance)  # distance in km
+        related = models.get_user_related(request.user)
+        return [o for o in qs if not o.geolocation or is_close_enough(related.geolocation, o.geolocation, distance)]
+
+
+class PrestataireResource(SearchResource, ModelResource):
     class Meta:
         queryset = models.Prestataire.objects.all()
         resource_name = "prestataires"
@@ -14,11 +29,11 @@ class PrestataireResource(ModelResource):
         allowed_methods = ["get", ]
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
-            level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL
+            level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL
         )
 
 
-class FamilleResource(ModelResource):
+class FamilleResource(SearchResource, ModelResource):
     # TODO: refine this
     FIELD_ACCESS_NOT_LOGGED = [
         "first_name", "name", "city", "country", "description"

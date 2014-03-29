@@ -16,7 +16,7 @@ from famille.utils.python import pick
 __all__ = [
     "Famille", "Prestataire", "Enfant",
     "get_user_related", "Reference", "UserInfo",
-    "has_user_related"
+    "has_user_related", "user_is_located"
 ]
 
 class Geolocation(BaseModel):
@@ -55,6 +55,19 @@ def has_user_related(user):
         return True
     except (ObjectDoesNotExist, AttributeError):
         return False
+
+
+def user_is_located(user):
+    """
+    Find out if a user is geolocated or not.
+
+    :param user:       Django user
+    """
+    if not has_user_related(user):
+        return False
+
+    related = get_user_related(user)
+    return bool(related.geolocation)
 
 
 class UserInfo(BaseModel):
