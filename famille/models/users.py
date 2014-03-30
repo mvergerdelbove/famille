@@ -38,12 +38,27 @@ class Geolocation(BaseModel):
         Geolocation user from postal code. This is useful
         for search using postal code.
         """
-        try:
-            lat, lon = geolocation.geolocate("%s France" % postal_code)  # FIXME: this will obviously only work in France
-        except errors.GeolocationError:
-            return None
-
+        lat, lon = geolocation.geolocate("%s France" % postal_code)  # FIXME: this will obviously only work in France
         return cls(lat=lat, lon=lon)
+
+    def geolocate(self, address):
+        """
+        Geolocate a geolocation object, given an address.
+
+        :param address:         the address to geolocate
+        """
+        try:
+            lat, lon = geolocation.geolocate(address)
+        except errors.GeolocationError:
+            self.has_error = True
+            self.lat = None
+            self.lon = None
+        else:
+            self.has_error = False
+            self.lat = lat
+            self.lon = lon
+
+        self.save()
 
 
 def get_user_related(user):
@@ -82,7 +97,7 @@ def user_is_located(user):
         return False
 
     related = get_user_related(user)
-    return related.geolocation and not related.geolocation.has_error
+    return related.is_geolocated
 
 
 class UserInfo(BaseModel):
@@ -142,7 +157,7 @@ class UserInfo(BaseModel):
         """
         A property to check if a user is geolocated.
         """
-        return bool(self.geolocation)
+        return self.geolocation and not self.geolocation.has_error
 
     @property
     def is_premium(self):
@@ -183,25 +198,13 @@ class UserInfo(BaseModel):
             self.street or "",
             self.postal_code or "",
             self.city or "",
-            self.country or ""
+            self.country or "France"  # FIXME: this will obviously only work in France
         )
-        geo = self.geolocation
-        if not geo:
-            geo = Geolocation()
 
-        try:
-            lat, lon = geolocation.geolocate(address)
-        except errors.GeolocationError:
-            geo.has_error = True
-            geo.lat = None
-            geo.lon = None
-        else:
-            geo.has_error = False
-            geo.lat = lat
-            geo.lon = lon
+        if not self.geolocation:
+            self.geolocation = Geolocation()
 
-        geo.save()
-        self.geolocation = geo
+        self.geolocation.geolocate(address)
         self.save()
 
     def manage_geolocation(self, changed_data):
@@ -214,7 +217,7 @@ class UserInfo(BaseModel):
         """
         condition = (
             any(field in changed_data for field in ("street", "postal_code", "city", "country"))
-            and self.city and self.country
+            and (self.city or self.postal_code)
         )
         if condition:
             self.geolocate()

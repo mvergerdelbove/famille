@@ -33,7 +33,7 @@ class SearchResource(object):
         :param queryset:        the queryset
         """
         distance = float(distance)  # distance in km
-        condition = lambda o: not o.geolocation or o.geolocation.has_error or is_close_enough(geoloc, o.geolocation, distance)
+        condition = lambda o: not o.is_geolocated or is_close_enough(geoloc, o.geolocation, distance)
         return [o for o in queryset if condition(o)]
 
 
@@ -47,7 +47,7 @@ class SearchResource(object):
         :param queryset:           the queryset
         """
         try:
-            geoloc = models.Geolocation(postal_code)
+            geoloc = models.Geolocation.from_postal_code(postal_code)
         except errors.GeolocationError:
             return queryset
 

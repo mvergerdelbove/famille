@@ -60,6 +60,8 @@ class GeolocationTestCase(TestCase):
     def test_geolocate(self, mock):
         mock.return_value = []
         self.assertRaises(errors.GeolocationError, geolocation.geolocate, "")
+        mock.return_value = [1]
+        self.assertRaises(errors.GeolocationError, geolocation.geolocate, "")
 
 
 class PythonTestCase(TestCase):

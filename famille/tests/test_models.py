@@ -6,11 +6,11 @@ from django.db.models.signals import pre_save
 from django.test import TestCase
 from mock import MagicMock, patch
 
-from famille import models
+from famille import models, errors
 from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
 
 
-__all__ = ["ModelsTestCase", "RatingTestCase"]
+__all__ = ["ModelsTestCase", "RatingTestCase", "GeolocationTestCase"]
 
 
 class ModelsTestCase(TestCase):
@@ -40,7 +40,7 @@ class ModelsTestCase(TestCase):
         User.objects.all().delete()
         models.Famille.objects.all().delete()
         models.Prestataire.objects.all().delete()
-        Geolocation.objects.all().delete()
+        models.Geolocation.objects.all().delete()
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
 
@@ -58,7 +58,7 @@ class ModelsTestCase(TestCase):
         self.assertFalse(models.has_user_related(anonymous))
 
     def test_is_geolocated(self):
-        geoloc = Geolocation(lat=33.01, lon=2.89)
+        geoloc = models.Geolocation(lat=33.01, lon=2.89)
         geoloc.save()
 
         self.assertFalse(self.famille.is_geolocated)
@@ -66,6 +66,10 @@ class ModelsTestCase(TestCase):
         self.famille.geolocation = geoloc
         self.famille.save()
         self.assertTrue(self.famille.is_geolocated)
+
+        geoloc.has_error = True
+        geoloc.save()
+        self.assertFalse(self.famille.is_geolocated)
 
     @patch("famille.utils.geolocation.geolocate")
     def test_geolocate(self, geolocate):
@@ -78,7 +82,7 @@ class ModelsTestCase(TestCase):
 
         self.famille.geolocate()
         geolocate.assert_called_with("32 rue des Epinettes 75017 Paris, France")
-        self.assertIsNotNone(Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
+        self.assertIsNotNone(models.Geolocation.objects.filter(lat=48.895603, lon=2.322858).first())
         self.assertEqual(self.famille.geolocation.lat, 48.895603)
         self.assertEqual(self.famille.geolocation.lon, 2.322858)
 
@@ -99,6 +103,12 @@ class ModelsTestCase(TestCase):
         self.famille.manage_geolocation(["city"])
         self.assertTrue(mock.called)
         mock.reset_mock()
+
+        self.famille.city = ""
+        self.famille.postal_code = "75017"  # enough info to geolocate
+        self.famille.save()
+        self.famille.manage_geolocation(["city"])
+        self.assertTrue(mock.called)
 
     def test_add_favorite(self):
         uri = "/api/v1/prestataires/%s" % self.presta.pk
@@ -186,7 +196,7 @@ class ModelsTestCase(TestCase):
         user = self.user1
         self.assertFalse(models.user_is_located(user))
 
-        geoloc = Geolocation(lat=12.2, lon=12.2)
+        geoloc = models.Geolocation(lat=12.2, lon=12.2)
         geoloc.save()
         self.famille.geolocation = geoloc
         self.famille.save()
@@ -195,6 +205,39 @@ class ModelsTestCase(TestCase):
         geoloc.has_error = True
         geoloc.save()
         self.assertFalse(models.user_is_located(user))
+
+
+class GeolocationTestCase(TestCase):
+
+    def setUp(self):
+        self.geoloc = models.Geolocation()
+
+    @patch("famille.utils.geolocation.geolocate")
+    def test_from_postal_code(self, mock_geo):
+        mock_geo.return_value = 12.1, 13.2
+        g = models.Geolocation.from_postal_code("75001")
+        self.assertIsNotNone(g)
+        self.assertEqual(g.lat, 12.1)
+        self.assertEqual(g.lon, 13.2)
+        self.assertFalse(g.has_error)
+
+        mock_geo.side_effect = errors.GeolocationError()
+        self.assertRaises(errors.GeolocationError, models.Geolocation.from_postal_code, "75001")
+
+    @patch("famille.utils.geolocation.geolocate")
+    def test_geolocate(self, mock_geo):
+        mock_geo.return_value = 12.1, 13.2
+        self.geoloc.geolocate("an address")
+        self.assertEqual(self.geoloc.lat, 12.1)
+        self.assertEqual(self.geoloc.lon, 13.2)
+        self.assertFalse(self.geoloc.has_error)
+        self.assertTrue(self.geoloc.pk)
+
+        mock_geo.side_effect = errors.GeolocationError()
+        self.geoloc.geolocate("an address")
+        self.assertIsNone(self.geoloc.lat)
+        self.assertIsNone(self.geoloc.lon)
+        self.assertTrue(self.geoloc.has_error)
 
 
 class RatingTestCase(TestCase):
