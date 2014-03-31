@@ -10,8 +10,8 @@ from famille.utils.geolocation import is_close_enough, geolocate
 class SearchResource(object):
 
     def apply_filters(self, request, applicable_filters):
-        distance = request.GET.get("distance")
-        postal_code = request.GET.get("pc")
+        distance = request.GET.get("distance__iexact")
+        postal_code = request.GET.get("pc__iexact")
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
 
         if postal_code:

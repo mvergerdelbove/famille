@@ -41,3 +41,11 @@ def user_type(value):
         return False
 
     return get_user_related(value).__class__.__name__
+
+
+@register.filter(name="has_related")
+def has_related(value):
+    """
+    Returns if user has related user or not.
+    """
+    return has_user_related(value)

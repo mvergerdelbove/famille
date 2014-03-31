@@ -1,5 +1,6 @@
 {% extends "search.html" %}
 {% load bootstrap3 %}
+{% load helpers %}
 
 {% block form %}
 <div class="panel-group" id="accordion">
@@ -14,8 +15,26 @@
         <div id="c-classic" class="panel-collapse collapse in">
             <div class="panel-body">
                 <form class="form form-search">
-                    {% bootstrap_field search_form.city %}
-                    {% bootstrap_field search_form.postal_code %}
+                    {% bootstrap_field search_form.pc %}
+                    {% if request.user|has_related %}
+                        {% buttons %}
+                        <div class="btn-group btn-group-distance">
+                            <button type="button" class="btn btn-primary control-distance" data-distance="10">
+                                <i class="glyphicon glyphicon-map-marker"></i> Près de chez moi
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Choisir une distance</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-distance="10">&le; 10km</a></li>
+                                <li><a href="#" data-distance="20">&le; 20km</a></li>
+                                <li><a href="#" data-distance="50">&le; 50km</a></li>
+                            </ul>
+                        </div>
+                        {% endbuttons %}
+                        {% bootstrap_field search_form.distance %}
+                    {% endif %}
                     <div class="form-group">
                         {% bootstrap_label search_form.tarif.label %}<br/>
                         <b>5€</b>

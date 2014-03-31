@@ -311,14 +311,13 @@ class SimpleSearchForm(forms.Form):
 
 class PrestataireSearchForm(forms.Form):
     # classic
-    city = forms.CharField(
-        label="Ville", required=False,
-        widget=forms.TextInput(attrs={"data-api": "icontains"})
-    )
-    postal_code = forms.CharField(
-        label="Code postal", required=False,
+    pc = forms.CharField(
+        label="Ville ou code postal", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
-    ) # TODO : add completion on frontend
+    )
+    distance = forms.CharField(
+        required=False, widget=forms.HiddenInput(attrs={"data-api": "iexact"})
+    )
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})

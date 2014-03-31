@@ -1,3 +1,26 @@
+var constructFilterForString = function(name, query, value){
+    return name + "__" + query + "=" + value;
+};
+
+var constructFilter = function(name, query, value){
+    if (_.isString(value)) return constructFilterForString(name, query, value);
+    if (_.isArray(value)) return _.map(value, _.partial(constructFilterForString, name, query)).join("&");
+};
+
+var constructLanguageFilter = function(name, value){
+    return _.map(value, function(val){
+        return constructFilterForString("level_" + val, "isnull", "False")
+    }).join("&");
+};
+
+var constructTarifFilter = function (name, value) {
+    var min = value[0];
+    var max = value[1];
+    if(min !== max) {
+        return "tarif__gte="+ min +"&tarif__lte=" + max;
+    }
+};
+
 module.exports = Backbone.View.extend({
     events: {
         "click .next": "displayNext",
@@ -7,20 +30,60 @@ module.exports = Backbone.View.extend({
         "change .form-control": "doSearch",
         "click [type=checkbox]": "doSearch",
         "onkeyup [type=text]": "doSearch",
-        "slideStop #id_tarif": "doSearch"
+        "slideStop #id_tarif": "doSearch",
+        "click [data-distance]": "doDistanceSearch"
     },
 
     initialize: function(options){
         this.resultTemplate = options.resultTemplate;
         _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious", "toggleFavorite");
+        this.$distanceButton = this.$(".control-distance");
+        this.$distanceInput = this.$("#id_distance");
+        this.$distanceButtonGroup = this.$(".btn-group-distance");
+    },
+
+    buildQuery: function($els){
+        var filters = $els.map(function(){
+            var $this = $(this),
+                name = $this.attr("name"),
+                value = $this.val(),
+                query = $this.data("api");
+            if (value && query) return constructFilter(name, query, value);
+            if (value && name == "language") return constructLanguageFilter(name, value);
+            if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
+        });
+
+        return _.compact(filters).join("&");
     },
 
     doSearch: function(){
-        var $els = this.$(".form-search .form-control,[type=checkbox]:checked");
-        famille.router.doSearch($els, {
+        var $els = this.$(".form-search .form-control,[type=checkbox]:checked,#id_distance");
+        famille.router.doSearch(this.buildQuery($els), {
             success: this.displayResults,
             error: this.error
         });
+    },
+
+    doDistanceSearch: function (e) {
+        e.preventDefault();
+        var $target = $(e.target),
+            distance = $target.data("distance");
+
+        if ($target.is(this.$distanceButton) && this.$distanceButton.hasClass("active")) {
+            this.$distanceInput.val("");
+            this.$distanceButton.removeClass("active");
+            this.$distanceButtonGroup.tooltip("destroy");
+            this.$distanceButton.blur();
+        }
+        else {
+            this.$distanceInput.val(distance);
+            this.$distanceButton.addClass("active");
+            this.$distanceButtonGroup.tooltip({
+                placement: "right",
+                title: "La recherche par géolocation est active."
+            });
+        }
+        this.doSearch();
     },
 
     displayNext: function(e){

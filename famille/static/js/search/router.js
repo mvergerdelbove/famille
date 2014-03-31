@@ -1,26 +1,3 @@
-var constructFilterForString = function(name, query, value){
-    return name + "__" + query + "=" + value;
-};
-
-var constructFilter = function(name, query, value){
-    if (_.isString(value)) return constructFilterForString(name, query, value);
-    if (_.isArray(value)) return _.map(value, _.partial(constructFilterForString, name, query)).join("&");
-};
-
-var constructLanguageFilter = function(name, value){
-    return _.map(value, function(val){
-        return constructFilterForString("level_" + val, "isnull", "False")
-    }).join("&");
-};
-
-var constructTarifFilter = function (name, value) {
-    var min = value[0];
-    var max = value[1];
-    if(min !== max) {
-        return "tarif__gte="+ min +"&tarif__lte=" + max;
-    }
-}
-
 var sortedQueryString = function(uri){
     return uri.substring(uri.indexOf('?') + 1).split("&").sort().join("&");
 };
@@ -44,22 +21,11 @@ module.exports = Backbone.Router.extend({
         this.total_count = 0;
     },
 
-    buildQuery: function($els){
-        var filters = $els.map(function(){
-            var $this = $(this),
-                name = $this.attr("name"),
-                value = $this.val(),
-                query = $this.data("api");
-            if (value && query) return constructFilter(name, query, value);
-            if (value && name == "language") return constructLanguageFilter(name, value);
-            if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
-        });
-        return _.compact(filters).join("&") + "&limit=" + this.limit + "&offset=0";
-    },
-
-    doSearch: function(url_or_$els, options){
-        var url = _.isString(url_or_$els) ? url_or_$els : this.searchApi + this.buildQuery(url_or_$els),
+    doSearch: function(url, options){
+        var url = (url.indexOf(this.searchApi) == 0) ? url : this.searchApi + url,
             that = this;
+
+        url = this.addMetaToUrl(url);
 
         options.success = options.success || $.noop;
         options.error = options.error || $.noop;
@@ -78,6 +44,12 @@ module.exports = Backbone.Router.extend({
                 error: options.error
             });
         }
+    },
+
+    addMetaToUrl: function (url) {
+        if (url.indexOf("limit") === -1) url += "&limit=" + this.limit;
+
+        return url;
     },
 
     processResults: function(callback, data){
