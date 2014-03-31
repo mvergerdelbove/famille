@@ -206,6 +206,19 @@ class ModelsTestCase(TestCase):
         geoloc.save()
         self.assertFalse(models.user_is_located(user))
 
+    def test_get_pseudo(self):
+        self.presta.first_name = "Joe"
+        self.assertEqual(self.presta.get_pseudo(), "Joe")
+        self.presta.name = "Jack"
+        self.assertEqual(self.presta.get_pseudo(), "Joe J.")
+
+        self.famille.first_name = "Mick"
+        self.assertEqual(self.famille.get_pseudo(), "Mick")
+        self.famille.name = "Down"
+        self.assertEqual(self.famille.get_pseudo(), "Mick D.")
+        self.famille.pseudo = "mickey68"
+        self.assertEqual(self.famille.get_pseudo(), "mickey68")
+
 
 class GeolocationTestCase(TestCase):
 

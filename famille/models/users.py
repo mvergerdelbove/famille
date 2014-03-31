@@ -20,6 +20,7 @@ __all__ = [
     "has_user_related", "user_is_located", "Geolocation"
 ]
 
+
 class Geolocation(BaseModel):
     """
     A model that represent a geolocation
@@ -283,6 +284,16 @@ class UserInfo(BaseModel):
         """
         return True
 
+    def get_pseudo(self):
+        """
+        Return the pseudo of a user.
+        """
+        pseudo = self.first_name
+        if self.name:
+            pseudo += " %s." % self.name[0]
+
+        return pseudo
+
 
 class Criteria(UserInfo):
     TYPES_GARDE_FAMILLE = {
@@ -374,6 +385,7 @@ class Famille(Criteria):
         "actif": "Famille couple actif",
     }
 
+    pseudo = models.CharField(blank=True, null=True, max_length=60)
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
@@ -403,6 +415,12 @@ class Famille(Criteria):
 
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
+
+    def get_pseudo(self):
+        """
+        Return a pseudo of a famille.
+        """
+        return self.pseudo or super(Famille, self).get_pseudo()
 
 
 class Enfant(BaseModel):
