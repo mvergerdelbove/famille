@@ -121,6 +121,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
+    'famille.utils.context_processors.related_user',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

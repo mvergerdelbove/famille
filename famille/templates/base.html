@@ -68,7 +68,14 @@
       </ul>
       {% if user.is_authenticated %}
       <ul class="nav navbar-nav navbar-right">
-	      <li><a href="{% url 'account' %}">{{ user.username }}</a></li> <!--TODO : get full name or email and img-->
+	      <li><a href="{% url 'account' %}">
+              {% if profil.instance.profile_pic %}
+                  <img src="{% get_media_prefix %}{{ related_user.profile_pic.name }}" class="small-pic" alt="Mon compte">
+              {% else %}
+                  <img src="{% static "img/nopic.png" %}" class="small-pic" alt="Mon compte">
+              {% endif %}
+              {{ related_user.get_pseudo }}
+          </a></li>
 	      <li><a href="{% url 'auth_logout' %}">Déconnexion</a></li>
       </ul>
       {% else %}

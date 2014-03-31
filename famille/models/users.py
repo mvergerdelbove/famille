@@ -289,7 +289,9 @@ class UserInfo(BaseModel):
         Return the pseudo of a user.
         """
         pseudo = self.first_name
-        if self.name:
+        if not pseudo:
+            pseudo = self.email.split("@")[0]
+        elif self.name:
             pseudo += " %s." % self.name[0]
 
         return pseudo
@@ -385,7 +387,7 @@ class Famille(Criteria):
         "actif": "Famille couple actif",
     }
 
-    pseudo = models.CharField(blank=True, null=True, max_length=60)
+    pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())

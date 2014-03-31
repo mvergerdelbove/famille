@@ -156,8 +156,8 @@ class FamilleForm(ForeignKeyForm, UserForm):
 
     class Meta(UserForm.Meta):
         model = Famille
-        fields = UserForm.Meta.fields + ('type', )
-        labels = dict(UserForm.Meta.labels, type="Type de famille")
+        fields = ('pseudo', ) + UserForm.Meta.fields + ('type', )
+        labels = dict(UserForm.Meta.labels, type="Type de famille", pseudo="Pseudo")
 
 
 class CriteriaForm(forms.ModelForm):

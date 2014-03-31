@@ -66,3 +66,7 @@
     font-size: 150px;
     color: dimgrey;
 }
+
+.nav>li>a>img.small-pic {
+    max-width: 20px;
+}

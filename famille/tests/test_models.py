@@ -207,11 +207,13 @@ class ModelsTestCase(TestCase):
         self.assertFalse(models.user_is_located(user))
 
     def test_get_pseudo(self):
+        self.assertEqual(self.presta.get_pseudo(), "b")
         self.presta.first_name = "Joe"
         self.assertEqual(self.presta.get_pseudo(), "Joe")
         self.presta.name = "Jack"
         self.assertEqual(self.presta.get_pseudo(), "Joe J.")
 
+        self.assertEqual(self.famille.get_pseudo(), "a")
         self.famille.first_name = "Mick"
         self.assertEqual(self.famille.get_pseudo(), "Mick")
         self.famille.name = "Down"
