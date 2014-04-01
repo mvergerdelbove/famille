@@ -10,7 +10,24 @@ __all__ = [
     "FamillePlanning", "PrestatairePlanning"
 ]
 
-class Weekday(models.Model):
+
+class ChoicesModel(models.Model):
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def get_choices(cls):
+        """
+        Return choices for a django form field.
+        """
+        return [
+            (o.id, o.name)
+            for o in cls.objects.all()
+        ]
+
+
+class Weekday(ChoicesModel):
     name = models.CharField(max_length=15)
 
     class Meta:
@@ -20,7 +37,7 @@ class Weekday(models.Model):
         return unicode(self.name)
 
 
-class Schedule(models.Model):
+class Schedule(ChoicesModel):
     name = models.CharField(max_length=30)
 
     class Meta:

@@ -8,9 +8,14 @@ from famille.models import (
     Reference, PrestatairePlanning, UserInfo, FamilleRatings,
     PrestataireRatings
 )
+from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.utils.fields import RangeField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
+
+
+SCHEDULE_CHOICES = Schedule.get_choices()
+WEEKDAY_CHOICES = Weekday.get_choices()
 
 
 class RegistrationForm(forms.Form):
@@ -309,7 +314,7 @@ class SimpleSearchForm(forms.Form):
     type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())
 
 
-class PrestataireSearchForm(forms.Form):
+class BaseSearchForm(forms.Form):
     # classic
     pc = forms.CharField(
         label="Ville ou code postal", required=False,
@@ -318,6 +323,27 @@ class PrestataireSearchForm(forms.Form):
     distance = forms.CharField(
         required=False, widget=forms.HiddenInput(attrs={"data-api": "iexact"})
     )
+    tarif = RangeField(
+        label=u"Tarif horaire (€/h)",
+        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
+    )
+    # planning
+    plannings__schedule__id = forms.MultipleChoiceField(
+        label=u"Plage horaire", choices=SCHEDULE_CHOICES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    plannings__weekday__id = forms.MultipleChoiceField(
+        label=u"Jour(s) de la semaine", choices=WEEKDAY_CHOICES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    plannings__frequency = forms.MultipleChoiceField(
+        label=u"A quelle fréquence ?", choices=BasePlanning.FREQUENCY.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    # FIXME: "a partir de ?" needed ?
+
+
+class PrestataireSearchForm(BaseSearchForm):
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
@@ -328,10 +354,6 @@ class PrestataireSearchForm(forms.Form):
     )
     language = forms.MultipleChoiceField(
         label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
-    )
-    tarif = RangeField(
-        label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
     )
     # extra 1
     cdt_periscolaire = forms.BooleanField(
@@ -381,7 +403,7 @@ class PrestataireSearchForm(forms.Form):
     )
 
 
-class FamilleSearchForm(forms.Form):
+class FamilleSearchForm(BaseSearchForm):
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
@@ -394,6 +416,7 @@ class FamilleSearchForm(forms.Form):
         label=u"Sortie d'école", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
+
 
 class ProfilePicBaseForm(forms.ModelForm):
 

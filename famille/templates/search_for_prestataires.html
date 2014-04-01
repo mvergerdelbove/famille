@@ -41,6 +41,9 @@
                         {{ search_form.tarif }}
                         <b>100€</b>
                     </div>
+                    {% bootstrap_field search_form.plannings__weekday__id %}
+                    {% bootstrap_field search_form.plannings__schedule__id %}
+                    {% bootstrap_field search_form.plannings__frequency %}
                     {% bootstrap_field search_form.type_garde %}
                     {% bootstrap_field search_form.diploma %}
                     {% bootstrap_field search_form.language %}
