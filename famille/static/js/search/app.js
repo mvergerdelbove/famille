@@ -3,6 +3,7 @@ var View = require("./view");
 
 
 function App(){
+    this.initEvents();
     this.baseUrl = location.origin;
     this.nbSearchResults = parseInt($(".nb-search-results").val(), 10);
     this.emptyResultTemplate = $(".empty-result-template").html();
@@ -13,7 +14,6 @@ function App(){
 }
 
 App.prototype.initialize = function(){
-    this.initEvents();
     this.router = new Router({
         limit: this.nbSearchResults,
         baseUrl: this.baseUrl,
@@ -28,6 +28,7 @@ App.prototype.initialize = function(){
 };
 
 App.prototype.initEvents = function(){
+    $("select").select2();
     $('[data-toggle="tooltip"]').tooltip();
     if ($("#id_tarif").length){
         this.initSlider($("#id_tarif"));
