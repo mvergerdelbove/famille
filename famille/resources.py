@@ -1,10 +1,76 @@
 from django.conf import settings
 from django.db.models import Q
-from tastypie.resources import ModelResource, ALL
+from tastypie import fields
+from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 
 from famille import models, forms, errors
+from famille.models import planning
 from famille.utils.python import pick, without
 from famille.utils.geolocation import is_close_enough, geolocate
+
+
+class WeekdayResource(ModelResource):
+    """
+    A resource representing a weekday.
+    """
+    class Meta:
+        queryset = planning.Weekday.objects.all()
+        resource_name = "weekdays"
+        fields = ["name", "id"]
+        allowed_methods = ["get", ]
+        filtering = {
+            "name": ALL,
+            "id": ALL
+        }
+
+
+class ScheduleResource(ModelResource):
+    """
+    A resource representing a weekday.
+    """
+    class Meta:
+        queryset = planning.Schedule.objects.all()
+        resource_name = "schedules"
+        fields = ["name", "id"]
+        allowed_methods = ["get", ]
+        filtering = {
+            "name": ALL,
+            "id": ALL
+        }
+
+
+class PlanningResource(ModelResource):
+    """
+    The base resource for plannings.
+    """
+    weekday = fields.ManyToManyField(WeekdayResource, "weekday", full=True)
+    schedule = fields.ManyToManyField(ScheduleResource, "schedule", full=True)
+
+    class Meta:
+        fields = [
+            "start_date", "weekday", "frequency", "schedule", "comment"
+        ]
+        allowed_methods = ["get", ]
+        filtering = {
+            "start_date": ALL,
+            "weekday": ALL_WITH_RELATIONS,
+            "frequency": ALL,
+            "schedule": ALL_WITH_RELATIONS
+        }
+
+
+class FamillePlanningResource(PlanningResource):
+
+    class Meta(PlanningResource.Meta):
+        queryset = planning.FamillePlanning.objects.all()
+        resource_name = "famille_plannings"
+
+
+class PrestatairePlanningResource(PlanningResource):
+
+    class Meta(PlanningResource.Meta):
+        queryset = planning.PrestatairePlanning.objects.all()
+        resource_name = "prestataire_plannings"
 
 
 class SearchResource(object):
@@ -55,6 +121,7 @@ class SearchResource(object):
 
 
 class PrestataireResource(SearchResource, ModelResource):
+    plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
     class Meta:
         queryset = models.Prestataire.objects.all()
         resource_name = "prestataires"
@@ -63,7 +130,8 @@ class PrestataireResource(SearchResource, ModelResource):
         allowed_methods = ["get", ]
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
-            level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL
+            level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
+            plannings=ALL_WITH_RELATIONS
         )
 
 
@@ -73,6 +141,7 @@ class FamilleResource(SearchResource, ModelResource):
         "first_name", "name", "city", "country", "description"
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
+    plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
 
     class Meta:
         queryset = models.Famille.objects.all()
@@ -80,11 +149,12 @@ class FamilleResource(SearchResource, ModelResource):
         # TODO: refine this
         fields = [
             "first_name", "name", "tel", "email", "city",
-            "country", "description", "id"
+            "country", "description", "id", "plannings"
         ]
         allowed_methods = ["get", ]
         filtering = dict(
-            [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()]
+            [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
+            plannings=ALL_WITH_RELATIONS
         )
 
     def get_object_list(self, request):

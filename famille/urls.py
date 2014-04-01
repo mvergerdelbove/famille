@@ -13,6 +13,10 @@ admin.autodiscover()
 api = Api(api_name='v1')
 api.register(resources.PrestataireResource())
 api.register(resources.FamilleResource())
+api.register(resources.FamillePlanningResource())
+api.register(resources.PrestatairePlanningResource())
+api.register(resources.ScheduleResource())
+api.register(resources.WeekdayResource())
 
 
 urlpatterns = patterns(
