@@ -183,9 +183,9 @@
                                             </span>
                                         </div>
                                     </div>
-                                    {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5"%}
+                                    {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5" %}
+                                    {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                                    {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
                                     <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                                 </div>
                                 {% endfor %}
@@ -214,8 +214,8 @@
                             </div>
                         </div>
                         {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5"%}
+                        {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                        {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
                         <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                     </div>
                 </div>
