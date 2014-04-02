@@ -412,8 +412,8 @@ class PrestataireSearchForm(BaseSearchForm):
 class FamilleSearchForm(BaseSearchForm):
     ordering_dict = {
         "-updated_at": u"Le plus récent",
-         "geolocation": "Le moins cher",
-         "-rating": "Le plus proche"
+         "geolocation": "Le plus proche",
+         "-rating": u"Le mieux noté"
     }
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,

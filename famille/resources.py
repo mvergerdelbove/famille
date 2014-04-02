@@ -88,11 +88,13 @@ class SearchResource(object):
             return super(SearchResource, self).apply_sorting(obj_list, options)
         except InvalidSortError:
             order_by = options.get("order_by")
-            if order_by not in ("geolocation", "rating"):
+            if order_by not in ("geolocation", "-rating"):
                 raise
 
-        # TODO: handle custom sorting here
-        pass
+        if order_by == "rating":
+            return sorted(object_list, key=lambda u: - u.total_rating)
+        else:
+            pass
 
     def apply_filters(self, request, applicable_filters):
         distance = request.GET.get("distance__iexact")
