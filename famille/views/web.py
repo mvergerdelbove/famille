@@ -46,17 +46,17 @@ def search(request):
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
         Item = Famille
-        template = "search_for_familles.html"
+        template = "search/familles.html"
     else:
         FormClass = forms.PrestataireSearchForm
         Item = Prestataire
-        template = "search_for_prestataires.html"
+        template = "search/prestataires.html"
 
     form = FormClass(data)
     if not form.is_valid():
         form = FormClass()
 
-    # TODO: do location filtering, together with geolocation stuff
+    # TODO: do location filtering, together with geolocation stuff ?
     objects = Item.objects.all()[:settings.NB_SEARCH_RESULTS]
     result_template = get_result_template_from_user(request)
     if request.user.is_authenticated():
