@@ -14,6 +14,7 @@ from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
     has_user_related, FamilleRatings, PrestataireRatings
 )
+from famille.resources import PrestataireResource, FamilleResource
 from famille.utils import get_context, get_result_template_from_user
 from famille.utils.http import require_related, login_required, assert_POST
 
@@ -46,18 +47,18 @@ def search(request):
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
         Item = Famille
-        template = "search/familles.html"
+        template = "search/famille.html"
     else:
         FormClass = forms.PrestataireSearchForm
         Item = Prestataire
-        template = "search/prestataires.html"
+        template = "search/prestataire.html"
 
     form = FormClass(data)
     if not form.is_valid():
         form = FormClass()
 
     # TODO: do location filtering, together with geolocation stuff ?
-    objects = Item.objects.all()[:settings.NB_SEARCH_RESULTS]
+    objects = Item.objects.all().order_by("-updated_at")[:settings.NB_SEARCH_RESULTS]
     result_template = get_result_template_from_user(request)
     if request.user.is_authenticated():
         favorites = get_user_related(request.user).favorites.all()
@@ -67,7 +68,7 @@ def search(request):
         request, template,
         get_context(
             search_form=form, results=objects, result_template=result_template,
-            nb_search_results=settings.NB_SEARCH_RESULTS,
+            nb_search_results=settings.NB_SEARCH_RESULTS, ordering=form.ordering_dict,
             favorites=favorites, user=request.user, search_type=search_type
         )
     )

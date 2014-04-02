@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db.models import Q
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
+from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
 from famille.models import planning
@@ -75,6 +76,24 @@ class PrestatairePlanningResource(PlanningResource):
 
 class SearchResource(object):
 
+    class Meta:
+        allowed_methods = ["get", ]
+
+    def apply_sorting(self, obj_list, options=None):
+        """
+        Override apply_sorting method to manage particular cases,
+        like geolocation and rating.
+        """
+        try:
+            return super(SearchResource, self).apply_sorting(obj_list, options)
+        except InvalidSortError:
+            order_by = options.get("order_by")
+            if order_by not in ("geolocation", "rating"):
+                raise
+
+        # TODO: handle custom sorting here
+        pass
+
     def apply_filters(self, request, applicable_filters):
         distance = request.GET.get("distance__iexact")
         postal_code = request.GET.get("pc__iexact")
@@ -122,12 +141,13 @@ class SearchResource(object):
 
 class PrestataireResource(SearchResource, ModelResource):
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
-    class Meta:
+
+    class Meta(SearchResource.Meta):
         queryset = models.Prestataire.objects.all()
         resource_name = "prestataires"
         # TODO: refine this for prestataires
         excludes = ['user', "street", "tel", "tel_visible", "email"]
-        allowed_methods = ["get", ]
+        ordering = forms.PrestataireSearchForm.ordering_dict.keys()
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
@@ -143,7 +163,7 @@ class FamilleResource(SearchResource, ModelResource):
     FIELD_DENIED_BASIC = ["email", "tel"]
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
 
-    class Meta:
+    class Meta(SearchResource.Meta):
         queryset = models.Famille.objects.all()
         resource_name = "familles"
         # TODO: refine this
@@ -151,7 +171,7 @@ class FamilleResource(SearchResource, ModelResource):
             "first_name", "name", "tel", "email", "city",
             "country", "description", "id", "plannings"
         ]
-        allowed_methods = ["get", ]
+        ordering = forms.FamilleSearchForm.ordering_dict.keys()
         filtering = dict(
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
             plannings=ALL_WITH_RELATIONS

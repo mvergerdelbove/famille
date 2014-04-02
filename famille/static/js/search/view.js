@@ -27,11 +27,12 @@ module.exports = Backbone.View.extend({
         "click .previous": "displayPrevious",
         "click .favorite": "toggleFavorite",
         "click .choose-search": "switchSearch",
-        "change .form-control": "doSearch",
-        "click [type=checkbox]": "doSearch",
-        "onkeyup [type=text]": "doSearch",
+        "change .form-search .form-control": "doSearch",
+        "click .form-search [type=checkbox]": "doSearch",
+        "onkeyup .form-search [type=text]": "doSearch",
         "slideStop #id_tarif": "doSearch",
-        "click [data-distance]": "doDistanceSearch"
+        "click .form-search [data-distance]": "doDistanceSearch",
+        "change #search-sort": "doSearch"
     },
 
     initialize: function(options){
@@ -40,6 +41,7 @@ module.exports = Backbone.View.extend({
         this.$distanceButton = this.$(".control-distance");
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
+        this.$sortSelect = this.$("#search-sort");
     },
 
     buildQuery: function($els){
@@ -52,12 +54,12 @@ module.exports = Backbone.View.extend({
             if (value && name == "language") return constructLanguageFilter(name, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });
-
+        filters.push(this.getSortQuery());
         return _.compact(filters).join("&");
     },
 
     doSearch: function(){
-        var $els = this.$(".form-search .form-control,[type=checkbox]:checked,#id_distance");
+        var $els = this.$(".form-control,[type=checkbox]:checked,#id_distance", ".form-search");
         famille.router.doSearch(this.buildQuery($els), {
             success: this.displayResults,
             error: this.error
@@ -132,6 +134,19 @@ module.exports = Backbone.View.extend({
     error: function(jqXHR){
         console.log(jqXHR);
     },
+
+    /****************************************/
+    /************      Sort     *************/
+    /****************************************/
+
+    getSortQuery: function () {
+        var sort = this.$sortSelect.val();
+        return "order_by=" + sort;
+    },
+
+    /****************************************/
+    /************   Favorites   *************/
+    /****************************************/
 
     initFavorites: function(){
         if (!this.isAuthenticated()) return;

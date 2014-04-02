@@ -344,6 +344,12 @@ class BaseSearchForm(forms.Form):
 
 
 class PrestataireSearchForm(BaseSearchForm):
+    ordering_dict = {
+        "-updated_at": u"Le plus récent",
+         "tarif": u"Le mieux noté",
+         "geolocation": "Le moins cher",
+         "-rating": "Le plus proche"
+    }
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
@@ -404,6 +410,11 @@ class PrestataireSearchForm(BaseSearchForm):
 
 
 class FamilleSearchForm(BaseSearchForm):
+    ordering_dict = {
+        "-updated_at": u"Le plus récent",
+         "geolocation": "Le moins cher",
+         "-rating": "Le plus proche"
+    }
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})

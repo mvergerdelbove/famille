@@ -26,7 +26,19 @@
     </div>
     <div class="col-md-6 col-md-offset-1">
         <div class="row">
-            <div class="col-md-7"><h3>Résultats</h3></div>
+            <div class="col-md-4"><h3>Résultats</h3></div>
+            <div class="col-md-3">
+                <form class="form form-horizontal">
+                    <div class="form-group">
+                        <label for="search-sort">Classer par</label>
+                        <select id="search-sort" class="form-control search-sort">
+                            {% for key, name in ordering.items %}
+                                <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
             <div class="col-md-5 pagination-sm pull-right small">
                 <ul class="pager">
                     <li class="previous disabled"><a href="#">&larr; Précédents</a></li>
