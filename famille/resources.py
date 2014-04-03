@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import FieldError
 from django.db.models import Q
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
@@ -84,17 +85,14 @@ class SearchResource(object):
         Override apply_sorting method to manage particular cases,
         like geolocation and rating.
         """
-        try:
-            return super(SearchResource, self).apply_sorting(obj_list, options)
-        except InvalidSortError:
-            order_by = options.get("order_by")
-            if order_by not in ("geolocation", "-rating"):
-                raise
+        order_by = options.get("order_by")
 
-        if order_by == "rating":
-            return sorted(object_list, key=lambda u: - u.total_rating)
+        if order_by == "-rating":
+            return sorted(obj_list, key=lambda u: - u.total_rating)
+        elif order_by == "geolocation":
+            pass  # IDEA: dehydrate_geolocation when needed (filter / sort in request)
         else:
-            pass
+            return super(SearchResource, self).apply_sorting(obj_list, options)
 
     def apply_filters(self, request, applicable_filters):
         distance = request.GET.get("distance__iexact")
@@ -142,14 +140,16 @@ class SearchResource(object):
 
 
 class PrestataireResource(SearchResource, ModelResource):
+
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
+    rating = fields.FloatField(attribute="total_rating")
 
     class Meta(SearchResource.Meta):
         queryset = models.Prestataire.objects.all()
         resource_name = "prestataires"
         # TODO: refine this for prestataires
         excludes = ['user', "street", "tel", "tel_visible", "email"]
-        ordering = forms.PrestataireSearchForm.ordering_dict.keys()
+        ordering = [key[1:] if key.startswith("-") else key for key in forms.PrestataireSearchForm.ordering_dict.keys()]
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
@@ -163,7 +163,9 @@ class FamilleResource(SearchResource, ModelResource):
         "first_name", "name", "city", "country", "description"
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
+
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
+    rating = fields.FloatField(attribute="total_rating")
 
     class Meta(SearchResource.Meta):
         queryset = models.Famille.objects.all()
@@ -171,9 +173,10 @@ class FamilleResource(SearchResource, ModelResource):
         # TODO: refine this
         fields = [
             "first_name", "name", "tel", "email", "city",
-            "country", "description", "id", "plannings"
+            "country", "description", "id", "plannings", "rating",
+            "updated_at"
         ]
-        ordering = forms.FamilleSearchForm.ordering_dict.keys()
+        ordering = [key[1:] if key.startswith("-") else key for key in forms.FamilleSearchForm.ordering_dict.keys()]
         filtering = dict(
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
             plannings=ALL_WITH_RELATIONS
