@@ -190,12 +190,12 @@ class FamilleResource(SearchResource, ModelResource):
         fields = [
             "first_name", "name", "tel", "email", "city",
             "country", "description", "id", "plannings", "rating",
-            "updated_at"
+            "updated_at", "enfants"
         ]
         ordering = [key[1:] if key.startswith("-") else key for key in forms.FamilleSearchForm.ordering_dict.keys()]
         filtering = dict(
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
-            plannings=ALL_WITH_RELATIONS
+            plannings=ALL_WITH_RELATIONS, enfants=ALL_WITH_RELATIONS
         )
 
     def get_object_list(self, request):

@@ -415,6 +415,10 @@ class FamilleSearchForm(BaseSearchForm):
          "geolocation": "Le plus proche",
          "-rating": u"Le mieux noté"
     }
+    enfants__school = forms.CharField(
+        label=u"Ecole des enfants", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
+    )
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
