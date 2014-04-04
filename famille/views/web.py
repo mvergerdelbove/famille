@@ -47,11 +47,11 @@ def search(request):
     search_type = "prestataire" if search_type not in ["famille", "prestataire"] else search_type
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
-        Item = Famille
+        objects = Famille.objects.filter(compute_user_visibility_filters(request.user))
         template = "search/famille.html"
     else:
         FormClass = forms.PrestataireSearchForm
-        Item = Prestataire
+        objects = Prestataire.objects.all()
         template = "search/prestataire.html"
 
     form = FormClass(data)
@@ -59,7 +59,7 @@ def search(request):
         form = FormClass()
 
     # TODO: do location filtering, together with geolocation stuff ?
-    objects = Item.objects.filter(compute_user_visibility_filters(request.user)).order_by("-updated_at")
+    objects = objects.order_by("-updated_at")
     total_search_results = objects.count()
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
