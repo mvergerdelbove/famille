@@ -58,7 +58,10 @@ def search(request):
         form = FormClass()
 
     # TODO: do location filtering, together with geolocation stuff ?
-    objects = Item.objects.all().order_by("-updated_at")[:settings.NB_SEARCH_RESULTS]
+    # TODO: filter with user rights here !
+    objects = Item.objects.all().order_by("-updated_at")
+    nb_search_results = min(settings.NB_SEARCH_RESULTS, objects.count())
+    objects = objects[:nb_search_results]
     result_template = get_result_template_from_user(request)
     if request.user.is_authenticated():
         favorites = get_user_related(request.user).favorites.all()
@@ -68,7 +71,7 @@ def search(request):
         request, template,
         get_context(
             search_form=form, results=objects, result_template=result_template,
-            nb_search_results=settings.NB_SEARCH_RESULTS, ordering=form.ordering_dict,
+            nb_search_results=nb_search_results, ordering=form.ordering_dict,
             favorites=favorites, user=request.user, search_type=search_type
         )
     )

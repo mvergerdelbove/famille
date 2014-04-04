@@ -18,7 +18,7 @@ def get_result_template_from_user(request):
 
     :param request:          an HTTP request
     """
-    return "simple_results.html"
+    return "search/results/anonymous.html"
 
 
 resource_pattern = re.compile("/api/v1/([a-z_-]+)s/([\d]+)/?")
