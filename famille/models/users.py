@@ -17,7 +17,8 @@ from famille.utils.python import pick
 __all__ = [
     "Famille", "Prestataire", "Enfant",
     "get_user_related", "Reference", "UserInfo",
-    "has_user_related", "user_is_located", "Geolocation"
+    "has_user_related", "user_is_located", "Geolocation",
+    "compute_user_visibility_filters"
 ]
 
 
@@ -99,6 +100,26 @@ def user_is_located(user):
 
     related = get_user_related(user)
     return related.is_geolocated
+
+
+def compute_user_visibility_filters(user):
+    """
+    Compute the filters that will filter the whole
+    user queryset and remove the users that are not
+    visible to the user passed as parameter (request.user).
+
+    :param user:          a Django user (might be anonymous)
+    """
+    filters = models.Q(visibility_global=True)
+
+    if has_user_related(user):
+        user = get_user_related(user)
+        if isinstance(user, Famille):
+            filters &= models.Q(visibility_family=True)
+        else:
+            filters &= models.Q(visibility_prestataire=True)
+
+    return filters
 
 
 class UserInfo(BaseModel):

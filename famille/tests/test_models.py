@@ -221,6 +221,17 @@ class ModelsTestCase(TestCase):
         self.famille.pseudo = "mickey68"
         self.assertEqual(self.famille.get_pseudo(), "mickey68")
 
+    def test_compute_user_visibility_filters(self):
+        user = AnonymousUser()
+        f = models.compute_user_visibility_filters(user)
+        self.assertEqual(f.children, [('visibility_global', True)])
+
+        f = models.compute_user_visibility_filters(self.user1)
+        self.assertEqual(f.children, [('visibility_global', True), ('visibility_family', True)])
+
+        f = models.compute_user_visibility_filters(self.user2)
+        self.assertEqual(f.children, [('visibility_global', True), ('visibility_prestataire', True)])
+
 
 class GeolocationTestCase(TestCase):
 

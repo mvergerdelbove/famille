@@ -16,7 +16,8 @@ module.exports = Backbone.Router.extend({
         this.baseUrl = options.baseUrl;
         this.searchType = options.searchType;
         this.searchApi = options.searchApi;
-        this.next = this.searchApi + "offset=" + this.limit + "&limit=" + this.limit;
+        if (options.totalNbSearchResults > this.limit)
+            this.next = this.searchApi + "offset=" + this.limit + "&limit=" + this.limit;
         this.previous = null;
         this.total_count = 0;
     },

@@ -90,20 +90,22 @@ module.exports = Backbone.View.extend({
 
     displayNext: function(e){
         e.preventDefault();
-        if (famille.router.next)
-        famille.router.doSearch(famille.router.next, {
-            success: this.displayResults,
-            error: this.error
-        });
+        if (famille.router.next) {
+            famille.router.doSearch(famille.router.next, {
+                success: this.displayResults,
+                error: this.error
+            });
+        }
     },
 
     displayPrevious: function(e){
         e.preventDefault();
-        if (famille.router.previous)
-        famille.router.doSearch(famille.router.previous, {
-            success: this.displayResults,
-            error: this.error
-        });
+        if (famille.router.previous) {
+            famille.router.doSearch(famille.router.previous, {
+                success: this.displayResults,
+                error: this.error
+            });
+        }
     },
 
     displayResults: function(data){

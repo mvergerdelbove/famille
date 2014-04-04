@@ -12,7 +12,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 from famille import forms
 from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
-    has_user_related, FamilleRatings, PrestataireRatings
+    has_user_related, FamilleRatings, PrestataireRatings,
+    compute_user_visibility_filters
 )
 from famille.resources import PrestataireResource, FamilleResource
 from famille.utils import get_context, get_result_template_from_user
@@ -58,9 +59,9 @@ def search(request):
         form = FormClass()
 
     # TODO: do location filtering, together with geolocation stuff ?
-    # TODO: filter with user rights here !
-    objects = Item.objects.all().order_by("-updated_at")
-    nb_search_results = min(settings.NB_SEARCH_RESULTS, objects.count())
+    objects = Item.objects.filter(compute_user_visibility_filters(request.user)).order_by("-updated_at")
+    total_search_results = objects.count()
+    nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
     result_template = get_result_template_from_user(request)
     if request.user.is_authenticated():
@@ -72,7 +73,9 @@ def search(request):
         get_context(
             search_form=form, results=objects, result_template=result_template,
             nb_search_results=nb_search_results, ordering=form.ordering_dict,
-            favorites=favorites, user=request.user, search_type=search_type
+            favorites=favorites, user=request.user, search_type=search_type,
+            max_nb_search_results=settings.NB_SEARCH_RESULTS,
+            total_search_results=total_search_results
         )
     )
 

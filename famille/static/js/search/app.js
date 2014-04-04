@@ -5,7 +5,8 @@ var View = require("./view");
 function App(){
     this.initEvents();
     this.baseUrl = location.origin;
-    this.nbSearchResults = parseInt($(".nb-search-results").val(), 10);
+    this.maxNbSearchResults = parseInt($(".max-nb-search-results").val(), 10);
+    this.totalNbSearchResults = parseInt($(".total-nb-search-results").val(), 10);
     this.emptyResultTemplate = $(".empty-result-template").html();
     this.searchType = $(".search-type").val();
     this.searchApi = "/api/v1/{type}s/?".replace("{type}", this.searchType);
@@ -15,7 +16,8 @@ function App(){
 
 App.prototype.initialize = function(){
     this.router = new Router({
-        limit: this.nbSearchResults,
+        limit: this.maxNbSearchResults,
+        totalNbSearchResults: this.totalNbSearchResults,
         baseUrl: this.baseUrl,
         searchApi: this.searchApi,
         searchType: this.searchType

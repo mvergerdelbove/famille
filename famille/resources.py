@@ -6,7 +6,7 @@ from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
-from famille.models import planning
+from famille.models import planning, compute_user_visibility_filters
 from famille.utils.python import pick, without
 from famille.utils.geolocation import is_close_enough, geolocate
 
@@ -188,15 +188,7 @@ class FamilleResource(SearchResource, ModelResource):
 
         :param request:           the given HTTP request
         """
-        filters = Q(visibility_global=True)
-
-        if models.has_user_related(request.user):
-            user = models.get_user_related(request.user)
-            if isinstance(user, models.Famille):
-                filters = filters & Q(visibility_family=True)
-            else:
-                filters = filters & Q(visibility_prestataire=True)
-
+        filters = compute_user_visibility_filters(request.user)
         return super(FamilleResource, self).get_object_list(request).filter(filters)
 
     def dehydrate(self, bundle):
