@@ -75,6 +75,21 @@ class PrestatairePlanningResource(PlanningResource):
         resource_name = "prestataire_plannings"
 
 
+class EnfantResource(ModelResource):
+    """
+    The resource representing enfants.
+    """
+    school = fields.CharField(attribute="e_school")
+    class Meta:
+        fields = ("school", )
+        queryset = models.Enfant.objects.all()
+        resource_name = "enfants"
+        allowed_methods = ["get", ]
+        filtering = {
+            "school": ALL
+        }
+
+
 class SearchResource(object):
 
     class Meta:
@@ -165,6 +180,7 @@ class FamilleResource(SearchResource, ModelResource):
     FIELD_DENIED_BASIC = ["email", "tel"]
 
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
+    enfants = fields.ToManyField(EnfantResource, "enfants", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
 
     class Meta(SearchResource.Meta):
