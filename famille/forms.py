@@ -62,7 +62,7 @@ class UserForm(forms.ModelForm):
             "city": "Ville",
             "country": "Pays",
             "tel": u"Téléphone",
-            "tel_visible": u"Téléphone visible",
+            "tel_visible": u"J’accepte que mon téléphone soit visible pour les personnes souhaitant me contacter",
         }
 
     def save(self, commit=True):
