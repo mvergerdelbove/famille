@@ -380,6 +380,11 @@ class Prestataire(Criteria):
         "pro": u"Maîtrisé",
         "bil": "Bilingue"
     }
+    RESTRICTIONS = {
+        "bebe": u"Bébé (0 à 1 an)",
+        "jeune": u"Jeunes enfants (1 à 3 ans)",
+        "marche": u"Enfants de 3 à 7 ans"
+    }
 
     type = models.CharField(max_length=40, choices=TYPES.items())
     other_type = models.CharField(max_length=100, null=True, blank=True)
@@ -394,6 +399,7 @@ class Prestataire(Criteria):
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
         max_upload_size=2621440  # 2.5MB
     )
+    restrictions = models.CharField(max_length=40, choices=RESTRICTIONS.items(), null=True, blank=True)
 
     class Meta:
         app_label = 'famille'

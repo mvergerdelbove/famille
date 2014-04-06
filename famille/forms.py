@@ -223,12 +223,13 @@ class PrestataireCompetenceForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Prestataire
         fields = CriteriaForm.Meta.fields + [
-            "level_en", "level_de", "level_es", "level_it", "other_language", "resume"
+            "level_en", "level_de", "level_es", "level_it", "other_language", "resume",
+            "restrictions"
         ]
         labels = dict(
             CriteriaForm.Meta.labels, diploma=u"Diplôme", level_en="Anglais",
             level_de="Allemand", level_es="Espagnol", level_it="Italien",
-            other_language="Autre langue", resume="Joindre un CV"
+            other_language="Autre langue", resume="Joindre un CV", restrictions="Mes restrictions"
         )
 
 
@@ -353,7 +354,7 @@ class PrestataireSearchForm(BaseSearchForm):
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    ) # TODO: add select2
+    )
     diploma = forms.MultipleChoiceField(
         label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
@@ -422,7 +423,7 @@ class FamilleSearchForm(BaseSearchForm):
     type_garde = forms.MultipleChoiceField(
         label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    ) # TODO: add select2
+    )
     cdt_periscolaire = forms.BooleanField(
         label=u"Conduite périscolaire", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})

@@ -30,6 +30,7 @@ class ContentTypeRestrictedFileField(FileField):
 
         super(ContentTypeRestrictedFileField, self).__init__(*args, **kwargs)
 
+    # FIXME: use validators instead !!!!!!!
     def clean(self, *args, **kwargs):
         data = super(ContentTypeRestrictedFileField, self).clean(*args, **kwargs)
 
@@ -69,10 +70,9 @@ content_type_restricted_file_field_rules = [
 
 
 class RangeField(MultiValueField):
-    default_error_messages = {} # TODO
 
     def __init__(self, field_class=CharField, min_value=None, max_value=None, widget=None, *args, **kwargs):
-        self.fields = (field_class(), field_class()) # TODO
+        self.fields = (field_class(), field_class())
         if widget:
             min_value, max_value = widget.min_value, widget.max_value
 
