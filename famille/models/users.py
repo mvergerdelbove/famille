@@ -525,6 +525,9 @@ class Reference(BaseModel):
     phone = models.CharField(blank=True, null=True, max_length=15)
     missions = models.TextField(blank=True, null=True)
     referenced_user = models.OneToOneField(Famille, blank=True, null=True, related_name="reference_of")
+    date_from = models.DateField(blank=True, null=True)
+    date_to = models.DateField(blank=True, null=True)
+    current = models.BooleanField(blank=True, default=False)
 
     class Meta:
         app_label = 'famille'

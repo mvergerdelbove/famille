@@ -7,6 +7,7 @@ var ReferenceView = require("./views/references.js");
 var templateExistingReference = '\
     <div class="col-md-8">\
         <h4>Famille <%= referenced_user %></h4>\
+        <p>Du <%= date_from %> à <%= (typeof current !== "undefined" && current) ? "Aujourd\'hui" : date_to %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\
@@ -15,10 +16,11 @@ var templateExistingReference = '\
             <button type="button" class="btn btn-default btn-xs remove">Supprimer</button>\
         </div>\
     </div>';
+
 var templateOutsideReference = '\
     <div class="col-md-8">\
-        <h4>Famille <%= name %></h4>\
-        <small><%= (email) ? email : phone %></small>\
+        <h4>Famille <%= name %> <small><%= (email) ? email : phone %></small></h4>\
+        <p>Du <%= date_from %> à <%= (typeof current !== "undefined" && current) ? "Aujourd\'hui" : date_to %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\
@@ -38,7 +40,7 @@ var templateOutsideReference = '\
         if (val == "other") $otherTypeContainer.removeClass("hide");
         else $otherTypeContainer.addClass("hide");
     });
-    var $hiddenFormEl = $(".empty-real-form .reference-form");
+    var $hiddenFormEl = $(".empty-real-form").html();
     var settings = {
         templates: {
             templateExistingReference: _.template(templateExistingReference),

@@ -241,9 +241,22 @@ class ReferenceForm(forms.ModelForm):
             "email": "Adresse mail",
             "phone": u"Téléphone",
             "missions": "Missions",
-            "referenced_user": "Nom de famille"
+            "referenced_user": "Nom de famille",
+            "date_from": u"Période de...",
+            "date_to": u"...à",
+            "current": u"Je travaille toujours pour cette personne"
         }
         fields = labels.keys()
+        widgets = {
+            "date_from": forms.DateInput(
+                attrs={'type':'datetime', "class": "form-control"},
+                format="%d/%m/%Y"
+            ),
+            "date_to": forms.DateInput(
+                attrs={'type':'datetime', "class": "form-control"},
+                format="%d/%m/%Y"
+            )
+        }
 
 
 class PrestataireCompteForm(ForeignKeyForm, forms.ModelForm):

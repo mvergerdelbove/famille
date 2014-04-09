@@ -3,11 +3,25 @@ function App (){
 	forms = {child: $(".empty-child-form .child-form"), planning: $(".empty-planning-form .planning-form")},
 	no = {child: $(".no-child"), planning: $(".no-planning")};
 
+    var datePickerOptions = {
+        planning: {
+            language: 'fr',
+            format: "DD/MM/YYYY",
+            startDate: moment().startOf("day"),
+            pickTime: false
+        },
+        references: {
+            language: 'fr',
+            format: "DD/MM/YYYY",
+            pickTime: false,
+            defaultDate: ""
+        }
+    };
+
     var addSubForm = function(key){
         no[key].hide();
         var $form = forms[key].clone(true);
         $form.appendTo(containers[key]);
-        if (key == "planning") initDatepicker($(".date", $form));
     };
 
     var hasSubForm = function(key){
@@ -38,13 +52,8 @@ function App (){
         if (hasSubForm(key)) no[key].hide();
     };
 
-    var initDatepicker = function($els){
-        $els.datetimepicker({
-            language: 'fr',
-            format: "DD/MM/YYYY HH:mm:ss",
-            minuteStepping: 10,
-            startDate: moment().startOf("day")
-        });
+    var initDatepicker = function($els, options){
+        $els.datetimepicker(options);
     };
 
     // event handling
@@ -58,6 +67,8 @@ function App (){
 
     // init
     showTab();
+    initDatepicker($("#planning .date"), datePickerOptions.planning);
+    initDatepicker($("#compte .date"), datePickerOptions.references);
     $('.nav-tabs a').click(function (e) {
 		$(this).tab('show');
 		var scrollmem = $('body').scrollTop();

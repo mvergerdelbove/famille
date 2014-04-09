@@ -73,7 +73,15 @@
                 <div class="hidden empty-real-form">
                     <div class="reference-form">
                         {% for field in compte.sub_form_empty %}
-                            {% bootstrap_field field %}
+                            {% if field.name != "current" %}
+                                {% bootstrap_field field %}
+                            {% else %}
+                                {% if field.value %}
+                                    <input type="text" name="current" id="id_current" value="on"/>
+                                {% else %}
+                                    <input type="text" name="current" id="id_current" value=""/>
+                                {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -101,12 +109,32 @@
                                         Votre référence n'est pas sur <em>Une vie de famille</em>
                                     </h5>
                                     <div class="choice-collapse hidden" id="doesnt-exists">
-                                        {% bootstrap_field compte.sub_form_empty.name field_class="col-sm-7" label_class="col-sm-5"%}
-                                        {% bootstrap_field compte.sub_form_empty.email field_class="col-sm-7" label_class="col-sm-5"%}
-                                        {% bootstrap_field compte.sub_form_empty.phone field_class="col-sm-7" label_class="col-sm-5"%}
+                                        {% bootstrap_field compte.sub_form_empty.name field_class="col-sm-4" label_class="col-sm-4"%}
+                                        {% bootstrap_field compte.sub_form_empty.email field_class="col-sm-4" label_class="col-sm-4"%}
+                                        {% bootstrap_field compte.sub_form_empty.phone field_class="col-sm-4" label_class="col-sm-4"%}
                                     </div>
                                     <br/>
                                     <div class="no-collapse">
+                                        <!-- TODO: use rigth DOM syntax -->
+                                        <div class="form-group">
+                                            {% bootstrap_label compte.sub_form_empty.date_from.label_tag label_class="col-sm-4" %}
+                                            <div class="col-sm-4 input-group date">
+                                                {{ compte.sub_form_empty.date_from }}
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {% bootstrap_label compte.sub_form_empty.date_to.label_tag label_class="col-sm-4" %}
+                                            <div class="col-sm-4 input-group date">
+                                                {{ compte.sub_form_empty.date_to }}
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {% bootstrap_field compte.sub_form_empty.current field_class="col-sm-4" label_class="col-sm-4"%}
                                         <h5>Quelles missions avez vous effetcuées pour cette famille ?</h5>
                                         {% bootstrap_field compte.sub_form_empty.missions field_class="col-sm-7" label_class="sr-only" %}
                                     </div>
