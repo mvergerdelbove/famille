@@ -7,7 +7,7 @@ var ReferenceView = require("./views/references.js");
 var templateExistingReference = '\
     <div class="col-md-8">\
         <h4>Famille <%= referenced_user %></h4>\
-        <p>Du <%= date_from %> à <%= (typeof current !== "undefined" && current) ? "Aujourd\'hui" : date_to %></p>\
+        <p>Du <%= date_from %> <%= (typeof current !== "undefined" && current) ? "à Aujourd\'hui" : "au " + date_to %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\
@@ -20,7 +20,7 @@ var templateExistingReference = '\
 var templateOutsideReference = '\
     <div class="col-md-8">\
         <h4>Famille <%= name %> <small><%= (email) ? email : phone %></small></h4>\
-        <p>Du <%= date_from %> à <%= (typeof current !== "undefined" && current) ? "Aujourd\'hui" : date_to %></p>\
+        <p>Du <%= date_from %> <%= (typeof current !== "undefined" && current) ? "à Aujourd\'hui" : "au " + date_to %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\

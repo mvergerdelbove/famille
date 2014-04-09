@@ -242,8 +242,8 @@ class ReferenceForm(forms.ModelForm):
             "phone": u"Téléphone",
             "missions": "Missions",
             "referenced_user": "Nom de famille",
-            "date_from": u"Période de...",
-            "date_to": u"...à",
+            "date_from": u"Période du...",
+            "date_to": u"...au",
             "current": u"Je travaille toujours pour cette personne"
         }
         fields = labels.keys()
