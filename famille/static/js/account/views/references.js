@@ -72,7 +72,8 @@ var ReferenceEditionView = Backbone.View.extend({
             date_to: this.$("[name=date_to]"),
             phone: this.$("[name=phone]"),
             email: this.$("[name=email]"),
-            missions: this.$("[name=missions]")
+            missions: this.$("[name=missions]"),
+            garde: this.$("[name=garde]")
         };
     },
 
@@ -111,7 +112,8 @@ var ReferenceEditionView = Backbone.View.extend({
         var self = this;
         this.currentRef = reference;
 
-        var values = _.omit(reference.data, "referenced_user", "current", "date_from", "date_to");
+        // TODO: use filter
+        var values = _.omit(reference.data, "referenced_user", "current", "date_from", "date_to", "garde");
         _.each(values, function(value, key){
             self.ui[key].val(value);
         });
@@ -121,6 +123,7 @@ var ReferenceEditionView = Backbone.View.extend({
         else {
             this.ui.current.prop("checked", false);
         }
+        this.ui.garde.select2("val", reference.data.garde);
         this.$date_from.data("DateTimePicker").setDate(moment(reference.data.date_from, "DD/MM/YYYY"));
         this.handleCurrent();
         this.$date_to.data("DateTimePicker").setDate(moment(reference.data.date_to, "DD/MM/YYYY"));

@@ -8,6 +8,7 @@ var templateExistingReference = '\
     <div class="col-md-8">\
         <h4>Famille <%= referenced_user %></h4>\
         <p>Du <%= date_from %> <%= (typeof current !== "undefined" && current) ? "à Aujourd\'hui" : "au " + date_to %></p>\
+        <p>Type de garde: <%= garde %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\
@@ -21,6 +22,7 @@ var templateOutsideReference = '\
     <div class="col-md-8">\
         <h4>Famille <%= name %> <small><%= (email) ? email : phone %></small></h4>\
         <p>Du <%= date_from %> <%= (typeof current !== "undefined" && current) ? "à Aujourd\'hui" : "au " + date_to %></p>\
+        <p>Type de garde: <%= garde %></p>\
         <p>Missions: <%= missions %></p>\
     </div>\
     <div class="col-md-4">\

@@ -108,6 +108,7 @@ def register(request, social=None, type=None):
 def account(request):
     url_hash = ""
     if request.method == "POST":
+        import pdb; pdb.set_trace()
         account_forms = forms.AccountFormManager(instance=request.related_user, data=request.POST, files=request.FILES)
         url_hash = account_forms.form_submitted
         if account_forms.is_valid():

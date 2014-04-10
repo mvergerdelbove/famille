@@ -244,7 +244,8 @@ class ReferenceForm(forms.ModelForm):
             "referenced_user": "Nom de famille",
             "date_from": u"Période du...",
             "date_to": u"...au",
-            "current": u"Je travaille toujours pour cette personne"
+            "current": u"Je travaille toujours pour cette personne",
+            "garde": u"Type de garde"
         }
         fields = labels.keys()
         widgets = {
@@ -255,7 +256,7 @@ class ReferenceForm(forms.ModelForm):
             "date_to": forms.DateInput(
                 attrs={'type':'datetime', "class": "form-control"},
                 format="%d/%m/%Y"
-            )
+            ),
         }
 
 

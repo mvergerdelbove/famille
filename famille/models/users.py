@@ -519,6 +519,14 @@ class Reference(BaseModel):
     """
     A model representing a reference for a prestataire.
     """
+    TYPE_GARDE = (
+        ("Domicile des parents", "Domicile des parents"),
+        ("Mon domicile", "Mon domicile"),
+        ("Centre/colonie", "Centre/colonie"),
+        ("Maison d’assistantes parentales", "Maison d’assistantes parentales"),
+        ("Autre", "Autre")
+    )
+
     prestataire = models.ForeignKey(Prestataire, related_name="references")
     name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
@@ -528,6 +536,7 @@ class Reference(BaseModel):
     date_from = models.DateField(blank=True, null=True)
     date_to = models.DateField(blank=True, null=True)
     current = models.BooleanField(blank=True, default=False)
+    garde = models.CharField(blank=True, null=True, max_length=40, choices=TYPE_GARDE)
 
     class Meta:
         app_label = 'famille'
