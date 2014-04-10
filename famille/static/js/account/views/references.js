@@ -64,6 +64,16 @@ var ReferenceEditionView = Backbone.View.extend({
     initialize: function (options) {
         this.$date_from = this.$(".date:has([name=date_from])");
         this.$date_to = this.$(".date:has([name=date_to])");
+        this.ui = {
+            referenced_user: this.$("[name=referenced_user]"),
+            current: this.$("[name=current]"),
+            name: this.$("[name=name]"),
+            date_from: this.$("[name=date_from]"),
+            date_to: this.$("[name=date_to]"),
+            phone: this.$("[name=phone]"),
+            email: this.$("[name=email]"),
+            missions: this.$("[name=missions]")
+        };
     },
 
     render: function(){
@@ -77,13 +87,16 @@ var ReferenceEditionView = Backbone.View.extend({
     },
 
     save: function(e){
-        // TODO: validate data on save
         var data = this.getData();
-        if (this.currentRef) {
-            this.currentRef.render(data);
-            this.trigger("reference:changed", this.currentRef);
+        if (this.validate(data)) {
+            this.cleanInvalid();
+            if (this.currentRef) {
+                this.currentRef.render(data);
+                this.trigger("reference:changed", this.currentRef);
+            }
+            else this.trigger("reference:add", data);
+            this.$el.modal("hide");
         }
-        else this.trigger("reference:add", data);
     },
 
     empty: function(e){
@@ -91,6 +104,7 @@ var ReferenceEditionView = Backbone.View.extend({
             $(el).val("");
         });
         this.currentRef = null;
+        this.cleanInvalid();
     },
 
     fill: function(reference){
@@ -99,13 +113,13 @@ var ReferenceEditionView = Backbone.View.extend({
 
         var values = _.omit(reference.data, "referenced_user", "current", "date_from", "date_to");
         _.each(values, function(value, key){
-            self.$("[name=" + key + "]").val(value);
+            self.ui[key].val(value);
         });
         if (reference.data.current) {
-            this.$("[name=current]").attr("checked", true);
+            this.ui.current.prop("checked", true);
         }
         else {
-            this.$("[name=current]").attr("checked", false);
+            this.ui.current.prop("checked", false);
         }
         this.$date_from.data("DateTimePicker").setDate(moment(reference.data.date_from, "DD/MM/YYYY"));
         this.handleCurrent();
@@ -113,9 +127,11 @@ var ReferenceEditionView = Backbone.View.extend({
 
         if (reference.data.referenced_user) {
             $("[value=#exists]").click();
-            var referenceSelect = this.$("[name=referenced_user]");
-            var value = $("option:contains("+ reference.data.referenced_user +")", referenceSelect).attr("value");
-            referenceSelect.select2("val", value);
+            var value = $(
+                "option:contains("+ reference.data.referenced_user +")",
+                this.ui.referenced_user
+            ).attr("value");
+            this.ui.referenced_user.select2("val", value);
         }
         else {
             $("[value=#doesnt-exists]").click();
@@ -127,8 +143,8 @@ var ReferenceEditionView = Backbone.View.extend({
     },
 
     handleCurrent: function (e) {
-        if (this.$("[name=current]").is(":checked")) {
-            this.$("[name=date_to]").val("");
+        if (this.ui.current.is(":checked")) {
+            this.ui.date_to.val("");
             this.$date_to.data("DateTimePicker").disable();
         }
         else {
@@ -137,7 +153,54 @@ var ReferenceEditionView = Backbone.View.extend({
     },
 
     validate: function (data) {
+        var valid = true, msg;
+        // referenced_user or famille name + (tel or mail)
+        if (!data.referenced_user && !(data.name && (data.phone || data.email))) {
+            if (!data.name) {
+                msg = "Ce champs est requis.";
+                this.markInvalid(this.ui.name, msg);
+                valid = false;
+            }
+            if (!data.phone && !data.email) {
+                msg = "Au moins un champs de contact est requis.";
+                this.markInvalid(this.ui.phone, msg);
+                this.markInvalid(this.ui.email, msg);
+                valid = false;
+            }
+        }
+        if (!data.date_from) {
+            msg = "Ce champs est requis";
+            this.markInvalid(this.ui.date_from, msg);
+            valid = false;
+        }
+        if (!data.current && !data.date_to) {
+            msg = "Ce champs est requis.";
+            this.markInvalid(this.ui.date_to, msg);
+            valid = false;
+        }
+        if (!data.missions) {
+            msg = "Ce champs est requis.";
+            this.markInvalid(this.ui.missions, msg);
+            valid = false;
+        }
 
+        if (valid) this.cleanInvalid();
+
+        return valid;
+    },
+
+    markInvalid: function ($field, msg) {
+        var el = "<span class='invalid-field text-danger'>{msg}</span>".replace("{msg}", msg);
+        var $parent = $field.parents(".form-group");
+
+        if (!$parent.hasClass("has-error")) {
+            $parent.addClass("has-error").append(el);
+        }
+    },
+
+    cleanInvalid: function () {
+        this.$(".form-group").removeClass("has-error");
+        this.$(".invalid-field").remove();
     }
 });
 
