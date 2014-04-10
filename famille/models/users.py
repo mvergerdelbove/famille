@@ -532,6 +532,7 @@ class Reference(BaseModel):
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(blank=True, null=True, max_length=15)
     missions = models.TextField(blank=True, null=True)
+    # FIXME: doesn't look like the proper field...
     referenced_user = models.OneToOneField(Famille, blank=True, null=True, related_name="reference_of")
     date_from = models.DateField(blank=True, null=True)
     date_to = models.DateField(blank=True, null=True)
