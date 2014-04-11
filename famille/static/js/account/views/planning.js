@@ -77,6 +77,7 @@ var PlanningView = Backbone.View.extend({
 
     render: function () {
         this.setElement(this.template({}));
+        this.$("select").select2();
         this.renderDatetime();
         return this;
     },

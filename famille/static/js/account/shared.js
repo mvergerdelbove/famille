@@ -63,7 +63,7 @@ function App (){
 	}
     initSlider($("#id_tarif"));
     $(".slider").removeAttr("style");
-    $("select").select2();
+    $("select:not(.empty-planning-form select)").select2();
 
     // init
     showTab();
