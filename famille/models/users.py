@@ -386,6 +386,7 @@ class Prestataire(Criteria):
         "marche": u"Enfants de 3 à 7 ans"
     }
 
+    birthday = models.DateField(null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES.items())
     other_type = models.CharField(max_length=100, null=True, blank=True)
     language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())

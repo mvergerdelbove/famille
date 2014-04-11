@@ -215,8 +215,19 @@ class FamilleCriteriaForm(CriteriaForm):
 class PrestataireForm(UserForm):
     class Meta(UserForm.Meta):
         model = Prestataire
-        fields = UserForm.Meta.fields + ("type", "other_type")
-        labels = dict(UserForm.Meta.labels, type="Type de prestataire", other_type=u"Précisez...")
+        fields = UserForm.Meta.fields + ("type", "other_type", "birthday")
+        labels = dict(
+            UserForm.Meta.labels,
+            type="Type de prestataire",
+            other_type=u"Précisez...",
+            birthday=u"Date de naissance"
+        )
+        widgets = {
+            "birthday": forms.DateInput(
+                attrs={'type':'datetime', "class": "form-control"},
+                format="%d/%m/%Y"
+            )
+        }
 
 
 class PrestataireCompetenceForm(CriteriaForm):

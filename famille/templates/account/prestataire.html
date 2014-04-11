@@ -205,6 +205,15 @@
 									{% bootstrap_field profil.name field_class="col-md-6" label_class="col-md-4" %}
 									{% bootstrap_field profil.first_name field_class="col-md-6" label_class="col-md-4" %}
 									{% bootstrap_field profil.email field_class="col-md-6" label_class="col-md-4" %}
+                                    <div class="form-group">
+                                        {% bootstrap_label profil.birthday.label_tag label_class="col-md-4" %}
+                                        <div class="col-md-6 input-group date">
+                                            {{ profil.birthday }}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
 									{% bootstrap_field profil.type field_class="col-md-6" label_class="col-md-4" %}
                                     <div class="hide other-type">
                                         {% bootstrap_field profil.other_type field_class="col-md-6" label_class="col-md-4" %}

@@ -69,6 +69,7 @@ function App (){
     showTab();
     initDatepicker($("#planning .date"), datePickerOptions.planning);
     initDatepicker($("#compte .date"), datePickerOptions.references);
+    initDatepicker($("#profil .date"), datePickerOptions.references);
     $('.nav-tabs a').click(function (e) {
 		$(this).tab('show');
 		var scrollmem = $('body').scrollTop();
