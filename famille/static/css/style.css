@@ -70,3 +70,7 @@
 .nav>li>a>img.small-pic {
     max-width: 20px;
 }
+
+.notifyjs-corner {
+    top: 60px !important;
+}

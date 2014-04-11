@@ -6,6 +6,7 @@
         "bootstrap": "3.0.3",
         "bootstrap3-datetimepicker": "3.0.0",
         "jquery.cookie": "1.4.0",
+        "notifyjs": "0.3.1",
         "seiyria-bootstrap-slider": "1.9.5",
         "select2": "3.4.6",
         "underscore": "1.5.2"
