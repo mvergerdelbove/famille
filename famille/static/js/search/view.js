@@ -172,7 +172,7 @@ module.exports = Backbone.View.extend({
     toggleFavorite: function(e){
         if (!this.isAuthenticated()) return;
         var $target = $(e.target),
-        resource_uri = $("[data-field=resource_uri]", $target.parent().parent()).html(),
+        resource_uri = $("[data-field=resource_uri]", $target.parents(".panel-heading")).html(),
         action = ($target.hasClass("glyphicon-star-empty")) ? "add": "remove";
 
         $target.toggleClass("glyphicon-star").toggleClass("glyphicon-star-empty");
