@@ -50,7 +50,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         fields = (
-            'name', 'first_name', 'email', 'street',
+            'pseudo', 'name', 'first_name', 'email', 'street',
             'postal_code', 'city', 'country',
             'tel', 'tel_visible'
         )
@@ -63,6 +63,7 @@ class UserForm(forms.ModelForm):
             "country": "Pays",
             "tel": u"Téléphone",
             "tel_visible": u"J’accepte que mon téléphone soit visible pour les personnes souhaitant me contacter",
+            "pseudo": u"Pseudo"
         }
 
     def save(self, commit=True):
@@ -161,8 +162,8 @@ class FamilleForm(ForeignKeyForm, UserForm):
 
     class Meta(UserForm.Meta):
         model = Famille
-        fields = ('pseudo', ) + UserForm.Meta.fields + ('type', )
-        labels = dict(UserForm.Meta.labels, type="Type de famille", pseudo="Pseudo")
+        fields = UserForm.Meta.fields + ('type', )
+        labels = dict(UserForm.Meta.labels, type="Type de famille")
 
 
 class CriteriaForm(forms.ModelForm):

@@ -136,6 +136,7 @@ class UserInfo(BaseModel):
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100)
+    pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
 
     street = models.CharField(blank=True, null=True, max_length=100)
     postal_code = models.CharField(blank=True, null=True, max_length=8)
@@ -309,6 +310,9 @@ class UserInfo(BaseModel):
         """
         Return the pseudo of a user.
         """
+        if self.pseudo:
+            return self.pseudo
+
         pseudo = self.first_name
         if not pseudo:
             pseudo = self.email.split("@")[0]
@@ -415,7 +419,6 @@ class Famille(Criteria):
         "actif": "Famille couple actif",
     }
 
-    pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
@@ -445,12 +448,6 @@ class Famille(Criteria):
 
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
-
-    def get_pseudo(self):
-        """
-        Return a pseudo of a famille.
-        """
-        return self.pseudo or super(Famille, self).get_pseudo()
 
 
 class Enfant(BaseModel):

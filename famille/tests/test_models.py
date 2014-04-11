@@ -212,6 +212,8 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.presta.get_pseudo(), "Joe")
         self.presta.name = "Jack"
         self.assertEqual(self.presta.get_pseudo(), "Joe J.")
+        self.presta.pseudo = "joejoe"
+        self.assertEqual(self.presta.get_pseudo(), "joejoe")
 
         self.assertEqual(self.famille.get_pseudo(), "a")
         self.famille.first_name = "Mick"
