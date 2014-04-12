@@ -30,7 +30,7 @@ module.exports = Backbone.Router.extend({
         }).done(function(){
             self.trigger("contact:success");
         }).fail(function(){
-            self.trigger("contact:fail");
+            self.trigger("contact:error");
         });
     },
 

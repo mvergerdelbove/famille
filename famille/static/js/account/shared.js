@@ -76,7 +76,6 @@ function App (){
 		window.location.hash = this.hash;
 		$('html,body').scrollTop(scrollmem);
     });
-
 }
 
 module.exports = App;

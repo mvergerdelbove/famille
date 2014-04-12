@@ -24,4 +24,5 @@ _.extend(Notifier.prototype, {
 
 module.exports = (function ($) {
     window.notifier = window.notifier || new Notifier();
+    return window.notifier;
 })(jQuery);

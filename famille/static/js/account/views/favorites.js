@@ -1,3 +1,5 @@
+var notifier = require("../../notifier");
+
 var modalSubtitleTemplate = _.template("Ce formulaire sera envoyé à <em><%= names.join(', ') %></em>.");
 var modalBodyTemplate = _.template("\
     <form class='form-horizontal'>\
@@ -39,7 +41,7 @@ var FavoriteView = Backbone.View.extend({
         this.router.removeFavorite({
             data: _.pick(data, "resource_uri")
         });
-        this.trigger("remove");
+        this.trigger("remove", this);
         this.remove();
     }
 });
@@ -61,10 +63,12 @@ var MainView = Backbone.View.extend({
                 el: el,
                 router: options.router
             });
-            self.listenTo(view, "remove", self.removeFavorite(view));
+            self.listenTo(view, "remove", self.removeFavorite);
             self.listenTo(view, "fav:contact", self.fireModal);
             return view;
         });
+        this.listenTo(this.router, "contact:success", this.contactSuccess);
+        this.listenTo(this.router, "contact:error", this.contactError);
     },
 
     contactFavorites: function(e){
@@ -80,6 +84,15 @@ var MainView = Backbone.View.extend({
 
     removeFavorite: function(view){
         this.views = _.without(this.views, view);
+        notifier.info("Favori supprimé avec succès.");
+    },
+
+    contactSuccess: function () {
+        notifier.success("Votre message a été envoyé avec succès.");
+    },
+
+    contactError: function () {
+        notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
     }
 });
 
