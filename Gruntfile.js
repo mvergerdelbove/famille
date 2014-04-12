@@ -47,6 +47,7 @@ module.exports = function(grunt) {
             },
             all: {
                 files: [
+                    JS_ROOT + "*.js",
                     JS_ROOT + 'search/**/*.js',
                     JS_ROOT + 'account/**/*.js',
                     JS_ROOT + 'profile/**/*.js'
