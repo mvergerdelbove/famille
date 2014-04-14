@@ -1,3 +1,5 @@
+var notifier = require("../../notifier");
+
 var MainView = Backbone.View.extend({
     events: {
         "click .add-planning": "addPlanning",
@@ -50,6 +52,7 @@ var MainView = Backbone.View.extend({
 
     onSuccess: function () {
         _.invoke(this.views, "onSuccess");
+        notifier.success("Vos préférences de planning ont été sauvegardées avec succès.");
     },
 
     onError: function (errors) {
@@ -57,6 +60,8 @@ var MainView = Backbone.View.extend({
         _.each(errors, function (errs, idx) {
             views[idx].onError(errs);
         });
+        var errMsg = "Certains champs ont mal été remplis, veuillez réessayer.";
+        notifier.error({title: "Erreur de validation", message: errMsg});
     }
 });
 
@@ -103,14 +108,15 @@ var PlanningView = Backbone.View.extend({
     },
 
     onSuccess: function () {
-        this.$(".form-group").removeClass("has-error").addClass("has-success");
+        this.$(".form-group").removeClass("has-error");
+        this.$(".error-msg").remove();
     },
 
     onError: function (errors) {
         if (!_.isEmpty(errors)) {
             var self = this;
             _.each(errors, function (msg, name) {
-                msg = "<span class=help-block>{msg}</span>".replace("{msg}", msg);
+                msg = "<span class='help-block error-msg'>{msg}</span>".replace("{msg}", msg);
                 var $el = self.$(".form-control[name={name}]".replace("{name}", name));
                 $el.closest(".form-group").addClass("has-error");
                 $el.after(msg);
