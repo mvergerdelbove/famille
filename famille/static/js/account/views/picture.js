@@ -1,3 +1,6 @@
+var notifier = require("../../notifier");
+
+
 module.exports = Backbone.View.extend({
 
     events: {
@@ -44,9 +47,12 @@ module.exports = Backbone.View.extend({
         this.$(".errorblock").html();
         this.modal.modal("hide");
         this.$("img").attr("src", Settings.urls.media + data.profile_pic);
+        notifier.success("Photo de profil sauvegardée avec succès.");
     },
 
     onFail: function (data) {
-        this.$(".errorblock").html(data.profile_pic.join(", "));
+        var err = data.profile_pic.join(", ");
+        this.$(".errorblock").html(err);
+        notifier.error({title: "Erreur de validation", message: err});
     }
 });
