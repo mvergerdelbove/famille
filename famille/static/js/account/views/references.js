@@ -1,3 +1,5 @@
+var notifier = require("../../notifier");
+
 function getDataFromEl(form){
     form = $(form);
     return _.object(_.compact(_.map(form.find(".form-control,[type=checkbox]:checked"), function(el){
@@ -215,6 +217,7 @@ var PrestataireAccountView = Backbone.View.extend({
 
     initialize: function(options){
         Backbone.View.prototype.initialize.call(this, options);
+        this._dirty = false;
         this.settings = options.settings;
         this.settings.main = this;
         this.views = [];
@@ -229,18 +232,20 @@ var PrestataireAccountView = Backbone.View.extend({
         var self = this;
         _.each(this.$(".real-forms .reference-form"), function(el){
             var data = getDataFromEl(el);
-            self.addReference(data, el);
+            self.addReference(data, el, true);
         });
     },
 
-    addReference: function(data, formEl){
+    addReference: function(data, formEl, nodirty){
+        if (!nodirty) this.handleDirty();
         var view = new ReferenceView(data, formEl, this.settings);
         this.views.push(view);
         this.$(".reference-list").append(view.render().el);
-        this.appendReferenceForm(view);
+        this.appendReferenceForm(view, nodirty);
     },
 
-    appendReferenceForm: function (view) {
+    appendReferenceForm: function (view, nodirty) {
+        if (!nodirty) this.handleDirty();
         this.$(".real-forms").append(view.$formEl);
     },
 
@@ -251,6 +256,7 @@ var PrestataireAccountView = Backbone.View.extend({
     },
 
     removeReference: function(e){
+        this.handleDirty();
         var idx = this.getReferenceIdx(e.target);
         this.views[idx].remove();
         this.views.splice(idx, 1);
@@ -262,6 +268,12 @@ var PrestataireAccountView = Backbone.View.extend({
 
     getReferencedUserName: function(uid){
         return this.$("select[name=referenced_user] option[value="+ uid +"]").html();
+    },
+
+    handleDirty: function () {
+        if (this._dirty) return;
+        this._dirty = true;
+        notifier.info("Certains changements ne sont pas sauvegardés. N'oubliez pas de valider avant de quitter !");
     }
 });
 
