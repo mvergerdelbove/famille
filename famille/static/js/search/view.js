@@ -1,3 +1,5 @@
+var notifier = require("../notifier.js");
+
 var constructFilterForString = function(name, query, value){
     return name + "__" + query + "=" + value;
 };
@@ -134,7 +136,7 @@ module.exports = Backbone.View.extend({
     },
 
     error: function(jqXHR){
-        console.log(jqXHR);
+        notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
     },
 
     /****************************************/
