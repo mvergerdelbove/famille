@@ -21,7 +21,7 @@ module.exports = Backbone.Router.extend({
         }).done(function(data){
             self.trigger("rating:success", data);
         }).fail(function(){
-            self.trigger("rating:fail");
+            self.trigger("rating:error");
         });
     }
 });

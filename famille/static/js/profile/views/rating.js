@@ -1,3 +1,4 @@
+var notifier = require("../../notifier.js");
 var ScoreView = require("./score");
 
 
@@ -13,7 +14,8 @@ module.exports = Backbone.View.extend({
                 el: el
             });
         });
-        this.listenTo(this.router, "rating:fail", this.onFailure);
+        this.listenTo(this.router, "rating:success", this.onSuccess);
+        this.listenTo(this.router, "rating:error", this.onError);
     },
 
     submit: function (e) {
@@ -28,7 +30,11 @@ module.exports = Backbone.View.extend({
         }));
     },
 
-    onFailure: function () {
-        console.log(arguments);
+    onError: function () {
+        notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
+    },
+
+    onSuccess: function () {
+        notifier.success("Votre note a bien été prise en compte !");
     }
 });
