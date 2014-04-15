@@ -1,3 +1,5 @@
+var displaySuccessNotification = require("../success.js");
+
 function App (){
     var containers = {child: $(".child-container"), planning: $(".planning-container")},
 	forms = {child: $(".empty-child-form .child-form"), planning: $(".empty-planning-form .planning-form")},
@@ -67,6 +69,7 @@ function App (){
 
     // init
     showTab();
+    displaySuccessNotification("Vos informations ont été mises à jour avec succès.");
     initDatepicker($("#planning .date"), datePickerOptions.planning);
     initDatepicker($("#compte .date"), datePickerOptions.references);
     initDatepicker($("#profil .date"), datePickerOptions.references);

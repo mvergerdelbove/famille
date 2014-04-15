@@ -39,7 +39,11 @@ module.exports = function(grunt) {
             profile: {
                 dest: BUILD_ROOT + "profile.js",
                 src: [JS_ROOT + "profile/app.js"]
-            }
+            },
+            visibility: {
+                dest: BUILD_ROOT + "visibility.js",
+                src: [JS_ROOT + "account/visibility.js"]
+            },
         },
         watch: {
             options: {
@@ -68,6 +72,7 @@ module.exports = function(grunt) {
         'browserify:search',
         'browserify:famille_account',
         'browserify:prestataire_account',
-        'browserify:profile'
+        'browserify:profile',
+        'browserify:visibility'
     ]);
 };

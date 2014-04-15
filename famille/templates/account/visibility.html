@@ -1,5 +1,6 @@
 {% extends "account/base.html" %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 
 {% block mainContent %}
 {% bootstrap_messages %}
@@ -13,4 +14,8 @@
         {% endbuttons %}
     </form>
 </div>
+{% endblock %}
+
+{% block extraScript %}
+<script src="{% static "js/build/visibility.js" %}"></script>
 {% endblock %}

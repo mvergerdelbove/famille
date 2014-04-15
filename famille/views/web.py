@@ -112,7 +112,7 @@ def account(request):
         url_hash = account_forms.form_submitted
         if account_forms.is_valid():
             account_forms.save()
-            return HttpResponseRedirect('/mon-compte/#' + url_hash)
+            return HttpResponseRedirect('/mon-compte/?success#%s' % url_hash)
     else:
         account_forms = forms.AccountFormManager(instance=request.related_user)
 
@@ -205,7 +205,7 @@ def premium(request, action=None):
     form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
     return render(request, "account/premium.html", get_context(form=form, action=action))
 
-
+# FIXME: visibility for prestataires ?
 @require_related
 @login_required
 def visibility(request):
@@ -214,8 +214,10 @@ def visibility(request):
     """
     if request.method == "POST":
         form = forms.VisibilityForm(instance=request.related_user, data=request.POST)
+        import pdb; pdb.set_trace()
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect('/mon-compte/visibilite/?success')
     else:
         form = forms.VisibilityForm(instance=request.related_user)
 

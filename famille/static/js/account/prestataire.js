@@ -33,7 +33,6 @@ var templateOutsideReference = '\
     </div>';
 
 (function($){
-    Shared();
     window.famille = window.famille || {};
 
     var $otherTypeContainer = $(".other-type"), $typeSelect = $("#id_type");
