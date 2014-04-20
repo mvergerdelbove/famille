@@ -97,3 +97,19 @@ def submit_rating(request, type, uid):
         })
 
     return JsonResponse(form.errors, status=403)
+
+
+########## Messages #############
+
+@require_related
+@require_POST
+@login_required
+def send_message(request):
+    """
+    Send a message to some users.
+    """
+    # take the data
+    # from pk to objects
+    # send email
+    # save
+    pass

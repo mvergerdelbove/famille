@@ -353,3 +353,11 @@ class MessagesTestCase(TestCase):
         self.assertEqual(msgs.count(), 1)
         msgs = models.get_inbox(self.famille)
         self.assertEqual(msgs.count(), 1)
+
+    def test_get_outbox(self):
+        msgs = models.get_outbox(self.famille)
+        self.assertEqual(msgs.count(), 1)
+        msgs = models.get_outbox(self.presta)
+        self.assertEqual(msgs.count(), 1)
+        msgs = models.get_outbox(self.presta2)
+        self.assertEqual(msgs.count(), 0)

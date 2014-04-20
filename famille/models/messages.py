@@ -22,12 +22,12 @@ def get_inbox(related_user):
 
     :param related_user:       a prestataire or a famille instance
     """
-    return related_user.user.received_messaged.all()
+    return related_user.user.received_messages.all()
 
 
 class Message(BaseModel):
     sender = models.ForeignKey(User, related_name="sent_messages")
-    recipients = models.ManyToManyField(User, related_name="received_messaged")
+    recipients = models.ManyToManyField(User, related_name="received_messages")
     subject = models.CharField(blank=True, null=True, max_length=50)
     content = models.TextField(blank=True, null=True)
     sent = models.BooleanField(default=False)
