@@ -44,6 +44,10 @@ module.exports = function(grunt) {
                 dest: BUILD_ROOT + "visibility.js",
                 src: [JS_ROOT + "account/visibility.js"]
             },
+            premium: {
+                dest: BUILD_ROOT + "premium.js",
+                src: [JS_ROOT + "account/premium.js"]
+            }
         },
         watch: {
             options: {
@@ -73,6 +77,7 @@ module.exports = function(grunt) {
         'browserify:famille_account',
         'browserify:prestataire_account',
         'browserify:profile',
-        'browserify:visibility'
+        'browserify:visibility',
+        'browserify:premium'
     ]);
 };
