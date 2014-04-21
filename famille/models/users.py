@@ -179,6 +179,7 @@ class UserInfo(BaseModel):
     @classmethod
     def premium_signup(sender, **kwargs):
         import logging
+
         logging.warning("premium_signup: %s", sender)
         logging.warning("premium_signup: %s", str(kwargs))
 
