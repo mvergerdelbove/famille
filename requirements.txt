@@ -4,6 +4,7 @@ dj-database-url==0.2.2
 dj-static==0.0.5
 django-bootstrap3==2.5.1
 django-grappelli==2.5.0
+django-log-request-id==1.0.0
 django-localflavor==1.0
 django-password-reset==0.7
 git+https://github.com/spookylukey/django-paypal.git@c3f1dc1dad197584431b3853205722577c0a8912
