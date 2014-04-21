@@ -176,7 +176,7 @@ class UserInfo(BaseModel):
         user.save()
         return user
 
-    @classmethod
+    @staticmethod
     def premium_signup(sender, **kwargs):
         import logging
 
