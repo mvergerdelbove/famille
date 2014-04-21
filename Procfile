@@ -1,1 +1,1 @@
-web: gunicorn famille.wsgi
+web: newrelic-admin gunicorn famille.wsgi
