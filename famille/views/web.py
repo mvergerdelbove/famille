@@ -171,13 +171,13 @@ def profile(request, type, uid):
     return render(request, "profile/base.html", get_context(profile=user, **context))
 
 
-# TODO: might be a subscription
 premium_dict = {
     "business": settings.PAYPAL_RECEIVER_EMAIL,
-    "amount": "10.00",
-    "item_name": "Compte premium",
-    "item_number": "TODO",
-    "src": "1"
+    "amount": settings.PREMIUM_PRICE,
+    "item_name": "Compte premium Une vie de famille",
+    "item_number": settings.PREMIUM_ID,
+    "src": "1",
+    "currency_code": "EUR"
 }
 
 @require_related
@@ -191,9 +191,7 @@ def premium(request, action=None):
         return render_to_response("account/already_premium.html")
 
     if action == "valider":
-        # TODO: make sure that the payment has been received. how ?
-        #       invoice should be something related to the user
-        return render(request, "account/premium.html", get_context(form=form, action=action))
+        return render(request, "account/premium.html", get_context(action=action))
 
     data = premium_dict.copy()
     data.update(
@@ -204,6 +202,7 @@ def premium(request, action=None):
     )
     form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
     return render(request, "account/premium.html", get_context(form=form, action=action))
+
 
 # FIXME: visibility for prestataires ?
 @require_related

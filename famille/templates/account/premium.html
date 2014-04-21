@@ -12,7 +12,15 @@
 </div>
 <div class="row">
     <div class="col-md-offset-2 col-md-8">
-        {{ form.render }}
+        {% if action != "valider" %}
+            {{ form.render }}
+        {% endif %}
     </div>
 </div>
+<input type="hidden" value="{{ action }}" id="paypal-action"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static "lib/underscore/underscore-min.js" %}"></script>
+    <script src="{% static "js/build/premium.js" %}"></script>
 {% endblock %}

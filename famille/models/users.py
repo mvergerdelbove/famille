@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from paypal.standard.ipn.signals import subscription_signup
 
 from famille import errors
 from famille.models.base import BaseModel
@@ -174,6 +175,12 @@ class UserInfo(BaseModel):
         user = UserType(user=dj_user, email=dj_user.email)
         user.save()
         return user
+
+    @classmethod
+    def premium_signup(sender, **kwargs):
+        import logging
+        logging.warning("premium_signup: %s", sender)
+        logging.warning("premium_signup: %s", str(kwargs))
 
     @property
     def is_geolocated(self):
@@ -550,3 +557,6 @@ FAVORITE_CLASSES = {
     Famille: FamilleFavorite,
     Prestataire: PrestataireFavorite
 }
+
+# signals
+subscription_signup.connect(UserInfo.premium_signup)
