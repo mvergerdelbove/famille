@@ -560,4 +560,4 @@ FAVORITE_CLASSES = {
 }
 
 # signals
-subscription_signup.connect(UserInfo.premium_signup)
+# subscription_signup.connect(UserInfo.premium_signup)
