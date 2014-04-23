@@ -10,9 +10,15 @@ cp-settings = ([ ! -f $(1) ]) || ([ -f $(2) ] && echo "File already exists.") ||
 
 install: venv settings dependencies
 
-dependencies:
-	npm install --loglevel error
+install_test: venv settings pydependencies
+
+dependencies: pydependencies jsdependencies
+
+pydependencies:
 	${PYTHONHOME}bin/pip install -q -r requirements.txt
+
+jsdependencies:
+	npm install --loglevel error
 
 venv:
 	echo "Creating virtualenv..."

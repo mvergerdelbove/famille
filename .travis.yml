@@ -5,7 +5,7 @@ postgres:
   username: postgres
 python:
 - '2.7'
-install: make install
+install: make install_test
 before_script:
 - psql -c 'create database famille;' -U postgres
 script: make test
