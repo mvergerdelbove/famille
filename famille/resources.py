@@ -1,17 +1,14 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from tastypie import fields
-from tastypie.authentication import BasicAuthentication
-from tastypie.exceptions import InvalidSortError
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
+from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
 from famille.models import planning, compute_user_visibility_filters
-from famille.utils.auth import MessageAuthorization
-from famille.utils.geolocation import is_close_enough, geolocate
 from famille.utils.python import pick, without
+from famille.utils.geolocation import is_close_enough, geolocate
 
 
 class WeekdayResource(ModelResource):
@@ -225,42 +222,3 @@ class FamilleResource(SearchResource, ModelResource):
                 bundle.data = without(bundle.data, *self.FIELD_DENIED_BASIC)
 
         return bundle
-
-
-class SimpleUserResource(ModelResource):
-
-    class Meta(SearchResource.Meta):
-        resource_name = "users"
-        object_class = User
-        fields = []
-
-
-class MessageResource(ModelResource):
-
-    sender = fields.ToOneField("famille.resources.SimpleUserResource", "sender", related_name="sent_messages")
-    recipients = fields.ToManyField("famille.resources.SimpleUserResource", "recipients", related_name="received_messages")
-
-    class Meta:
-        queryset = models.Message.objects.all()
-        resource_name = "messages"
-        authentication = BasicAuthentication()
-        authorization = MessageAuthorization()
-        fields = [
-            "sender", "recipients", "content",
-            "subject", "sent", "created_at", "id"
-        ]
-        filtering = {
-            "created_at": ALL,
-            "sent": ALL
-        }
-
-    def dehydrate_sender(self, bundle):
-        sender = bundle.obj.sender
-        related_user = models.get_user_related(sender)
-
-        return {
-            "id": sender.pk,
-            "related_id": related_user.pk,
-            "first_name": related_user.first_name,
-            "name": related_user.name,
-        }

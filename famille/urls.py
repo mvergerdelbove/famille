@@ -17,7 +17,6 @@ api.register(resources.FamillePlanningResource())
 api.register(resources.PrestatairePlanningResource())
 api.register(resources.ScheduleResource())
 api.register(resources.WeekdayResource())
-api.register(resources.MessageResource())
 
 
 urlpatterns = patterns(
