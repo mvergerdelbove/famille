@@ -19,7 +19,7 @@ __all__ = [
     "Famille", "Prestataire", "Enfant",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
-    "compute_user_visibility_filters"
+    "compute_user_visibility_filters", "get_user_pseudo"
 ]
 
 
@@ -121,6 +121,18 @@ def compute_user_visibility_filters(user):
             filters &= models.Q(visibility_prestataire=True)
 
     return filters
+
+
+def get_user_pseudo(user):
+    """
+    Retrieve the user pseudo, given an
+    instance of Django User. Useful for
+    django-postman.
+
+    :param user:       the Django user instance
+    """
+    related = get_user_related(user)
+    return related.get_pseudo()
 
 
 class UserInfo(BaseModel):

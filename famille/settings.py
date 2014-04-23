@@ -13,7 +13,6 @@ import os
 PROJECT_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -36,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'djrill',
+    'ajax_select',
     'bootstrap3',
     'south',
     'localflavor',
@@ -168,8 +168,18 @@ PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 
 # postman
+from famille.models import get_user_pseudo  # importing here to not fail
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_DISALLOW_MULTIRECIPIENTS = True  # for now...
+POSTMAN_SHOW_USER_AS = get_user_pseudo
+POSTMAN_AUTOCOMPLETER_APP = {
+    'arg_default': 'postman_users',
+}
+
+# ajax_select
+AJAX_LOOKUP_CHANNELS = {
+    'postman_users': ("famille.utils.lookup", "PostmanUserLookup"),
+}
 
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging
