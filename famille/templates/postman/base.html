@@ -9,15 +9,29 @@
 {# dj v1.2 #}{# {{ MEDIA_URL }}postman/css/postman.css #}
 " />{% endblock %}
 {% block content %}
+    <div class="row">
+        <div class="col-md-3">
     {% block postman_menu %}
-    <ul id="postman_menu">{% postman_unread as unread_count %}
-        <li><a href="{% url 'postman_inbox' %}">Boîte de réception{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
-        <li><a href="{% url 'postman_sent' %}">Messages envoyés</a></li>
-        <li><a href="{% url 'postman_write' %}">Écrire</a></li>
-        <li><a href="{% url 'postman_archives' %}">Archives</a></li>
-        <li><a href="{% url 'postman_trash' %}">Corbeille</a></li>
-    </ul>
+    <div id="postman_menu" class="list-group margin-top-1"> {% postman_unread as unread_count %}
+        <a class="list-group-item {% if 'messages/inbox' in request.path %}active{% endif %}"
+           href="{% url 'postman_inbox' %}">
+            <span class="badge pull-right">{{ unread_count }}</span>
+            Boîte de réception
+        </a>
+        <a class="list-group-item {% if 'messages/sent' in request.path %}active{% endif %}"
+           href="{% url 'postman_sent' %}">Messages envoyés</a>
+        <a class="list-group-item {% if 'messages/write' in request.path %}active{% endif %}"
+           href="{% url 'postman_write' %}">Écrire</a>
+        <a class="list-group-item {% if 'messages/archives' in request.path %}active{% endif %}"
+           href="{% url 'postman_archives' %}">Archives</a>
+        <a class="list-group-item {% if 'messages/trash' in request.path %}active{% endif %}"
+           href="{% url 'postman_trash' %}">Corbeille</a>
+    </div>
     {% endblock %}
+    </div>
+    <div class="col-md-6">
     {% block postman_content %}
     {% endblock %}
+</div>
+</div>
 {% endblock %}
