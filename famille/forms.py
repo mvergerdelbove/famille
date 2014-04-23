@@ -1,6 +1,7 @@
 # -*- coding=utf-8 -*-
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
 
 from famille.models import (
@@ -14,8 +15,8 @@ from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
 
-SCHEDULE_CHOICES = Schedule.get_choices()
-WEEKDAY_CHOICES = Weekday.get_choices()
+SCHEDULE_CHOICES = lazy(Schedule.get_choices, list)()
+WEEKDAY_CHOICES = lazy(Weekday.get_choices, list)()
 
 
 class RegistrationForm(forms.Form):
