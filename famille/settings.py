@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'localflavor',
     'password_reset',
     'paypal.standard.ipn',
+    'pagination',
+    'postman',
     'storages',
     'tastypie',
     'tinymce',
@@ -67,6 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'pagination.middleware.PaginationMiddleware',
 )
 
 ROOT_URLCONF = 'famille.urls'
@@ -163,6 +166,9 @@ PREMIUM_PRICE = "10.00"
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 
+# postman
+POSTMAN_DISALLOW_ANONYMOUS = True
+POSTMAN_DISALLOW_MULTIRECIPIENTS = True  # for now...
 
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging

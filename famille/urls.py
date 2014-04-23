@@ -67,4 +67,5 @@ urlpatterns = patterns(
     url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
     url(r'', include('password_reset.urls')),  # password reset
+    url(r'^messages/', include('postman.urls')),  # postman
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
