@@ -7,7 +7,7 @@ from famille.models.users import Famille, Prestataire
 
 
 __all__ = [
-    "FamillePlanning", "PrestatairePlanning"
+    "FamillePlanning", "PrestatairePlanning", "Weekday", "Schedule"
 ]
 
 
