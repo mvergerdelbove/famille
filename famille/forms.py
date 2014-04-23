@@ -10,7 +10,7 @@ from famille.models import (
     PrestataireRatings
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
-from famille.utils.fields import RangeField
+from famille.utils.fields import RangeField, LazyMultipleChoiceField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
@@ -356,11 +356,11 @@ class BaseSearchForm(forms.Form):
         widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
     )
     # planning
-    plannings__schedule__id = forms.MultipleChoiceField(
+    plannings__schedule__id = LazyMultipleChoiceField(
         label=u"Plage horaire", choices=SCHEDULE_CHOICES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    plannings__weekday__id = forms.MultipleChoiceField(
+    plannings__weekday__id = LazyMultipleChoiceField(
         label=u"Jour(s) de la semaine", choices=WEEKDAY_CHOICES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )

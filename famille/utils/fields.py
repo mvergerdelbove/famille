@@ -2,7 +2,7 @@
 import os
 
 from django.db.models import FileField
-from django.forms import forms, MultiValueField, CharField
+from django.forms import forms, MultiValueField, CharField, MultipleChoiceField
 from django.template.defaultfilters import filesizeformat
 
 from famille.utils.python import generate_timestamp
@@ -92,3 +92,22 @@ class RangeField(MultiValueField):
             ]
 
         return None
+
+
+class LazyMultipleChoiceField(MultipleChoiceField):
+
+    def _get_choices(self):
+        """
+        Override choices getter to cast choices to list.
+        """
+        return list(self._choices)
+
+    def _set_choices(self, value):
+        """
+        Override choices setter to not cast directly choices to list.
+
+        :param value:    the value to set
+        """
+        self._choices = self.widget.choices = value
+
+    choices = property(_get_choices, _set_choices)
