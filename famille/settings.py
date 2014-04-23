@@ -62,6 +62,7 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE_CLASSES = (
     'log_request_id.middleware.RequestIDMiddleware',
+    'famille.middlewares.ForceDefaultLanguageMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,7 +89,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'fr'  # this is default and forced thanks to the ForceDefaultLanguageMiddleware
 
 TIME_ZONE = 'UTC'
 
