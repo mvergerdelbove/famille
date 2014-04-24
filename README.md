@@ -15,7 +15,7 @@ Machine Dependencies
 - Install NodeJS v0.10.26: `brew install node`.
 - Install virtualenv: `pip install virtualenv` or `easy_install virtualenv`.
 - Install postgresql: `brew install postgresql`. You might encounter some issues with the installation of PostgreSQL, make sure your read every information from brew.
-- Install foreman package: [http://github.com/ddollar/foreman.
+- Install foreman package: http://github.com/ddollar/foreman.
 
 App installation
 ----------------
