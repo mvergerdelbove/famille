@@ -15,6 +15,7 @@ class FamilleAdmin(admin.ModelAdmin):
     model = Famille
     form = forms.FamilleForm
     list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
+    exclude = ('geolocation', 'user')
     search_fields = ['first_name', 'name', 'email']
 
 
@@ -22,6 +23,7 @@ class PrestataireAdmin(admin.ModelAdmin):
     model = Prestataire
     form = forms.PrestataireForm
     list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
+    exclude = ('geolocation', 'user')
     search_fields = ['first_name', 'name', 'email']
 
 
@@ -33,5 +35,4 @@ admin.site.register(Prestataire, PrestataireAdmin)
 
 # TODO:
 #       - display photo on rows ?
-#       - remove some fields : geolocations
 #       - a way to display plannings ?
