@@ -30,6 +30,9 @@ class RegistrationForm(forms.Form):
             return False
 
         user_exists = bool(User.objects.filter(username=self.cleaned_data["email"]).first())
+        if user_exists:
+            self._errors["email"] = self.error_class([u"Un utilisateur existe déjà avec cet email."])
+
         return not user_exists
 
     def save(self):

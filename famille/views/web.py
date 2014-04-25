@@ -91,14 +91,13 @@ def register(request, social=None, type=None):
                 form.save()
         else:
             form = forms.RegistrationForm()
-            return render(request, "registration/register.html", get_context(social=social, form=form))
+        return render(request, "registration/register.html", get_context(social=social, form=form))
     else:
         if not has_user_related(request.user):
             UserInfo.create_user(dj_user=request.user, type=type)
         else:
             return redirect('account')
 
-    # TODO: error
     return HttpResponseRedirect('/confirmation/')
 
 

@@ -136,7 +136,7 @@ class UserInfo(BaseModel):
     geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
 
     street = models.CharField(blank=True, null=True, max_length=100)
