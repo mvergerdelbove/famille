@@ -417,6 +417,7 @@ class Prestataire(Criteria):
     class Meta:
         app_label = 'famille'
 
+
 class Famille(Criteria):
     """
     The Famille user.
