@@ -27,6 +27,7 @@ class RegistrationFormTestCase(TestCase):
         self.form.is_bound = True
         self.form.data = {"email": "test@email.com", "password": "p"}
         self.assertFalse(self.form.is_valid())
+        self.assertIn("email", self.form._errors)
 
         self.form._errors = None
         self.form.data = {"email": "valid@email.com", "password": "p"}
@@ -211,3 +212,44 @@ class FieldsTestCase(TestCase):
         self.assertTrue(filename.startswith("folder/"))
         p = re.compile("folder/\d+\.txt")
         self.assertTrue(p.match(filename))
+
+
+class UserFormTestCase(TestCase):
+
+    def setUp(self):
+        class Form(forms.UserForm):
+            class Meta(forms.UserForm.Meta):
+                model = models.Famille
+
+        self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
+        self.famille.save()
+        self.Form = Form
+        self.data = {
+            "name": "Caca",
+            "first_name": "Toto",
+        }
+
+    def test_is_valid_no_email(self):
+        form = self.Form(data=self.data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
+
+    def test_is_valid_wrong_email(self):
+        self.data["email"] = "a@gmail.com"
+        form = self.Form(data=self.data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
+
+    def test_is_valid_good(self):
+        self.data["email"] = "b@gmail.com"
+        form = self.Form(data=self.data)
+        self.assertTrue(form.is_valid())
+
+    def test_save(self):
+        self.data["email"] = "b@gmail.com"
+        form = self.Form(data=self.data, instance=self.famille)
+        self.assertTrue(form.is_valid())
+        form.save()
+        user = User.objects.get(pk=self.user1.pk)
+        self.assertEqual(user.email, "b@gmail.com")

@@ -7,6 +7,7 @@ from django.test import TestCase
 from mock import MagicMock, patch
 
 from famille import models, errors
+from famille.models import utils
 from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
 
 
@@ -319,3 +320,25 @@ class RatingTestCase(TestCase):
         self.assertFalse(models.FamilleRatings.user_has_voted_for(self.presta, self.famille))
         models.FamilleRatings(user=self.famille, by=self.presta.simple_id).save()
         self.assertTrue(models.FamilleRatings.user_has_voted_for(self.presta, self.famille))
+
+class UtilsTestCase(TestCase):
+
+    def setUp(self):
+        self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
+        self.famille.save()
+        self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
+        self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
+        self.presta.save()
+        self.user3 = User.objects.create_user("d", "d@gmail.com", "d")
+        self.presta2 = models.Prestataire(user=self.user3, description="Une description", email="d@gmail.com")
+
+    def test_email_is_unique_no_model(self):
+        self.assertFalse(utils.email_is_unique("a@gmail.com"))
+        self.assertFalse(utils.email_is_unique("b@gmail.com"))
+        self.assertTrue(utils.email_is_unique("c@gmail.com"))
+
+    def test_email_is_unique_with_model(self):
+        self.assertTrue(utils.email_is_unique("d@gmail.com", self.presta2))
+        self.assertFalse(utils.email_is_unique("a@gmail.com", self.presta2))
+        self.assertFalse(utils.email_is_unique("b@gmail.com", self.presta2))

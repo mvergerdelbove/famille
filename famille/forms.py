@@ -10,6 +10,7 @@ from famille.models import (
     PrestataireRatings
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
+from famille.models.utils import email_is_unique
 from famille.utils.fields import RangeField, LazyMultipleChoiceField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
@@ -70,6 +71,23 @@ class UserForm(forms.ModelForm):
             "pseudo": u"Pseudo"
         }
 
+    def is_valid(self):
+        """
+        Make sure the form is valid, additionally
+        check that the email is unique among users.
+        """
+        if not super(UserForm, self).is_valid():
+            return False
+
+        if "email" not in self.changed_data:
+            return True
+
+        if not email_is_unique(self.cleaned_data["email"], self.instance):
+            self._errors["email"] = self.error_class([u"Un utilisateur existe déjà avec cet email."])
+            return False
+        return True
+
+
     def save(self, commit=True):
         """
         Override save method to trigger geolocation if needed.
@@ -77,6 +95,9 @@ class UserForm(forms.ModelForm):
         instance = super(UserForm, self).save(commit)
         if commit:
             instance.manage_geolocation(self.changed_data)
+            if "email" in self.changed_data:
+                instance.user.email = self.cleaned_data["email"]
+                instance.user.save()
         return instance
 
 
