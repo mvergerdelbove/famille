@@ -178,10 +178,7 @@ class UserInfo(BaseModel):
 
     @staticmethod
     def premium_signup(sender, **kwargs):
-        import logging
-
-        logging.error("premium_signup: %s", sender)
-        logging.error("premium_signup: %s", str(kwargs))
+        raise Exception("PREMIUM SIGNUP")
 
     @property
     def is_geolocated(self):
