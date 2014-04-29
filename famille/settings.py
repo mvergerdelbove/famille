@@ -134,9 +134,6 @@ bools = {
 
 for key in os.environ:
     value = os.environ[key]
-    if key == "ADMIN":
-        value = (("Admin", value), )
-        key = "ADMINS"
     globals()[key] = bools.get(value, value)
 
 NB_SEARCH_RESULTS = 5
@@ -193,10 +190,6 @@ LOGGING = {
             'filters': ['request_id'],
             'formatter': 'standard',
         },
-        'mail_admins_always': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
     },
     'loggers': {
         'log_request_id.middleware': {
@@ -205,7 +198,7 @@ LOGGING = {
             'propagate': False,
         },
         'django.request': {
-            'handlers': ['mail_admins_always'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False
         }
