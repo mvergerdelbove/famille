@@ -134,6 +134,9 @@ bools = {
 
 for key in os.environ:
     value = os.environ[key]
+    if key == "ADMIN":
+        value = (("Admin", value), )
+        key = "ADMINS"
     globals()[key] = bools.get(value, value)
 
 NB_SEARCH_RESULTS = 5
