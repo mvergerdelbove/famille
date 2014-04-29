@@ -180,8 +180,8 @@ class UserInfo(BaseModel):
     def premium_signup(sender, **kwargs):
         import logging
 
-        logging.warning("premium_signup: %s", sender)
-        logging.warning("premium_signup: %s", str(kwargs))
+        logging.error("premium_signup: %s", sender)
+        logging.error("premium_signup: %s", str(kwargs))
 
     @property
     def is_geolocated(self):
@@ -561,4 +561,4 @@ FAVORITE_CLASSES = {
 }
 
 # signals
-# subscription_signup.connect(UserInfo.premium_signup)
+subscription_signup.connect(UserInfo.premium_signup)
