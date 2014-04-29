@@ -4,7 +4,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from paypal.standard.ipn.signals import subscription_signup
+from paypal.standard.ipn.signals import payment_was_successful
 
 from famille import errors
 from famille.models.base import BaseModel
@@ -558,4 +558,4 @@ FAVORITE_CLASSES = {
 }
 
 # signals
-subscription_signup.connect(UserInfo.premium_signup)
+payment_was_successful.connect(UserInfo.premium_signup)
