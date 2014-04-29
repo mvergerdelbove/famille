@@ -190,6 +190,10 @@ LOGGING = {
             'filters': ['request_id'],
             'formatter': 'standard',
         },
+        'mail_admins_always': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
     },
     'loggers': {
         'log_request_id.middleware': {
@@ -197,5 +201,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'django.request': {
+            'handlers': ['mail_admins_always'],
+            'level': 'ERROR',
+            'propagate': False
+        }
     }
 }
