@@ -212,7 +212,6 @@ def visibility(request):
     """
     if request.method == "POST":
         form = forms.VisibilityForm(instance=request.related_user, data=request.POST)
-        import pdb; pdb.set_trace()
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/mon-compte/visibilite/?success')
