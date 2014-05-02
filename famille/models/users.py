@@ -1,6 +1,5 @@
 # -*- coding=utf-8 -*-
 from datetime import datetime
-import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -561,4 +560,4 @@ FAVORITE_CLASSES = {
 
 
 # signals
-payment_was_successful.connect(payment.signer.premium_signup)
+payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")
