@@ -6,12 +6,13 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from paypal.standard.ipn.models import PayPalIPN
+from paypal.standard.ipn.signals import payment_was_successful
 
 from famille import errors
 from famille.models.base import BaseModel
 from famille.utils import (
     parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES,
-    fields as extra_fields
+    fields as extra_fields, payment
 )
 from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
@@ -393,6 +394,7 @@ class Prestataire(Criteria):
         "jeune": u"Jeunes enfants (1 à 3 ans)",
         "marche": u"Enfants de 3 à 7 ans"
     }
+    PAYMENT_PREFIX = "f"
 
     birthday = models.DateField(null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES.items())
@@ -423,6 +425,7 @@ class Famille(Criteria):
         "foyer": "Famille Mère/Père au foyer",
         "actif": "Famille couple actif",
     }
+    PAYMENT_PREFIX = "f"
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
@@ -555,3 +558,7 @@ FAVORITE_CLASSES = {
     Famille: FamilleFavorite,
     Prestataire: PrestataireFavorite
 }
+
+
+# signals
+payment_was_successful.connect(payment.signer.premium_signup)

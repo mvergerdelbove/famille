@@ -4,14 +4,10 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.signing import TimestampSigner, BadSignature
 
-from famille import models
-
 
 class PaymentSigner(TimestampSigner):
     SEP = ":"
     PREFIX = "VDF_"
-    FAMILLE_PREFIX = "f"
-    PRESTA_PREFIX = "p"
 
     def __init__(self, sep=SEP):
         super(PaymentSigner, self).__init__(sep=sep, salt="famille.payment")
@@ -22,8 +18,7 @@ class PaymentSigner(TimestampSigner):
 
         :param user:     the user, famille or prestataire
         """
-        prefix = self.FAMILLE_PREFIX if isinstance(user, models.Famille) else self.PRESTA_PREFIX
-        return self.sign("%s%s" % (prefix, user.pk))
+        return self.sign("%s%s" % (user.PAYMENT_PREFIX, user.pk))
 
     def sign(self, value):
         """
@@ -68,10 +63,11 @@ class PaymentSigner(TimestampSigner):
 
         :param ipn:            the ipn that fired a signal
         """
+        from famille import models
         value = self.unsign(ipn.invoice)
 
         prefix, pk = value[0], value[1:]
-        ModelClass = models.Famille if prefix == self.FAMILLE_PREFIX else models.Prestataire
+        ModelClass = models.Famille if prefix == models.Famille.PAYMENT_PREFIX else models.Prestataire
         return ModelClass.objects.get(pk=pk)
 
     def premium_signup(self, sender, **kwargs):
@@ -82,7 +78,7 @@ class PaymentSigner(TimestampSigner):
         if self.transaction_is_legit(sender):
             user = self.user_from_ipn(sender)
             user.ipn_id = sender.pk
-            user.plan = models.UserInfo.PLANS["premium"]
+            user.plan = user.PLANS["premium"]
             user.save()
         else:
             logging.warning("Paypal transaction not legit, pk %s", sender.pk)
