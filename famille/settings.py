@@ -201,6 +201,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False
+        },
+        'famille': {
+            'handlers': ['console'],
+            'level': 'INFO'
         }
     }
 }
