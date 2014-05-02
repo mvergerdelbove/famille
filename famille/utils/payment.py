@@ -75,6 +75,7 @@ class PaymentSigner(TimestampSigner):
         This method is a callback for django paypal signal,
         it links the payment to the user and mark the user as premium.
         """
+        raise Exception("FUCK YOU")
         logging.info("Signing up premium member")
         if self.transaction_is_legit(sender):
             user = self.user_from_ipn(sender)
