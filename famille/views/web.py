@@ -1,6 +1,3 @@
-import hashlib
-import time
-
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -16,7 +13,7 @@ from famille.models import (
     compute_user_visibility_filters
 )
 from famille.resources import PrestataireResource, FamilleResource
-from famille.utils import get_context, get_result_template_from_user
+from famille.utils import get_context, get_result_template_from_user, payment
 from famille.utils.http import require_related, login_required, assert_POST
 
 
@@ -194,7 +191,7 @@ def premium(request, action=None):
 
     data = premium_dict.copy()
     data.update(
-        invoice="PREMIUM_VDF__%s__%s" % (int(time.time()), hashlib.md5(str(request.related_user.pk)).hexdigest()),
+        invoice=payment.signer.sign_user(request.related_user),
         notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
         return_url=request.build_absolute_uri('/devenir-premium/valider/'),
         cancel_return=request.build_absolute_uri('/devenir-premium/annuler/')

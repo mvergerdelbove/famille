@@ -1,14 +1,17 @@
 import types
 
+from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
 from django.test import TestCase
 from mock import MagicMock, patch
+from paypal.standard.ipn.models import PayPalIPN
 
 from famille import models, errors
 from famille.models import utils
 from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
+from famille.utils import payment
 
 
 __all__ = ["ModelsTestCase", "RatingTestCase", "GeolocationTestCase"]

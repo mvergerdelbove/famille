@@ -1,15 +1,18 @@
 from datetime import date, datetime
 import json
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.signing import BadSignature
 from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
+from paypal.standard.ipn.models import PayPalIPN
 
 from famille import utils, models, errors
 from famille.models.users import Geolocation
-from famille.utils import geolocation, http, python, mail
+from famille.utils import geolocation, http, python, mail, payment
 
 
 __all__ = ["UtilsTestCase", "GeolocationTestCase", "PythonTestCase", "HTTPTestCase"]
@@ -161,3 +164,143 @@ class HTTPTestCase(TestCase):
 
         resp = http.JsonResponse({"toto": "tata"}, status=400)
         self.assertEqual(resp.status_code, 400)
+
+
+DUMMY_IPN = {
+    "charset": "a",
+    "custom": "a",
+    "business": "a",
+    "parent_txn_id": "a",
+    "receiver_email": "a@a.com",
+    "receiver_id": "a",
+    "residence_country": "a",
+    "txn_id": "a",
+    "txn_type": "a",
+    "verify_sign": "a",
+    "address_country": "a",
+    "address_city": "a",
+    "address_country_code": "a",
+    "address_name": "a",
+    "address_state": "a",
+    "address_street": "a",
+    "address_status": "a",
+    "address_zip": "a",
+    "first_name": "a",
+    "contact_phone": "a",
+    "last_name": "a",
+    "payer_business_name": "a",
+    "payer_email": "a",
+    "payer_id": "a",
+    "auth_exp": "a",
+    "auth_id": "a",
+    "auth_status": "a",
+    "invoice": "a",
+    "item_name": "a",
+    "item_number": settings.PREMIUM_ID,
+    "mc_currency": "USD",
+    "memo": "a",
+    "memo": "a",
+    "option_name1": "a",
+    "option_name2": "a",
+    "payer_status": "a",
+    "payment_status": "a",
+    "payment_type": "a",
+    "pending_reason": "a",
+    "protection_eligibility": "a",
+    "reason_code": "a",
+    "shipping": 1.2,
+    "settle_currency": "a",
+    "shipping_method": "a",
+    "transaction_entity": "a",
+    "auction_buyer_id": "a",
+    "payment_cycle": "a",
+    "period_type": "a",
+    "product_type": "a",
+    "product_name": "a",
+    "profile_status": "a",
+    "rp_invoice_id": "a",
+    "recurring_payment_id": "a",
+    "period1": "a",
+    "password": "a",
+    "period2": "a",
+    "period3": "a",
+    "reattempt": "a",
+    "recurring": "a",
+    "subscr_id": "a",
+    "username": "a",
+    "case_id": "a",
+    "case_type": "a",
+    "receipt_id": "a",
+    "currency_code": "a",
+    "transaction_subject": "a",
+    "ipaddress": "192.0.2.30",
+    "flag_code": "a",
+    "flag": False,
+    "flag_info": "a",
+    "response": "a",
+    "query": "a",
+}
+
+
+class PaymentTestCase(TestCase):
+
+    def setUp(self):
+        self.ipn = PayPalIPN(**DUMMY_IPN)
+        self.ipn.save()
+        self.user = User(username="test@email.com", email="test@email.com", password="p")
+        self.user.save()
+        self.famille = models.Famille(user=self.user)
+        self.famille.save()
+
+    def tearDown(self):
+        self.ipn.delete()
+        self.famille.delete()
+        self.user.delete()
+
+    def test_sign_user_unsign_ok(self):
+        signed_value = payment.signer.sign_user(self.famille)
+        value = payment.signer.unsign(signed_value)
+        expected = "f%s" % self.famille.pk
+        self.assertEqual(value, expected)
+
+    def test_sign_user_unsign_ko(self):
+        signed_value = payment.signer.sign_user(self.famille)
+        signed_value = signed_value[:-1]
+        self.assertRaises(BadSignature, payment.signer.unsign, signed_value)
+
+    def test_transaction_is_legit(self):
+        signed_value = payment.signer.sign_user(self.famille)
+        self.ipn.invoice = signed_value
+        self.assertTrue(payment.signer.transaction_is_legit(self.ipn))
+
+    def test_transaction_is_legit_wrong_item_number(self):
+        self.ipn.item_number = "toto"
+        self.assertFalse(payment.signer.transaction_is_legit(self.ipn))
+
+    def test_transation_is_legit_wrong_invoice(self):
+        self.ipn.invoice = "VDF_f%s:iaozhdazposujazdjqsio" % self.famille.pk
+        self.assertFalse(payment.signer.transaction_is_legit(self.ipn))
+
+    def test_user_from_ipn(self):
+        self.ipn.invoice = payment.signer.sign_user(self.famille)
+        f = payment.signer.user_from_ipn(self.ipn)
+        self.assertEqual(f, self.famille)
+
+    def test_user_from_ipn_no_user(self):
+        famille = models.Famille()
+        famille.pk = 122
+        self.ipn.invoice = payment.signer.sign_user(famille)
+        self.assertRaises(models.Famille.DoesNotExist, payment.signer.user_from_ipn, self.ipn)
+
+    def test_user_from_ipn_wrong_signature(self):
+        self.ipn.invoice = "VDF_f%s:iaozhdazposujazdjqsio" % self.famille.pk
+        self.assertRaises(BadSignature, payment.signer.user_from_ipn, self.ipn)
+
+    def test_premium_signup_ok(self):
+        self.assertFalse(self.famille.is_premium)
+        self.ipn.invoice = payment.signer.sign_user(self.famille)
+
+        payment.signer.premium_signup(self.ipn)
+        famille = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertTrue(famille.is_premium)
+        self.assertEqual(famille.ipn, self.ipn)

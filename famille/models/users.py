@@ -1,15 +1,17 @@
 # -*- coding=utf-8 -*-
 from datetime import datetime
+import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from paypal.standard.ipn.signals import payment_was_successful
+from paypal.standard.ipn.models import PayPalIPN
 
 from famille import errors
 from famille.models.base import BaseModel
 from famille.utils import (
-    parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES, fields as extra_fields
+    parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES,
+    fields as extra_fields
 )
 from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
@@ -134,6 +136,7 @@ class UserInfo(BaseModel):
     }
     user = models.OneToOneField(User)
     geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
+    ipn = models.OneToOneField(PayPalIPN, blank=True, null=True)
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100, unique=True)
@@ -175,10 +178,6 @@ class UserInfo(BaseModel):
         user = UserType(user=dj_user, email=dj_user.email)
         user.save()
         return user
-
-    @staticmethod
-    def premium_signup(sender, **kwargs):
-        raise Exception("PREMIUM SIGNUP")
 
     @property
     def is_geolocated(self):
@@ -556,6 +555,3 @@ FAVORITE_CLASSES = {
     Famille: FamilleFavorite,
     Prestataire: PrestataireFavorite
 }
-
-# signals
-payment_was_successful.connect(UserInfo.premium_signup)
