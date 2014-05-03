@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -10,7 +12,7 @@ from famille import forms
 from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
     has_user_related, FamilleRatings, PrestataireRatings,
-    compute_user_visibility_filters
+    compute_user_visibility_filters, DownloadableFile
 )
 from famille.resources import PrestataireResource, FamilleResource
 from famille.utils import get_context, get_result_template_from_user, payment
@@ -20,6 +22,7 @@ from famille.utils.http import require_related, login_required, assert_POST
 __all__ = [
     "home", "search", "register", "account",
     "favorite", "profile", "premium", "visibility",
+    "tools"
 ]
 
 
@@ -216,3 +219,16 @@ def visibility(request):
         form = forms.VisibilityForm(instance=request.related_user)
 
     return render(request, "account/visibility.html", get_context(form=form))
+
+def tools(request):
+    """
+    Display the tools (DownloadableFile objects) to the user.
+    """
+    tool_files = defaultdict(list)
+    for tool in DownloadableFile.objects.all():
+        tool_files[tool.file_type].append(tool)
+
+    return render(
+        request, "espace/tools.html",
+        get_context(tool_files=dict(tool_files), kinds=DownloadableFile.KINDS)
+    )

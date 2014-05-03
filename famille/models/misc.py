@@ -10,11 +10,11 @@ __all__ = ["DownloadableFile", ]
 
 class DownloadableFile(models.Model):
 
-    KIND = (
-        ("tools", u"Outils"),
-        ("pratique", u"Fiches pratiques"),
-        ("metiers", u"Fiches métiers"),
-    )
+    KINDS = {
+        "tools": u"Outils",
+        "pratique": u"Fiches pratiques",
+        "metiers": u"Fiches métiers",
+    }
 
     name = models.CharField(max_length=50, verbose_name="Nom du fichier")
     description = models.CharField(max_length=150)
@@ -23,7 +23,7 @@ class DownloadableFile(models.Model):
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
         verbose_name="Fichier", max_upload_size=2621440  # 2.5MB
     )
-    file_type = models.CharField(max_length=10, choices=KIND, verbose_name="Type de fichier")
+    file_type = models.CharField(max_length=10, choices=KINDS.items(), verbose_name="Type de fichier")
 
     class Meta:
         app_label = 'famille'

@@ -35,6 +35,7 @@ urlpatterns = patterns(
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register(?:/(?P<social>[a-zA-Z]+)/((?P<type>[a-zA-Z]+)))?/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
+    url(r'^tout-sur-la-garde-denfants/$', 'famille.views.tools', name="tools"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^recover/$', Recover.as_view(
         search_fields=["email"], email_template_name="password_reset/recovery_email.html",
