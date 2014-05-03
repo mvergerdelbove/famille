@@ -25,3 +25,9 @@ App installation
 - Start postgres server.
 - Create a famille database in Postgres: `psql -h localhost -d postgres` and `create database famille;`.
 - Load application fixtures: `./manage.py loaddata prestataires.json`.
+
+Up and running
+--------------
+
+- Setup the database: `foreman run ./manage.py syncdb` and `foreman run ./manage.py migrate`.
+- Execute `foreman run ./manage.py runserver` and access to http://localhost:8000.
