@@ -34,7 +34,8 @@ module.exports = Backbone.View.extend({
         "onkeyup .form-search [type=text]": "doSearch",
         "slideStop #id_tarif": "doSearch",
         "click .form-search [data-distance]": "doDistanceSearch",
-        "change #search-sort": "doSearch"
+        "change #search-sort": "doSearch",
+        "change #id_age": "doSearch"
     },
 
     initialize: function(options){
