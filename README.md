@@ -38,3 +38,8 @@ Static pages (Flat pages)
 Static pages are a good way to make content editable by user.
 Some pages are required in the website. To load them (and maybe edit them),
 you can perform `foreman run ./manage.py loaddata flatpages.json`
+
+Once you edited the flatpages in the django admin, and you want to commit
+your changes so that every app (heroku app for instance) has the changes,
+you can execute `foreman run ./manage.py dumpdata flatpages --indent=4 > fixtures/flatpages.json`
+before commiting your changes to git.
