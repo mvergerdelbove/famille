@@ -168,7 +168,7 @@ class PrestataireResource(SearchResource, ModelResource):
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
-            plannings=ALL_WITH_RELATIONS
+            plannings=ALL_WITH_RELATIONS, birthday=('lte','gte')
         )
 
 
