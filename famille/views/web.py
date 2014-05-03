@@ -220,6 +220,7 @@ def visibility(request):
 
     return render(request, "account/visibility.html", get_context(form=form))
 
+
 def tools(request):
     """
     Display the tools (DownloadableFile objects) to the user.
