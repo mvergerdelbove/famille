@@ -1,14 +1,19 @@
 {% extends "base.html" %}
+{% load flatpages %}
+
 {% block bodyattrs %}data-spy="scroll" data-target=".side-bar"{% endblock %}
 
 {% block content %}
+{% get_flatpages "/faq/" as faq_pages %}
+{% with faq_page=faq_pages|first %}
 <div class="row little-margin">
     <div class="col-md-3 side-bar">
         <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="0">
             <li><a href="#description">Description du service</a></li>
-            <li><a href="#fonctionnement" class="">Fonctionnement</a></li>
-            <li><a href="#avantages" class="">Avantages offerts</a></li>
-            <li><a href="#premium" class="">Avantages premium</a></li>
+            <li><a href="#fonctionnement">Fonctionnement</a></li>
+            <li><a href="#avantages">Avantages offerts</a></li>
+            <li><a href="#premium">Avantages premium</a></li>
+            <li><a href="#faq">Foire aux questions</a></li>
         </ul>
     </div>
     <section class="col-md-8">
@@ -36,6 +41,13 @@
                 {% block avantages_premium %}{% endblock %}
             </div>
         </article>
+        <article id="faq">
+            <header><h3>Foire aux questions</h3></header>
+            <div>
+                {{ faq_page.content|safe }}
+            </div>
+        </article>
     </section>
 </div>
+{% endwith %}
 {% endblock %}

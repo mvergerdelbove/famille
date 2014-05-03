@@ -31,3 +31,10 @@ Up and running
 
 - Setup the database: `foreman run ./manage.py syncdb` and `foreman run ./manage.py migrate`.
 - Execute `foreman run ./manage.py runserver` and access to http://localhost:8000.
+
+Static pages (Flat pages)
+-------------------------
+
+Static pages are a good way to make content editable by user.
+Some pages are required in the website. To load them (and maybe edit them),
+you can perform `foreman run ./manage.py loaddata flatpages.json`
