@@ -53,11 +53,11 @@ urlpatterns = patterns(
         name="confirmation"
     ),
     url(
-        r'^espace-famille/$', TemplateView.as_view(template_name="espace_famille.html"),
+        r'^espace-famille/$', TemplateView.as_view(template_name="espace/famille.html"),
         name="espace_famille"
     ),
     url(
-        r'^espace-prestataire/$', TemplateView.as_view(template_name="espace_prestataire.html"),
+        r'^espace-prestataire/$', TemplateView.as_view(template_name="espace/prestataire.html"),
         name="espace_prestataire"
     ),
 
