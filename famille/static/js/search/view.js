@@ -23,6 +23,26 @@ var constructTarifFilter = function (name, value) {
     }
 };
 
+
+var constructAgeFilter = function(name, value) {
+    var birhdayField = "birthday";
+    var today = new Date();
+    var birthDate;
+    switch(value) {
+        case "16-":
+            birthDate = new Date(today.setYear(today.getYear() - 16));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18-":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18+":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__lte="+ birthDate.toISOString().split('T')[0];
+        default:
+            return "";
+    }
+};
+
 module.exports = Backbone.View.extend({
     events: {
         "click .next": "displayNext",
@@ -53,6 +73,7 @@ module.exports = Backbone.View.extend({
                 name = $this.attr("name"),
                 value = $this.val(),
                 query = $this.data("api");
+            if (value && name == "age") return constructAgeFilter(name, value);
             if (value && query) return constructFilter(name, query, value);
             if (value && name == "language") return constructLanguageFilter(name, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
