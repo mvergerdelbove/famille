@@ -47,6 +47,10 @@ module.exports = function(grunt) {
             premium: {
                 dest: BUILD_ROOT + "premium.js",
                 src: [JS_ROOT + "account/premium.js"]
+            },
+            messages: {
+                dest: BUILD_ROOT + "messages.js",
+                src: [JS_ROOT + "account/messages.js"]
             }
         },
         watch: {
@@ -78,6 +82,7 @@ module.exports = function(grunt) {
         'browserify:prestataire_account',
         'browserify:profile',
         'browserify:advanced',
-        'browserify:premium'
+        'browserify:premium',
+        'browserify:messages'
     ]);
 };
