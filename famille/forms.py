@@ -533,7 +533,7 @@ class RatingPrestataireForm(RatingBaseForm):
         model = PrestataireRatings
 
 
-class VisibilityForm(forms.ModelForm):
+class AdvancedForm(forms.ModelForm):
 
     class Meta:
         model = Famille

@@ -21,8 +21,8 @@ from famille.utils.http import require_related, login_required, assert_POST
 
 __all__ = [
     "home", "search", "register", "account",
-    "favorite", "profile", "premium", "visibility",
-    "tools"
+    "favorite", "profile", "premium",
+    "tools", "advanced"
 ]
 
 
@@ -203,22 +203,21 @@ def premium(request, action=None):
     return render(request, "account/premium.html", get_context(form=form, action=action))
 
 
-# FIXME: visibility for prestataires ?
 @require_related
 @login_required
-def visibility(request):
+def advanced(request):
     """
-    Page to manage visibility on the website.
+    Render the advanved settings view. It is called by several views.
     """
     if request.method == "POST":
-        form = forms.VisibilityForm(instance=request.related_user, data=request.POST)
+        form = forms.AdvancedForm(instance=request.related_user, data=request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/mon-compte/visibilite/?success')
+            return HttpResponseRedirect('/mon-compte/parametres-avances/?success')
     else:
-        form = forms.VisibilityForm(instance=request.related_user)
+        form = forms.AdvancedForm(instance=request.related_user)
 
-    return render(request, "account/visibility.html", get_context(form=form))
+    return render(request, "account/advanced.html", get_context(form=form))
 
 
 def tools(request):

@@ -1,0 +1,25 @@
+{% extends "account/base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block mainContent %}
+<div class="col-md-offset-2 col-md-6">
+    <h1>Paramètres avancés</h1>
+        <form action="{% url 'advanced' %}" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <h2>Gérer ma visibilité</h2>
+            {% bootstrap_field form.visibility_family %}
+            {% bootstrap_field form.visibility_prestataire %}
+            {% bootstrap_field form.visibility_global %}
+
+            {% buttons %}
+                <button type="submit" class="btn btn-success">Valider</button>
+            {% endbuttons %}
+        </form>
+    </article>
+</div>
+{% endblock %}
+
+{% block extraScript %}
+<script src="{% static "js/build/visibility.js" %}"></script>
+{% endblock %}
