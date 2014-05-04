@@ -1,0 +1,22 @@
+{% extends "postman/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block postman_content %}
+<div id="postman">
+<h1>{% block pm_write_title %}{% endblock %}</h1>
+<form action="{% if next_url %}?next={{ next_url|urlencode }}{% endif %}" method="post">{% csrf_token %}
+{% block pm_write_recipient %}{% endblock %}
+{% bootstrap_form form %}
+{% buttons %}
+    <button class="btn btn-success" type="submit">Envoyer</button>
+{% endbuttons %}
+</form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static "lib/jquery-ui/ui/jquery-ui.js" %}"></script>
+<script src="{% static "ajax_select/js/ajax_select.js" %}"></script>
+{% endblock %}
