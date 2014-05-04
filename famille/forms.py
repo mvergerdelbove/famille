@@ -541,5 +541,6 @@ class AdvancedForm(forms.ModelForm):
             "visibility_family": u"Visible auprès des familles",
             "visibility_prestataire": u"Visible auprès des prestataires",
             "visibility_global": u"Visible globalement sur le site",
+            "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
