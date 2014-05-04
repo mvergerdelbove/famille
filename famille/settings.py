@@ -168,10 +168,17 @@ PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 
 # postman
-from famille.models import get_user_pseudo  # importing here to not fail
+def get_user_pseudo_safely(user):
+    """
+    Safe wrapper to get a user pseudo, in order
+    to avoid problems when importing settings.
+    """
+    from famille.models import get_user_pseudo  # importing here to not fail
+    return get_user_pseudo(user)
+
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_DISALLOW_MULTIRECIPIENTS = True  # for now...
-POSTMAN_SHOW_USER_AS = get_user_pseudo
+POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
 POSTMAN_AUTOCOMPLETER_APP = {
     'arg_default': 'postman_users',
 }
