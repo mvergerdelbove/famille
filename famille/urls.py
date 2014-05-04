@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import TemplateView
 from password_reset.views import Recover
 from tastypie.api import Api
@@ -29,6 +30,14 @@ urlpatterns = patterns(
     }, name='auth_logout'),
     url(r'^mon-compte/$', 'famille.views.account', name="account"),
     url(r'^mon-compte/parametres-avances/', "famille.views.advanced", name="advanced"),
+    url(
+        r'^mon-compte/changer-de-mot-de-passe/$', 'django.contrib.auth.views.password_change',
+        {
+            'password_change_form': PasswordChangeForm,
+            'post_change_redirect': '/mon-compte/parametres-avances/?success',
+            'template_name': 'account/password_change.html'
+        }, name="password_change"
+    ),
     url(r'^profile/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.profile", name="profile"),
     url(r'^devenir-premium(?:/(?P<action>(annuler|valider)))?/$', "famille.views.premium", name="premium"),
     url(r'^recherche/$', 'famille.views.search', name="search"),

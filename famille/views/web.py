@@ -102,8 +102,8 @@ def register(request, social=None, type=None):
 
 
 # TODO: error handling for compte form
-@require_related
 @login_required
+@require_related
 def account(request):
     url_hash = ""
     if request.method == "POST":
@@ -121,9 +121,9 @@ def account(request):
     )
 
 
+@login_required
 @require_related
 @require_POST
-@login_required  # FIXME: does this work ?
 def favorite(request):
     """
     Mark an object as favorite. If action=remove is passed,
@@ -179,9 +179,9 @@ premium_dict = {
     "currency_code": "EUR"
 }
 
+@login_required
 @require_related
 @require_GET
-@login_required
 def premium(request, action=None):
     """
     Page to become premium.
@@ -203,8 +203,8 @@ def premium(request, action=None):
     return render(request, "account/premium.html", get_context(form=form, action=action))
 
 
-@require_related
 @login_required
+@require_related
 def advanced(request):
     """
     Render the advanved settings view. It is called by several views.
