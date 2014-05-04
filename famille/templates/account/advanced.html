@@ -18,7 +18,7 @@
                 <a href="{% url 'password_change' %}" class="btn btn-warning">
                     <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
                 </a>
-                <a href="" class="btn btn-danger">
+                <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-danger">
                     <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
                 </a>
             </div>
@@ -27,6 +27,24 @@
             {% endbuttons %}
         </form>
     </article>
+</div>
+<!-- Conformation modal for account deletion -->
+<div class="modal fade" id="accountDeletion" tabindex="-1" role="dialog" aria-labelledby="account-deletion" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="account-deletion">Vous êtes sur le point de supprimer votre compte</h4>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr ? .......
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                <a href="{% url 'delete_account'%}" class="btn btn-danger">Confirmer</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 

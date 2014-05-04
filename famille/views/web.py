@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
@@ -22,7 +23,7 @@ from famille.utils.http import require_related, login_required, assert_POST
 __all__ = [
     "home", "search", "register", "account",
     "favorite", "profile", "premium",
-    "tools", "advanced"
+    "tools", "advanced", "delete_account"
 ]
 
 
@@ -236,3 +237,16 @@ def tools(request):
         request, "espace/tools.html",
         get_context(tool_files=dict(tool_files), kinds=DownloadableFile.KINDS)
     )
+
+
+@login_required
+@require_related
+@require_GET
+def delete_account(request):
+    """
+    Mark an account as inactive.
+    """
+    request.user.is_active = False
+    request.user.save()
+    logout(request)
+    return HttpResponseRedirect('/')

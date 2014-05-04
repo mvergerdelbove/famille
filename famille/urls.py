@@ -8,6 +8,7 @@ from password_reset.views import Recover
 from tastypie.api import Api
 
 from famille import resources
+from famille.forms import CustomAuthenticationForm
 
 
 admin.autodiscover()
@@ -23,7 +24,9 @@ api.register(resources.WeekdayResource())
 urlpatterns = patterns(
     '',
     url(r'^$', "famille.views.home", name="home"),
-    url(r'^in', 'django.contrib.auth.views.login', name='auth_login'),
+    url(r'^in', 'django.contrib.auth.views.login', {
+        'authentication_form': CustomAuthenticationForm
+    }, name='auth_login'),
     url(r'^out/$', 'django.contrib.auth.views.logout', {
         'next_page': '/',
         'extra_context': {'action': 'logged_out'}
@@ -38,6 +41,7 @@ urlpatterns = patterns(
             'template_name': 'account/password_change.html'
         }, name="password_change"
     ),
+    url(r'^mon-compte/suppression/$', 'famille.views.delete_account', name="delete_account"),
     url(r'^profile/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.profile", name="profile"),
     url(r'^devenir-premium(?:/(?P<action>(annuler|valider)))?/$', "famille.views.premium", name="premium"),
     url(r'^recherche/$', 'famille.views.search', name="search"),

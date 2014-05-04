@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
@@ -555,3 +556,8 @@ class PrestataireAdvancedForm(AdvancedForm):
 
     class Meta(AdvancedForm.Meta):
         model = Prestataire
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    error_messages = AuthenticationForm.error_messages
+    error_messages["inactive"] = u"Ce compte est inactif. Veuillez nous contacter pour le réactiver"
