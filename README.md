@@ -43,3 +43,12 @@ Once you edited the flatpages in the django admin, and you want to commit
 your changes so that every app (heroku app for instance) has the changes,
 you can execute `foreman run ./manage.py dumpdata flatpages --indent=4 > fixtures/flatpages.json`
 before commiting your changes to git.
+
+Migrating SQL Tables
+--------------------
+
+This project uses South. When you modify a model class (adding / removing / modifying column),
+you just need to execute `make schemamigration` to migrate the database schema. And then
+you need to apply it to the database by doing `make migrate`. While deploying on servers,
+you only need to migrate since the schemamigration files are already there, because they are
+versionned.
