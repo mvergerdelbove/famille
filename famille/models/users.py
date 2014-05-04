@@ -167,7 +167,10 @@ class UserInfo(BaseModel):
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
     newsletter = models.BooleanField(blank=True, default=True)
-
+    # visibility
+    visibility_family = models.BooleanField(default=True, blank=True)
+    visibility_prestataire = models.BooleanField(default=True, blank=True)
+    visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
         abstract = True
@@ -314,15 +317,6 @@ class UserInfo(BaseModel):
                 subject=message.get("subject", ""), recipient_list=emails
             )
 
-    def profile_access_is_authorized(self, request):
-        """
-        A method to tell if a given request/user can access to
-        the profile page of the user (self).
-
-        :param request:          the request to be verified
-        """
-        return True
-
     def get_pseudo(self):
         """
         Return the pseudo of a user.
@@ -337,6 +331,24 @@ class UserInfo(BaseModel):
             pseudo += " %s." % self.name[0]
 
         return pseudo
+
+    def profile_access_is_authorized(self, request):
+        """
+        Athorize profile access only if request has the right to.
+
+        :param request:            the request to be verified
+        """
+        if not has_user_related(request.user):
+            return False
+
+        if self.user == request.user:
+            return True
+
+        if not self.visibility_global:
+            return False
+
+        user = get_user_related(request.user)
+        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Criteria(UserInfo):
@@ -443,31 +455,8 @@ class Famille(Criteria):
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
-    # visibility
-    visibility_family = models.BooleanField(default=True, blank=True)
-    visibility_prestataire = models.BooleanField(default=True, blank=True)
-    visibility_global = models.BooleanField(default=True, blank=True)
-
     class Meta:
         app_label = 'famille'
-
-    def profile_access_is_authorized(self, request):
-        """
-        Athorize profile access only if request has the right to.
-
-        :param request:            the request to be verified
-        """
-        if not has_user_related(request.user):
-            return False
-
-        if self.user == request.user:
-            return True
-
-        if not self.visibility_global:
-            return False
-
-        user = get_user_related(request.user)
-        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Enfant(BaseModel):

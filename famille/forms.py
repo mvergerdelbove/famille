@@ -536,7 +536,6 @@ class RatingPrestataireForm(RatingBaseForm):
 class AdvancedForm(forms.ModelForm):
 
     class Meta:
-        model = Famille
         labels = {
             "visibility_family": u"Visible auprès des familles",
             "visibility_prestataire": u"Visible auprès des prestataires",
@@ -544,3 +543,15 @@ class AdvancedForm(forms.ModelForm):
             "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
+
+
+class FamilleAdvancedForm(AdvancedForm):
+
+    class Meta(AdvancedForm.Meta):
+        model = Famille
+
+
+class PrestataireAdvancedForm(AdvancedForm):
+
+    class Meta(AdvancedForm.Meta):
+        model = Prestataire

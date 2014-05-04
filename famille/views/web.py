@@ -209,13 +209,17 @@ def advanced(request):
     """
     Render the advanved settings view. It is called by several views.
     """
+    FormClass = forms.PrestataireAdvancedForm
+    if isinstance(request.related_user, Famille):
+        FormClass = forms.FamilleAdvancedForm
+
     if request.method == "POST":
-        form = forms.AdvancedForm(instance=request.related_user, data=request.POST)
+        form = FormClass(instance=request.related_user, data=request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/mon-compte/parametres-avances/?success')
     else:
-        form = forms.AdvancedForm(instance=request.related_user)
+        form = FormClass(instance=request.related_user)
 
     return render(request, "account/advanced.html", get_context(form=form))
 
