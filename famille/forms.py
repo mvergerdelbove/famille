@@ -414,6 +414,10 @@ class PrestataireSearchForm(BaseSearchForm):
     language = forms.MultipleChoiceField(
         label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
     )
+    age = forms.TypedChoiceField(
+        label=u"Age", choices=Prestataire.AGES.items() + [('', 'Age')], required=False,
+        widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
+    )
     # extra 1
     cdt_periscolaire = forms.BooleanField(
         label=u"Conduite périscolaire", required=False,

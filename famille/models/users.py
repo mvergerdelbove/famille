@@ -420,6 +420,12 @@ class Prestataire(Criteria):
     }
     PAYMENT_PREFIX = "f"
 
+    AGES = {
+        "16-": u"Moins de 16 ans",
+        "18-": u"Moins de 18 ans",
+        "18+": u"Plus de 18 ans"
+    }
+
     birthday = models.DateField(null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES.items())
     other_type = models.CharField(max_length=100, null=True, blank=True)
