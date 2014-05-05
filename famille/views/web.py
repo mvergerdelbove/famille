@@ -144,7 +144,11 @@ def profile(request, type, uid):
     """
     Display the profile of a user.
     """
+    if type not in ("famille", "prestataire"):
+        raise Http404
+
     context = {}
+
     if type == "famille":
         ModelClass = Famille
         RatingClass = FamilleRatings
