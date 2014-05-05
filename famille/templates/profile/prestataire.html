@@ -1,1 +1,14 @@
 {% extends "profile/base.html" %}
+
+
+{% block subtitle %}
+    <h2>
+    {% if profile.get_age %}
+      {{profile.get_age }} ans
+    {% endif %}
+    <small>
+      {{profile.get_type }}
+    </small>
+    </h2>
+
+{% endblock subtitle %}
