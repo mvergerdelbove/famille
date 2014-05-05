@@ -18,7 +18,7 @@ from famille.utils.python import pick
 
 
 __all__ = [
-    "Famille", "Prestataire", "Enfant",
+    "Famille", "Prestataire", "Enfant", "Criteria",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
     "compute_user_visibility_filters", "get_user_pseudo"
