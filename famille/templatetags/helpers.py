@@ -49,3 +49,11 @@ def has_related(value):
     Returns if user has related user or not.
     """
     return has_user_related(value)
+
+
+@register.filter(name='key')
+def key(d, key_name):
+    """
+    Return the key of a dictionnary.
+    """
+    return d[key_name]

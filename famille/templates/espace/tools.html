@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load helpers %}
+
+{% block title %}Une vie de famille - Tout sur la garde d'enfants{% endblock %}
+
+{% block content %}
+<div class="row little-margin">
+    <div class="col-md-3 side-bar">
+        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="0">
+            {% for kind, kind_name in kinds.items %}
+            <li class="link"><a href="#{{ kind }}">{{ kind_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <section class="col-md-8">
+        {% for kind, tool_file_list in tool_files.items %}
+        <article id="{{ kind }}">
+            <header><h3>{{ kinds|key:kind }}</h3></header>
+            <div class="list-group">
+                {% for tool in tool_file_list %}
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">{{ tool.name }}</h4>
+                    <p class="list-group-item-text">
+                        {{ tool.description }}
+                    </p>
+                    <p><a href="{{ tool.file_content.url }}" target="_blank">Accéder au fichier</a></p>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+(function ($) {
+    if (location.hash) {
+        $(".nav-stacked li:has(a[href="+ location.hash +"])").addClass("active");
+    }
+    else {
+        $(".nav-stacked li:first").addClass("active");
+    }
+
+    $(".link").click(function (e) {
+        $(".link").removeClass("active");
+        $(this).addClass("active");
+    });
+})(jQuery);
+</script>
+{% endblock %}

@@ -39,12 +39,11 @@
               </a>
               {% url 'espace_famille' as famille %}
               <ul class="dropdown-menu">
-                  <li><a href="{{ famille }}#first">Présentaiton</a></li>
-                  <li><a href="#">Créer un compte</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{{ famille }}#second">Avantages offerts</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{{ famille }}#third">Témoignages</a></li>
+                  <li><a href="{{ famille }}#description">Description du service</a></li>
+                  <li><a href="{{ famille }}#fonctionnement">Fonctionnement</a></li>
+                  <li><a href="{{ famille }}#avantages">Avantages offerts</a></li>
+                  <li><a href="{{ famille }}#premium">Avantages premium</a></li>
+                  <li><a href="{{ famille }}#faq">Foire aux questions</a></li>
               </ul>
 	      </li>
           {% endif %}
@@ -55,16 +54,15 @@
               </a>
               {% url 'espace_prestataire' as prestataire %}
               <ul class="dropdown-menu">
-                  <li><a href="{{ prestataire }}#first">Présentaiton</a></li>
-                  <li><a href="#">Créer un compte</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{{ prestataire }}#second">Avantages offerts</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{{ prestataire }}#third">Témoignages</a></li>
+                  <li><a href="{{ prestataire }}#description">Description du service</a></li>
+                  <li><a href="{{ prestataire }}#fonctionnement">Fonctionnement</a></li>
+                  <li><a href="{{ prestataire }}#avantages">Avantages offerts</a></li>
+                  <li><a href="{{ prestataire }}#premium">Avantages premium</a></li>
+                  <li><a href="{{ prestataire }}#faq">Foire aux questions</a></li>
               </ul>
           </li>
           {% endif %}
-          <li><a href="#">A propos</a></li>
+          <li><a href="{% url 'tools' %}">Tout sur la garde d'enfants</a></li>
           <li><a href="#">Nous contacter</a></li>
       </ul>
       {% if user.is_authenticated %}

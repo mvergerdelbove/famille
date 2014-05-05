@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
@@ -10,6 +11,7 @@ from famille.models import (
     PrestataireRatings
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
+from famille.models.utils import email_is_unique
 from famille.utils.fields import RangeField, LazyMultipleChoiceField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
@@ -30,6 +32,9 @@ class RegistrationForm(forms.Form):
             return False
 
         user_exists = bool(User.objects.filter(username=self.cleaned_data["email"]).first())
+        if user_exists:
+            self._errors["email"] = self.error_class([u"Un utilisateur existe déjà avec cet email."])
+
         return not user_exists
 
     def save(self):
@@ -67,6 +72,23 @@ class UserForm(forms.ModelForm):
             "pseudo": u"Pseudo"
         }
 
+    def is_valid(self):
+        """
+        Make sure the form is valid, additionally
+        check that the email is unique among users.
+        """
+        if not super(UserForm, self).is_valid():
+            return False
+
+        if "email" not in self.changed_data:
+            return True
+
+        if not email_is_unique(self.cleaned_data["email"], self.instance):
+            self._errors["email"] = self.error_class([u"Un utilisateur existe déjà avec cet email."])
+            return False
+        return True
+
+
     def save(self, commit=True):
         """
         Override save method to trigger geolocation if needed.
@@ -74,6 +96,9 @@ class UserForm(forms.ModelForm):
         instance = super(UserForm, self).save(commit)
         if commit:
             instance.manage_geolocation(self.changed_data)
+            if "email" in self.changed_data:
+                instance.user.email = self.cleaned_data["email"]
+                instance.user.save()
         return instance
 
 
@@ -513,13 +538,30 @@ class RatingPrestataireForm(RatingBaseForm):
         model = PrestataireRatings
 
 
-class VisibilityForm(forms.ModelForm):
+class AdvancedForm(forms.ModelForm):
 
     class Meta:
-        model = Famille
         labels = {
             "visibility_family": u"Visible auprès des familles",
             "visibility_prestataire": u"Visible auprès des prestataires",
             "visibility_global": u"Visible globalement sur le site",
+            "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
+
+
+class FamilleAdvancedForm(AdvancedForm):
+
+    class Meta(AdvancedForm.Meta):
+        model = Famille
+
+
+class PrestataireAdvancedForm(AdvancedForm):
+
+    class Meta(AdvancedForm.Meta):
+        model = Prestataire
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    error_messages = AuthenticationForm.error_messages
+    error_messages["inactive"] = u"Ce compte est inactif. Veuillez nous contacter pour le réactiver"

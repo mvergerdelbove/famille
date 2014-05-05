@@ -1,7 +1,7 @@
-import hashlib
-import time
+from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
@@ -13,16 +13,17 @@ from famille import forms
 from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
     has_user_related, FamilleRatings, PrestataireRatings,
-    compute_user_visibility_filters
+    compute_user_visibility_filters, DownloadableFile
 )
 from famille.resources import PrestataireResource, FamilleResource
-from famille.utils import get_context, get_result_template_from_user
+from famille.utils import get_context, get_result_template_from_user, payment
 from famille.utils.http import require_related, login_required, assert_POST
 
 
 __all__ = [
     "home", "search", "register", "account",
-    "favorite", "profile", "premium", "visibility",
+    "favorite", "profile", "premium",
+    "tools", "advanced", "delete_account"
 ]
 
 
@@ -91,20 +92,19 @@ def register(request, social=None, type=None):
                 form.save()
         else:
             form = forms.RegistrationForm()
-            return render(request, "registration/register.html", get_context(social=social, form=form))
+        return render(request, "registration/register.html", get_context(social=social, form=form))
     else:
         if not has_user_related(request.user):
             UserInfo.create_user(dj_user=request.user, type=type)
         else:
             return redirect('account')
 
-    # TODO: error
     return HttpResponseRedirect('/confirmation/')
 
 
 # TODO: error handling for compte form
-@require_related
 @login_required
+@require_related
 def account(request):
     url_hash = ""
     if request.method == "POST":
@@ -122,9 +122,9 @@ def account(request):
     )
 
 
+@login_required
 @require_related
 @require_POST
-@login_required  # FIXME: does this work ?
 def favorite(request):
     """
     Mark an object as favorite. If action=remove is passed,
@@ -180,9 +180,9 @@ premium_dict = {
     "currency_code": "EUR"
 }
 
+@login_required
 @require_related
 @require_GET
-@login_required
 def premium(request, action=None):
     """
     Page to become premium.
@@ -195,7 +195,7 @@ def premium(request, action=None):
 
     data = premium_dict.copy()
     data.update(
-        invoice="PREMIUM_VDF__%s__%s" % (int(time.time()), hashlib.md5(str(request.related_user.pk)).hexdigest()),
+        invoice=payment.signer.sign_user(request.related_user),
         notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
         return_url=request.build_absolute_uri('/devenir-premium/valider/'),
         cancel_return=request.build_absolute_uri('/devenir-premium/annuler/')
@@ -204,20 +204,49 @@ def premium(request, action=None):
     return render(request, "account/premium.html", get_context(form=form, action=action))
 
 
-# FIXME: visibility for prestataires ?
-@require_related
 @login_required
-def visibility(request):
+@require_related
+def advanced(request):
     """
-    Page to manage visibility on the website.
+    Render the advanved settings view. It is called by several views.
     """
+    FormClass = forms.PrestataireAdvancedForm
+    if isinstance(request.related_user, Famille):
+        FormClass = forms.FamilleAdvancedForm
+
     if request.method == "POST":
-        form = forms.VisibilityForm(instance=request.related_user, data=request.POST)
-        import pdb; pdb.set_trace()
+        form = FormClass(instance=request.related_user, data=request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/mon-compte/visibilite/?success')
+            return HttpResponseRedirect('/mon-compte/parametres-avances/?success')
     else:
-        form = forms.VisibilityForm(instance=request.related_user)
+        form = FormClass(instance=request.related_user)
 
-    return render(request, "account/visibility.html", get_context(form=form))
+    return render(request, "account/advanced.html", get_context(form=form))
+
+
+def tools(request):
+    """
+    Display the tools (DownloadableFile objects) to the user.
+    """
+    tool_files = defaultdict(list)
+    for tool in DownloadableFile.objects.all():
+        tool_files[tool.file_type].append(tool)
+
+    return render(
+        request, "espace/tools.html",
+        get_context(tool_files=dict(tool_files), kinds=DownloadableFile.KINDS)
+    )
+
+
+@login_required
+@require_related
+@require_GET
+def delete_account(request):
+    """
+    Mark an account as inactive.
+    """
+    request.user.is_active = False
+    request.user.save()
+    logout(request)
+    return HttpResponseRedirect('/')

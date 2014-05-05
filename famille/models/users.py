@@ -4,12 +4,14 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from paypal.standard.ipn.signals import subscription_signup
+from paypal.standard.ipn.models import PayPalIPN
+from paypal.standard.ipn.signals import payment_was_successful
 
 from famille import errors
 from famille.models.base import BaseModel
 from famille.utils import (
-    parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES, fields as extra_fields
+    parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES,
+    fields as extra_fields, payment
 )
 from famille.utils.mail import send_mail_from_template_with_noreply
 from famille.utils.python import pick
@@ -19,7 +21,7 @@ __all__ = [
     "Famille", "Prestataire", "Enfant",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
-    "compute_user_visibility_filters"
+    "compute_user_visibility_filters", "get_user_pseudo"
 ]
 
 
@@ -123,6 +125,18 @@ def compute_user_visibility_filters(user):
     return filters
 
 
+def get_user_pseudo(user):
+    """
+    Retrieve the user pseudo, given an
+    instance of Django User. Useful for
+    django-postman.
+
+    :param user:       the Django user instance
+    """
+    related = get_user_related(user)
+    return related.get_pseudo()
+
+
 class UserInfo(BaseModel):
     """
     The common user info that a Famille and
@@ -134,9 +148,10 @@ class UserInfo(BaseModel):
     }
     user = models.OneToOneField(User)
     geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
+    ipn = models.OneToOneField(PayPalIPN, blank=True, null=True)
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
 
     street = models.CharField(blank=True, null=True, max_length=100)
@@ -151,7 +166,11 @@ class UserInfo(BaseModel):
         max_upload_size=2621440  # 2.5MB
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
-
+    newsletter = models.BooleanField(blank=True, default=True)
+    # visibility
+    visibility_family = models.BooleanField(default=True, blank=True)
+    visibility_prestataire = models.BooleanField(default=True, blank=True)
+    visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
         abstract = True
@@ -175,13 +194,6 @@ class UserInfo(BaseModel):
         user = UserType(user=dj_user, email=dj_user.email)
         user.save()
         return user
-
-    @staticmethod
-    def premium_signup(sender, **kwargs):
-        import logging
-
-        logging.warning("premium_signup: %s", sender)
-        logging.warning("premium_signup: %s", str(kwargs))
 
     @property
     def is_geolocated(self):
@@ -305,15 +317,6 @@ class UserInfo(BaseModel):
                 subject=message.get("subject", ""), recipient_list=emails
             )
 
-    def profile_access_is_authorized(self, request):
-        """
-        A method to tell if a given request/user can access to
-        the profile page of the user (self).
-
-        :param request:          the request to be verified
-        """
-        return True
-
     def get_pseudo(self):
         """
         Return the pseudo of a user.
@@ -328,6 +331,24 @@ class UserInfo(BaseModel):
             pseudo += " %s." % self.name[0]
 
         return pseudo
+
+    def profile_access_is_authorized(self, request):
+        """
+        Athorize profile access only if request has the right to.
+
+        :param request:            the request to be verified
+        """
+        if not has_user_related(request.user):
+            return False
+
+        if self.user == request.user:
+            return True
+
+        if not self.visibility_global:
+            return False
+
+        user = get_user_related(request.user)
+        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Criteria(UserInfo):
@@ -397,6 +418,7 @@ class Prestataire(Criteria):
         "jeune": u"Jeunes enfants (1 à 3 ans)",
         "marche": u"Enfants de 3 à 7 ans"
     }
+    PAYMENT_PREFIX = "f"
 
     AGES = {
         "16-": u"Moins de 16 ans",
@@ -423,6 +445,7 @@ class Prestataire(Criteria):
     class Meta:
         app_label = 'famille'
 
+
 class Famille(Criteria):
     """
     The Famille user.
@@ -432,36 +455,14 @@ class Famille(Criteria):
         "foyer": "Famille Mère/Père au foyer",
         "actif": "Famille couple actif",
     }
+    PAYMENT_PREFIX = "f"
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
-    # visibility
-    visibility_family = models.BooleanField(default=True, blank=True)
-    visibility_prestataire = models.BooleanField(default=True, blank=True)
-    visibility_global = models.BooleanField(default=True, blank=True)
-
     class Meta:
         app_label = 'famille'
-
-    def profile_access_is_authorized(self, request):
-        """
-        Athorize profile access only if request has the right to.
-
-        :param request:            the request to be verified
-        """
-        if not has_user_related(request.user):
-            return False
-
-        if self.user == request.user:
-            return True
-
-        if not self.visibility_global:
-            return False
-
-        user = get_user_related(request.user)
-        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Enfant(BaseModel):
@@ -565,5 +566,6 @@ FAVORITE_CLASSES = {
     Prestataire: PrestataireFavorite
 }
 
+
 # signals
-# subscription_signup.connect(UserInfo.premium_signup)
+payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")

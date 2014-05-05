@@ -1,0 +1,17 @@
+[
+{
+    "pk": 7, 
+    "model": "flatpages.flatpage", 
+    "fields": {
+        "registration_required": false, 
+        "title": "faq", 
+        "url": "/faq/", 
+        "template_name": "", 
+        "sites": [
+            1
+        ], 
+        "content": "<p><strong>1 - Premi&egrave;re question de la FAQ ?</strong></p>\r\n<p><strong><br /></strong>Premi&egrave;re r&eacute;ponse de la FAQ.</p>\r\n<p>&nbsp;</p>\r\n<p><strong>2 - Deuxi&egrave;me question</strong></p>\r\n<p>etc... avec des <a href=\"http://google.com\">liens</a></p>", 
+        "enable_comments": false
+    }
+}
+]

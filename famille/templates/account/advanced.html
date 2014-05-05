@@ -1,0 +1,53 @@
+{% extends "account/base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block mainContent %}
+<div class="col-md-offset-2 col-md-6">
+    <h1>Paramètres avancés</h1>
+        <form action="{% url 'advanced' %}" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <h2>Gérer ma visibilité</h2>
+            {% bootstrap_field form.visibility_family %}
+            {% bootstrap_field form.visibility_prestataire %}
+            {% bootstrap_field form.visibility_global %}
+            <h2>Newsletter</h2>
+            {% bootstrap_field form.newsletter %}
+            <h2>Informations sensibles</h2>
+            <div class="form-group">
+                <a href="{% url 'password_change' %}" class="btn btn-warning">
+                    <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
+                </a>
+                <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-danger">
+                    <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
+                </a>
+            </div>
+            {% buttons %}
+                <button type="submit" class="btn btn-success">Valider</button>
+            {% endbuttons %}
+        </form>
+    </article>
+</div>
+<!-- Conformation modal for account deletion -->
+<div class="modal fade" id="accountDeletion" tabindex="-1" role="dialog" aria-labelledby="account-deletion" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="account-deletion">Vous êtes sur le point de supprimer votre compte</h4>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr ? .......
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                <a href="{% url 'delete_account'%}" class="btn btn-danger">Confirmer</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extraScript %}
+<script src="{% static "js/build/advanced.js" %}"></script>
+{% endblock %}
