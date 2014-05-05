@@ -14,6 +14,14 @@ def language_level():
 def types():
     return random.choice(["part", "pro"])
 
+def random_date():
+    return random.choice([
+            datetime.date(1989, 6, 3),
+            datetime.date(1995, 7, 3),
+            datetime.date(1997, 2, 3),
+            datetime.date(1999, 9, 3),
+            datetime.date(2000, 1, 3),
+        ])
 
 def description():
     return "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -92,6 +100,7 @@ def generate_presta(i):
         "type": types(),
         "created_at": str(datetime.date.today()),
         "updated_at": str(datetime.date.today()),
+        "birthday": str(random_date())
     }
     for b in booleans:
         fields[b] = boolean()
