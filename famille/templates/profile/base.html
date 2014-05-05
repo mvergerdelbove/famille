@@ -18,7 +18,9 @@
                     {% endif %}
                 </a>
             </div>
-            <h1>{{ profile.instance.get_pseudo }} <small>{{ profile.city }}</small></h1>
+            <h1>{{ profile.get_pseudo }} <small>{{ profile.city }}</small></h1>
+            {% block subtitle %}
+            {% endblock subtitle %}
             <div class="user-score">
                 {% with ratings=profile.total_rating %}
                     {% for i in ratings|get_range %}
