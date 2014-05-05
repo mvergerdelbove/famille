@@ -172,7 +172,7 @@ def profile(request, type, uid):
             rating = RatingClass(user=user, by=related_user.simple_id)
             context["rating_form"] = RatingFormClass(instance=rating)
 
-    return render(request, "profile/base.html", get_context(profile=user, **context))
+    return render(request, "profile/"+type+".html", get_context(profile=user, **context))
 
 
 premium_dict = {
