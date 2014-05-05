@@ -2,6 +2,10 @@ import datetime
 import random
 import json
 
+from django.core.management.base import BaseCommand
+
+from famille.models.users import Prestataire
+
 
 def boolean():
     return bool(random.randint(0, 1))
@@ -12,7 +16,7 @@ def language_level():
 
 
 def types():
-    return random.choice(["part", "pro"])
+    return random.choice(Prestataire.TYPES.keys())
 
 def random_date():
     return random.choice([
@@ -114,8 +118,9 @@ def generate_presta(i):
         "fields": fields
     }
 
-
-if __name__ == "__main__":
-    data = json.dumps(generate_users())
-    with open("famille/fixtures/prestataires.json", "w+") as f:
-        f.write(data)
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        data = json.dumps(generate_users(), indent=1)
+        with open("famille/fixtures/prestataires.json", "w+") as f:
+            f.write(data)
+        print 'Generated in famille/fixtures/prestataires.json'
