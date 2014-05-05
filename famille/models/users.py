@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -439,6 +439,12 @@ class Prestataire(Criteria):
     class Meta:
         app_label = 'famille'
 
+    def get_age(self):
+        today = date.today()
+        born = self.birthday
+        if not born:
+            return None
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 class Famille(Criteria):
     """
