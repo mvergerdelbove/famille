@@ -157,10 +157,10 @@ def profile(request, type, uid):
     try:
         user = ModelClass.objects.get(pk=uid)
     except ModelClass.DoesNotExist:
-        return render(request, "profile/404.html")
+        return render(request, "profile/404.html", status=404)
 
     if not user.profile_access_is_authorized(request):
-        return render(request, "profile/401.html")
+        return render(request, "profile/401.html", status=401)
 
     if has_user_related(request.user):
         related_user = get_user_related(request.user)
