@@ -446,6 +446,9 @@ class Prestataire(Criteria):
             return None
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
+    def get_type(self):
+        return self.TYPES[self.type]
+
 class Famille(Criteria):
     """
     The Famille user.
