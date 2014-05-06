@@ -139,6 +139,8 @@ def favorite(request):
     return HttpResponse()
 
 
+@login_required
+@require_related
 @require_GET
 def profile(request, type, uid):
     """
