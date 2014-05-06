@@ -371,7 +371,7 @@ class BaseSearchForm(forms.Form):
     )
     tarif = RangeField(
         label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
+        widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
     )
     # planning
     plannings__schedule__id = LazyMultipleChoiceField(
