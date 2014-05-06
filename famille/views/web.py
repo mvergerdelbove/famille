@@ -145,6 +145,12 @@ def favorite(request):
 def profile(request, type, uid):
     """
     Display the profile of a user.
+    A nice 404 view is shown to the user
+    if the profile does not exist OR the profile
+    is not premium.
+    A nice 401 view is shown to the user if the
+    profile didn't want to show itself to the user
+    or globally.
     """
     if type not in ("famille", "prestataire"):
         raise Http404
@@ -163,6 +169,10 @@ def profile(request, type, uid):
     try:
         user = ModelClass.objects.get(pk=uid)
     except ModelClass.DoesNotExist:
+        return render(request, "profile/404.html", status=404)
+
+    # the user can view its own profile but others cannot if he is not premium
+    if request.related_user != user and not user.is_premium:
         return render(request, "profile/404.html", status=404)
 
     if not user.profile_access_is_authorized(request):
