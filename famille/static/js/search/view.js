@@ -65,6 +65,9 @@ module.exports = Backbone.View.extend({
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
         this.$sortSelect = this.$("#search-sort");
+        if (!this.isAuthenticated()) {
+            this.disableForm();
+        }
     },
 
     buildQuery: function($els){
@@ -159,6 +162,40 @@ module.exports = Backbone.View.extend({
 
     error: function(jqXHR){
         notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
+    },
+
+    disableForm: function () {
+        var postalCode = this.$(".form-control[name=pc]")[0];
+        this.$("#id_tarif").slider('disable');
+        this.attachDisabledPopover(this.$(".slider-disabled"));
+        _.each(this.$(".form-control,[type=checkbox]", ".form-search"), function (el) {
+            if (el === postalCode) return;
+
+            var $el = $(el);
+            if (el.tagName == "SELECT") {
+                $el.select2("readonly", true);
+            }
+            else {
+                $el.prop("disabled", "disabled");
+            }
+            this.attachDisabledPopover($el);
+        }, this);
+    },
+    /**
+     * Attach the popover to the elements that are disabled.
+     * in order to notify the user that he can create an account.
+     */
+    attachDisabledPopover: function ($el, select) {
+        $el.attr("data-toggle", "popover");
+        if ($el.attr("type") === "checkbox") {
+            $el = $el.parent();
+        }
+        $el.popover({
+            placement: "bottom",
+            trigger: "click",
+            title: "Fonctionalité indisponible",
+            content: "Créez un compte pour pouvoir l'utiliser :-)"
+        });
     },
 
     /****************************************/
