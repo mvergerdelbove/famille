@@ -213,7 +213,7 @@ module.exports = Backbone.View.extend({
     },
 
     isAuthenticated: function(){
-        return (this.$("[data-authenticated]").length == 1);
+        return window._auth;
     },
 
     switchSearch: function(e){

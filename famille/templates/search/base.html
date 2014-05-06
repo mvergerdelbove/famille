@@ -85,9 +85,6 @@
                 <div class="empty-result-template">
                 {% include result_template only %}
                 </div>
-                {% if user.is_authenticated %}
-                <span data-authenticated></span>
-                {% endif %}
             </div>
             <input type="hidden" class="max-nb-search-results" value="{{ max_nb_search_results }}"/>
             <input type="hidden" class="total-nb-search-results" value="{{ total_nb_search_results }}"/>
@@ -98,6 +95,11 @@
 {% endblock %}
 
 {% block script %}
+{% if user.is_authenticated %}
+<script>
+    window._auth = true;
+</script>
+{% endif %}
 <script src="{% static "lib/underscore/underscore-min.js" %}"></script>
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "lib/select2/select2.min.js" %}"></script>
