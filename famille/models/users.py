@@ -457,6 +457,7 @@ class Prestataire(Criteria):
     birthday = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=70, null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES)
+    other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
     language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())
     level_en = models.CharField(**language_kw)
     level_de = models.CharField(**language_kw)
