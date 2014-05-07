@@ -352,10 +352,6 @@ class UserInfo(BaseModel):
 
 
 class Criteria(UserInfo):
-    TYPES_GARDE_FAMILLE = {  # FIXME: to remove
-        "dom": "Garde à domicile",
-        "part": "Garde partagée",
-    }
     TYPES_GARDE = (
         ("plein", u"Garde à temps plein"),
         ("partiel", u"Garde à temps partiel"),
@@ -487,10 +483,22 @@ class Famille(Criteria):
         "foyer": "Famille Mère/Père au foyer",
         "actif": "Famille couple actif",
     }
+    TYPE_ATTENTES_FAMILLE = (
+        ("part", u"Garde partagée"),
+        ("ecole", u"Sortie d'école"),
+        ("urgences", u"Garde d'urgence (dépannages)"),
+        ("nuit", u"Garde de nuit"),
+        ("vacances", u"Vacances scolaires"),
+        ("cond_sco", u"Conduite scolaire"),
+        ("cond_peri", u"Conduite péri-scolaire"),
+        ("dej", u"Echange de déjeuners"),
+        ("other", u"Autre")
+    )
     PAYMENT_PREFIX = "f"
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
+    type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
 
     class Meta:
