@@ -35,6 +35,7 @@
                         {% endbuttons %}
                         {% bootstrap_field search_form.distance %}
                     {% endif %}
+                    {% block formbox1 %}
                     {% bootstrap_field search_form.type %}
                     {% bootstrap_field search_form.type_garde %}
                     <div class="form-group">
@@ -46,6 +47,7 @@
                     {% bootstrap_field search_form.plannings__weekday__id %}
                     {% bootstrap_field search_form.plannings__schedule__id %}
                     {% bootstrap_field search_form.plannings__frequency %}
+                    {% endblock %}
                 </form>
             </div>
         </div>

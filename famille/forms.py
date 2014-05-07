@@ -362,6 +362,7 @@ class SimpleSearchForm(forms.Form):
 
 
 class BaseSearchForm(forms.Form):
+    # BOX 1
     pc = forms.CharField(
         label="Ville ou code postal", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
@@ -384,6 +385,14 @@ class BaseSearchForm(forms.Form):
     )
     plannings__frequency = forms.MultipleChoiceField(
         label=u"A quelle fréquence ?", choices=BasePlanning.FREQUENCY.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    type = forms.MultipleChoiceField(
+        label="Type de prestataire", choices=Prestataire.TYPES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    type_garde = forms.MultipleChoiceField(
+        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
 
@@ -416,15 +425,6 @@ class PrestataireSearchForm(BaseSearchForm):
          "geolocation": "Le moins cher",
          "-rating": "Le plus proche"
     }
-    # BOX 1
-    type = forms.MultipleChoiceField(
-        label="Type de prestataire", choices=Prestataire.TYPES, required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    )
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    )
     # BOX 2
     nationality = forms.CharField(
         label=u"Nationalité", required=False,
@@ -498,26 +498,23 @@ class PrestataireSearchForm(BaseSearchForm):
 
 
 class FamilleSearchForm(BaseSearchForm):
+    search_blocks = []
     ordering_dict = {
         "-updated_at": u"Le plus récent",
          "geolocation": "Le plus proche",
          "-rating": u"Le mieux noté"
     }
+    type_attente_famille = forms.MultipleChoiceField(
+        label=u"Type d'attentes", required=False, choices=Famille.TYPE_ATTENTES_FAMILLE,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
     enfants__school = forms.CharField(
         label=u"Ecole des enfants", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
     )
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    )
-    cdt_periscolaire = forms.BooleanField(
-        label=u"Conduite périscolaire", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    sortie_ecole = forms.BooleanField(
-        label=u"Sortie d'école", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    enfants__length = forms.CharField(
+        label=u"Nombre d'enfants", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
     )
 
 
