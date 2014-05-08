@@ -1,16 +1,23 @@
 {% extends "account/base.html" %}
 {% load url from future %}
-{% load i18n %}{% load postman_tags %}
+{% load i18n %}
+{% load postman_tags %}
+{% load helpers %}
+
 {% block title %}{% trans "Messaging" %}{% endblock %}
+
 {% block extrahead %}{{ block.super }}
 <link type="text/css" media="all" rel="stylesheet" href="
 {# dj v1.4 #}{% load static %}{% static 'postman/css/postman.css' %}
 {# dj v1.3 #}{# {{ STATIC_URL }}postman/css/postman.css #}
 {# dj v1.2 #}{# {{ MEDIA_URL }}postman/css/postman.css #}
-" />{% endblock %}
+" />
+{% endblock %}
+
 {% block mainContent %}
+    {% with related=request.user|get_related %}
     <div class="col-md-offset-1 col-md-7">
-    {% if request.related_user.is_premium %}
+    {% if related.is_premium %}
         {% postman_unread as unread_count %}
         <ul class="nav nav-tabs" id="message-tabs">
             <li id="inboxLink"><a href="{% url 'postman_inbox' %}">
@@ -33,6 +40,7 @@
     </p>
     {% endif %}
     </div>
+    {% endwith %}
 {% endblock %}
 
 {% block script %}

@@ -46,9 +46,17 @@ def user_type(value):
 @register.filter(name="has_related")
 def has_related(value):
     """
-    Returns if user has related user or not.
+    Returns True if user has related user or not.
     """
     return has_user_related(value)
+
+
+@register.filter(name="get_related")
+def get_related(value):
+    """
+    Returns the related user of a request.user.
+    """
+    return get_user_related(value)
 
 
 @register.filter(name='key')
