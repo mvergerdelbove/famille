@@ -1,13 +1,80 @@
-.margin-top-little {
+@media screen and (min-width: 1200px) {
+
+    body{margin:0; padding: 0;width: 100%;}
+
+   .home{
+    margin-top: 0;
+    padding-top: 0;
+    background-image: url("../img/backg(light).jpg");
+    background-size: 110%;
+    background-repeat: no-repeat;
+    padding-bottom: 16%;
+    }
+
+    .margin-top-2{margin-top: 27%;}
+    .margin-top-1{margin-top: 20%;}
+    .margin-top-r{margin-top: 11%;}
+    .margin-top-0{margin-top: 7%;}
+    .margin-top-little{margin-top: 4%;}
+    .panel-group .panel + .panel{margin-top:0%;}
+
+    .margin-rigth-little{margin-right: 3%;}
+    .margin-left-little{margin-left: 3%;}
+    .margin-left-1{margin-left: 5%;}
+
+    .padding-top-1{padding-top: 4%;}
+
+    .profil-pict {
+        position: absolute;
+        z-index: 99;
+        left: 27%;
+        top:15%;
+    }
+}
+
+/* boutons personnalisés */
+
+.btn-green {background-color: #6CB292; border: 1px solid #7CC1A0; font-size: 23px;}
+.btn-green-min {background-color: #6CB292; border: 1px solid #7CC1A0;}
+
+.btn-brown {background-color: #A69F88; border:1px solid #C4BCA5;padding:7px 12px;}
+.btn-brown-min {background-color: #A69F88; border:1px solid #C4BCA5;}
+
+.btn-blue {background-color: #408394; border:1px solid #5099AA; font-size: 23px;}
+.btn-blue-min {background-color: #408394; border:1px solid #5099AA;}
+
+.btn-color{color: #fff;font-weight: bold;}
+.btn-color:hover{color: #fff;box-shadow: -1px 1px 10px 3px rgba(255, 255, 255, 0.3) inset;font-weight: bold;}
+.btn-color:active{color: #fff;box-shadow: -1px 1px 10px 3px rgba(0, 0, 0, 0.3) inset;font-weight: bold;}
+
+.text-green, {color: #6CB292}
+.text-blue, {color: #408394}
+
+h4{font-weight: bold;font-size: 25px;text-align: center;color:#555555;}
+.nav.navbar,.navbar-default{margin-bottom: 0; width: 100%;}
+
+.text-center{
+    text-align:center;
+}
+
+
+/* affichage des badges dans les resultats */
+
+.badges-lfo{float:left; width: 16%; }
+.categorie{font-size: 13px; padding: 0; padding-top: 3%;}
+
+.lft {left: 6%;}
+.rgt {left: 0%;}
+.l1 {margin-top: 1%}
+
+.little-padding{padding:2%;}
+
+/*.margin-top-little {
     margin-top: 15px;
 }
 
 .margin-top-0 {
     margin-top: 30px;
-}
-
-.margin-top-1 {
-    margin-top: 50px;
 }
 
 .margin-top-2 {
@@ -16,7 +83,7 @@
 
 .margin-bottom-0 {
     margin-bottom: 30px;
-}
+}*/
 
 .modal-thin {
     max-width: 400px;
@@ -73,4 +140,11 @@
 
 #growls {
     top: 60px !important;
+}
+
+#logo-home{
+    position: absolute;
+    z-index: 99;
+    left: 64%;
+    top:2%;
 }
