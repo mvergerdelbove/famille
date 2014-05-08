@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.signing import BadSignature
 from django.http import HttpResponseBadRequest, Http404
-from django.http.request import QueryDict
+from django.http.request import QueryDict, HttpRequest
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
@@ -13,7 +13,7 @@ from postman.models import Message
 
 from famille import utils, models, errors
 from famille.models.users import Geolocation
-from famille.utils import geolocation, http, python, mail, payment
+from famille.utils import geolocation, http, python, mail, payment, lookup
 
 
 __all__ = ["UtilsTestCase", "GeolocationTestCase", "PythonTestCase", "HTTPTestCase"]
@@ -338,3 +338,56 @@ class MailTestCase(TestCase):
         m = Message(sender=self.user)
         rating = mail.email_moderation(m)
         self.assertTrue(rating)
+
+
+class LookupTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User(username="test@email.com", email="test@email.com", password="p")
+        self.user.save()
+        self.user2 = User(username="test2@email.com", email="test2@email.com", password="p")
+        self.user2.save()
+        self.user_no_related = User(username="test3@email.com", email="test3@email.com", password="p")
+        self.user_no_related.save()
+        self.presta = models.Prestataire(user=self.user, first_name="Toto", plan=models.Prestataire.PLANS["premium"])
+        self.presta.save()
+        self.famille = models.Famille(user=self.user2, first_name="Toto2", plan=models.Prestataire.PLANS["premium"])
+        self.famille.save()
+        self.request = HttpRequest()
+        self.lookup = lookup.PostmanUserLookup()
+
+    def tearDown(self):
+        self.presta.delete()
+        self.famille.delete()
+        self.user_no_related.delete()
+        self.user.delete()
+        self.user2.delete()
+
+    def test_get_query_results(self):
+        results = list(self.lookup.get_query_results("to"))
+        self.assertEqual(len(results), 2)
+
+    def test_format_result(self):
+        expected = {
+            "text": "Toto",
+            "id": self.user.username
+        }
+        self.assertEqual(self.lookup.format_result(self.presta), expected)
+
+    def test_check_auth_anonymous(self):
+        self.request.user = AnonymousUser()
+        self.assertFalse(self.lookup.check_auth(self.request))
+
+    def test_check_auth_no_related(self):
+        self.request.user = self.user_no_related
+        self.assertFalse(self.lookup.check_auth(self.request))
+
+    def test_check_auth_no_premium(self):
+        self.request.user = self.user
+        self.presta.plan = models.Prestataire.PLANS["basic"]
+        self.presta.save()
+        self.assertFalse(self.lookup.check_auth(self.request))
+
+    def test_check_auth_ok(self):
+        self.request.user = self.user
+        self.assertTrue(self.lookup.check_auth(self.request))

@@ -166,6 +166,7 @@ PREMIUM_PRICE = "10.00"
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 
+
 # postman
 def get_user_pseudo_safely(user):
     """
@@ -174,6 +175,7 @@ def get_user_pseudo_safely(user):
     """
     from famille.models import get_user_pseudo  # importing here to not fail
     return get_user_pseudo(user)
+
 
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_DISALLOW_MULTIRECIPIENTS = False
