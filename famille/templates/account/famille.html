@@ -4,223 +4,55 @@
 {% load static %}
 {% load helpers %}
 
-{% bootstrap_messages %}
-{% block mainContent %}
-    <div class="col-md-offset-1 col-md-7">
-        <ul class="nav nav-tabs">
-            <li><a href="#compte" data-toggle="tab">Mon compte</a></li>
-            <li><a href="#profil" data-toggle="tab">Mon profil</a></li>
-            <li><a href="#planning" data-toggle="tab">Planning</a></li>
-            <li><a href="#attentes" data-toggle="tab">Attentes</a></li>
-        </ul>
-        <div class="tab-content margin-top-1">
-            <div class="tab-pane fade in active" id="compte">
-                <div class="panel-group" id="accordion">
-                    <div class="panel panel-default favorite-panel">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#favoris">
-                                    Mes favoris
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="favoris" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="row margin-bottom-0">
-                                    <div class="col-md-4 col-md-offset-8">
-                                        <button type="button" class="btn btn-primary contact-all">Contacter tous mes favoris</button>
-                                    </div>
-                                </div>
-                                {% for favorite in related.get_favorites_data %}
-                                <div class="favorite-row row">
-                                    <div class="col-md-8">
-                                        <h4 class="favorite-name">{{ favorite.first_name }} {{ favorite.name }}</h4>
-                                        <p>{{ favorite.description }}</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-xs contact">Contacter</button>
-                                            <button type="button" class="btn btn-default btn-xs remove">Supprimer</button>
-                                        </div>
-                                        <span class="hidden favorite-pk">{{ favorite.pk }}</span>
-                                        <span class="hidden favorite-type">{{ favorite|class_name }}</span>
-                                        <span class="hidden favorite-uri">{{ favorite.get_resource_uri }}</span>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="modal-contact-favorite"
-                             tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                        <h4 class="modal-title" id="myModalLabel">Formulaire de contact</h4>
-                                        <small class="modal-subtitle"></small>
-                                    </div>
-                                    <div class="modal-body">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                                        <button type="button"
-                                            class="btn btn-primary send-contact"
-                                            data-dismiss="modal">Envoyer</button>
-                                    </div>
-                                </div>
-                              </div>
-                        </div>
-                    </div>
-                </div>
+
+{% block navtabs %}
+{{ block.super }}
+<li><a href="#attentes" data-toggle="tab">Attentes</a></li>
+{% endblock %}
+
+{% block profile_form %}
+<div class="row">
+    <div class="form form-horizontal col-md-7">
+        <h4 class="margin-bottom-0">Coordonnées</h4>
+        {% for field in profil %}
+        {% bootstrap_field field field_class="col-md-5" label_class="col-md-2" %}
+        {% endfor %}
+    </div>
+    <div class="form col-md-5 form-horizontal">
+        <h4 class="margin-bottom-0">Enfants</h4>
+        <div class="no-child">
+            Vous n'avez pas encore ajouté d'enfant à votre famille.
+        </div>
+        <div class="child-container">
+            {% for form in profil.sub_forms %}
+            <div class="child-form clearfix">
+                {% bootstrap_field form.e_name field_class="col-sm-7" label_class="col-sm-5"%}
+                {% bootstrap_field form.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
+                {% bootstrap_field form.e_school field_class="col-sm-7" label_class="col-sm-5"%}
+                <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
             </div>
-            <div class="tab-pane fade" id="profil">
-                <div id="profile-pic-container" class="row">
-                    <div class="col-md-2">
-                        <a href="#" class="thumbnail profile-pic">
-                            {% if profil.instance.profile_pic %}
-                                <img src="{% get_media_prefix %}{{ profil.instance.profile_pic.name }}" alt="Photo de profil">
-                            {% else %}
-                                <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
-                            {% endif %}
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <h3>{{ profil.instance.get_pseudo }}</h3>
-                    </div>
-                    <div class="modal fade" id="modal-pic" tabindex="-1"
-                         role="dialog" aria-labelledby="modalPic" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close"
-                                            data-dismiss="modal" aria-hidden="true">
-                                        &times;
-                                    </button>
-                                    <h4 class="modal-title" id="modalPic">Photo de profil: édition</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal form-pic"
-                                          action="{% url 'profile_pic' %}" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <label for="picFile" class="col-md-5">Télécharger une photo de profil</label>
-                                            <div class="col-md-3">
-                                                <input type="file" id="picFile" name="profile_pic" required>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <div class="errorblock text-danger">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                                    <button type="button" class="btn btn-primary save">Enregistrer</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <form method="post" action="{% url "account" %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="form form-horizontal col-md-7">
-                            <h4 class="margin-bottom-0">Coordonnées</h4>
-                            {% for field in profil %}
-                            {% bootstrap_field field field_class="col-md-5" label_class="col-md-2" %}
-                            {% endfor %}
-                        </div>
-                        <div class="form col-md-5 form-horizontal">
-                            <h4 class="margin-bottom-0">Enfants</h4>
-                            <div class="no-child">
-                                Vous n'avez pas encore ajouté d'enfant à votre famille.
-                            </div>
-                            <div class="child-container">
-                                {% for form in profil.sub_forms %}
-                                <div class="child-form clearfix">
-                                    {% bootstrap_field form.e_name field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field form.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
-                                    {% bootstrap_field form.e_school field_class="col-sm-7" label_class="col-sm-5"%}
-                                    <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <button type="button" class="btn btn-primary add-child margin-top-0">
-                                Ajouter un enfant <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row"><div class="col-md-4 col-md-offset-5">
-                        <button type="submit" name="submit" value="profil" class="btn btn-success">Sauvegarder</button>
-                    </div></div>
-                </form>
-                <div class="empty-child-form hidden">
-                    <div class="child-form clearfix">
-                        {% bootstrap_field profil.sub_form_empty.e_name field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% bootstrap_field profil.sub_form_empty.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% bootstrap_field profil.sub_form_empty.e_school field_class="col-sm-7" label_class="col-sm-5"%}
-                        <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="planning">
-                <form method="post" action="{% url "account" %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="form form-horizontal col-md-12">
-                            <h4 class="margin-bottom-0">Planning</h4>
-                            <div class="no-planning">
-                                Vous n'avez pas encore ajouté de préférences de planning.
-                            </div>
-                            <div class="planning-container">
-                                {% for form in planning.sub_forms %}
-                                <div class="planning-form clearfix">
-                                    <div class="form-group">
-                                        {% bootstrap_label form.start_date.label_tag label_class="col-sm-5" %}
-                                        <div class="col-md-7 input-group date">
-                                            {{ form.start_date }}
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5" %}
-                                    {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
-                                    {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
-                                    <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <button type="button" class="btn btn-primary add-planning margin-top-0">
-                                Ajouter une nouvelle préférence <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row"><div class="col-md-4 col-md-offset-5">
-                        <button type="submit" name="submit"
-                                value="planning" class="btn btn-success submit-planning">
-                            Sauvegarder
-                        </button>
-                    </div></div>
-                </form>
-                <div class="empty-planning-form hidden">
-                    <div class="planning-form clearfix">
-                        <div class="form-group">
-                            {% bootstrap_label planning.sub_form_empty.start_date.label_tag label_class="col-sm-5" %}
-                            <div class="col-md-7 input-group date">
-                                {{ planning.sub_form_empty.start_date }}
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
-                        {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
-                        {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
-                        {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
-                        <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="attentes">
+            {% endfor %}
+        </div>
+        <button type="button" class="btn btn-primary add-child margin-top-0">
+            Ajouter un enfant <i class="glyphicon glyphicon-plus"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block profile_extra %}
+<div class="empty-child-form hidden">
+    <div class="child-form clearfix">
+        {% bootstrap_field profil.sub_form_empty.e_name field_class="col-sm-7" label_class="col-sm-5"%}
+        {% bootstrap_field profil.sub_form_empty.e_birthday field_class="col-sm-7" label_class="col-sm-5"%}
+        {% bootstrap_field profil.sub_form_empty.e_school field_class="col-sm-7" label_class="col-sm-5"%}
+        <i class="glyphicon glyphicon-minus remove-child pull-right"></i>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_extra %}
+    <div class="tab-pane fade" id="attentes">
                 <form method="post" action="{% url "account" %}">
                     {% csrf_token %}
                     <div class="row">
@@ -250,16 +82,11 @@
                                     {% bootstrap_field attentes.devoirs %}
                                     {% bootstrap_field attentes.menage %}
                                     {% bootstrap_field attentes.repassage %}
-                                    {% bootstrap_field attentes.cdt_periscolaire %}
-                                    {% bootstrap_field attentes.sortie_ecole %}
-                                    {% bootstrap_field attentes.nuit %}
                                 </div>
                                 <div class="col-md-6">
                                     {% bootstrap_field attentes.permis %}
                                     {% bootstrap_field attentes.non_fumeur %}
-                                    {% bootstrap_field attentes.urgence %}
                                     {% bootstrap_field attentes.psc1 %}
-                                    {% bootstrap_field attentes.baby %}
                                 </div>
                             </div>
                             <div class="row">
@@ -274,9 +101,8 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
 {% endblock %}
+
 {% block extraScript %}
 <script src="{% static "js/build/famille_account.js" %}"></script>
 {% endblock %}

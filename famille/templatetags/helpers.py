@@ -57,3 +57,10 @@ def key(d, key_name):
     Return the key of a dictionnary.
     """
     return d[key_name]
+
+@register.filter(name='get_form_field')
+def get_form_field(form, field_name):
+    """
+    Return a field of a form
+    """
+    return form[field_name]

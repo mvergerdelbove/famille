@@ -224,20 +224,27 @@ var PrestataireAccountView = Backbone.View.extend({
         this.modalView = new ReferenceEditionView({
             el: this.$("#referenceModal")
         });
+        this.$noRef = this.$(".no-reference-list");
         this.listenTo(this.modalView, "reference:add", this.addReference);
         this.listenTo(this.modalView, "reference:changed", this.appendReferenceForm);
     },
 
     initializeFromHTML: function(){
         var self = this;
-        _.each(this.$(".real-forms .reference-form"), function(el){
-            var data = getDataFromEl(el);
-            self.addReference(data, el, true);
-        });
+        var $els = this.$(".real-forms .reference-form");
+        if ($els.length) {
+            _.each($els, function(el){
+                var data = getDataFromEl(el);
+                self.addReference(data, el, true);
+            });
+        }
+        else {
+            this.$noRef.html("Vous n'avez pas encore rempli de référence.");
+        }
     },
 
     addReference: function(data, formEl, nodirty){
-        if (!nodirty) this.handleDirty();
+        this.$noRef.html("");
         var view = new ReferenceView(data, formEl, this.settings);
         this.views.push(view);
         this.$(".reference-list").append(view.render().el);

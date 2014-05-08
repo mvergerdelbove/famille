@@ -7,14 +7,16 @@
                         <span data-field="first_name">{{ result.first_name }}</span>
                         <span data-field="name">{{ result.name }}</span> -
                         <span data-field="city" class="panel-subtitle">{{ result.city }}</span>
+                        {% if user.is_authenticated %}
                         <i class="glyphicon glyphicon-star-empty favorite pull-right favorite-icon"
                             data-toggle="tooltip" data-placement="top"
-                            {% if user.is_authenticated %}
-                            title="Mettre en favori"
-                            {% else %}
-                            title="Créez un compte pour pouvoire utiliser les favoris"
-                            {% endif %}
-                        ></i>
+                            title="Mettre en favori"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-star-empty favorite pull-right favorite-icon"
+                            data-toggle="popover" data-placement="top" data-trigger="hover"
+                            title="Fonctionalité indisponible"
+                            data-content="Créez un compte pour pouvoir l'utiliser :-)"></i>
+                        {% endif %}
                     </h3>
                     <small>Note: <span data-field="rating">{{ result.total_rating }}</span></small>
                 </header>

@@ -8,7 +8,7 @@ from localflavor.fr.forms import FRPhoneNumberField
 from famille.models import (
     Famille, Prestataire, Enfant, FamillePlanning,
     Reference, PrestatairePlanning, UserInfo, FamilleRatings,
-    PrestataireRatings
+    PrestataireRatings, Criteria
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.models.utils import email_is_unique
@@ -200,15 +200,10 @@ class CriteriaForm(forms.ModelForm):
             "diploma": u"Diplôme souhaité",
             "menage": u"Ménage",
             "repassage": "Repassage",
-            "cdt_periscolaire": u"Conduite périscolaire",
-            "sortie_ecole": u"Sortie d'école",
-            "nuit": "Garde de nuit",
             "non_fumeur": "Non-fumeur",
             "devoirs": "Aide devoirs",
-            "urgence": "Garde d'urgence",
             "psc1": "Premiers secours",
             "permis": "Permis voiture",
-            "baby": u"Expérience avec bébés",
             "description": u"Plus de détails"
         }
         fields = labels.keys()
@@ -242,11 +237,11 @@ class FamilleCriteriaForm(CriteriaForm):
 class PrestataireForm(UserForm):
     class Meta(UserForm.Meta):
         model = Prestataire
-        fields = UserForm.Meta.fields + ("type", "other_type", "birthday")
+        fields = UserForm.Meta.fields + ("type", "birthday", "other_type")
         labels = dict(
             UserForm.Meta.labels,
             type="Type de prestataire",
-            other_type=u"Précisez...",
+            other_type="Autre",
             birthday=u"Date de naissance"
         )
         widgets = {
@@ -368,7 +363,7 @@ class SimpleSearchForm(forms.Form):
 
 
 class BaseSearchForm(forms.Form):
-    # classic
+    # BOX 1
     pc = forms.CharField(
         label="Ville ou code postal", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
@@ -378,7 +373,7 @@ class BaseSearchForm(forms.Form):
     )
     tarif = RangeField(
         label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
+        widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
     )
     # planning
     plannings__schedule__id = LazyMultipleChoiceField(
@@ -393,46 +388,76 @@ class BaseSearchForm(forms.Form):
         label=u"A quelle fréquence ?", choices=BasePlanning.FREQUENCY.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    # FIXME: "a partir de ?" needed ?
+    type = forms.MultipleChoiceField(
+        label="Type de prestataire", choices=Prestataire.TYPES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    type_garde = forms.MultipleChoiceField(
+        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
 
 
 class PrestataireSearchForm(BaseSearchForm):
+    search_blocks = [
+        {
+            "key": "details",
+            "label": u"Préciser mes besoins",
+            "fields": ["nationality", "age", "language"],
+        },
+        {
+            "key": "expertise",
+            "label": u"Expertises recherchées",
+            "fields": ["studies", "diploma", "experience_type", "experience_year"],
+        },
+        {
+            "key": "plus",
+            "label": u"Les petits + recherchés",
+            "fields": [
+                "enfant_malade", "menage", "repassage", "cuisine", "devoirs",
+                "animaux", "permis", "voiture", "psc1", "non_fumeur"
+            ]
+        }
+    ]
+
     ordering_dict = {
         "-updated_at": u"Le plus récent",
          "tarif": u"Le mieux noté",
          "geolocation": "Le moins cher",
          "-rating": "Le plus proche"
     }
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
+    # BOX 2
+    nationality = forms.CharField(
+        label=u"Nationalité", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
+    )
+    age = forms.TypedChoiceField(
+        label=u"Age", choices=Prestataire.AGES.items() + [('', 'Age')], required=False,
+        widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
+    )
+    language = forms.MultipleChoiceField(
+        label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
+    )
+    # BOX 3
+    studies = forms.MultipleChoiceField(
+        label=u"Niveau d'études", choices=Criteria.STUDIES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     diploma = forms.MultipleChoiceField(
         label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    language = forms.MultipleChoiceField(
-        label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
+    experience_type = forms.MultipleChoiceField(
+        label=u"Type d'expérience", choices=Criteria.EXP_TYPES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    age = forms.TypedChoiceField(
-        label=u"Age", choices=Prestataire.AGES.items() + [('', 'Age')], required=False,
-        widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
+    experience_year = forms.MultipleChoiceField(
+        label=u"Années d'expérience", choices=Criteria.EXP_YEARS, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    # extra 1
-    cdt_periscolaire = forms.BooleanField(
-        label=u"Conduite périscolaire", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    sortie_ecole = forms.BooleanField(
-        label=u"Sortie d'école", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    baby = forms.BooleanField(
-        label=u"Expérience avec bébés", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    devoirs = forms.BooleanField(
-        label=u"Aide devoirs", required=False,
+    # BOX 4
+    enfant_malade = forms.BooleanField(
+        label=u"Garde d'enfants malades", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
     menage = forms.BooleanField(
@@ -443,7 +468,18 @@ class PrestataireSearchForm(BaseSearchForm):
         label=u"Repassage", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
-    # extra 2
+    cuisine = forms.BooleanField(
+        label=u"Cuisine", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    devoirs = forms.BooleanField(
+        label=u"Aide devoirs", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    animaux = forms.BooleanField(
+        label=u"Prends soin des animaux", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
     psc1 = forms.BooleanField(
         label=u"Premiers secours", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
@@ -452,12 +488,8 @@ class PrestataireSearchForm(BaseSearchForm):
         label=u"Permis voiture", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
-    urgence = forms.BooleanField(
-        label=u"Garde d'urgence", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    nuit = forms.BooleanField(
-        label=u"Garde de nuit", required=False,
+    voiture = forms.BooleanField(
+        label=u"Possède une voiture", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
     non_fumeur = forms.BooleanField(
@@ -467,26 +499,23 @@ class PrestataireSearchForm(BaseSearchForm):
 
 
 class FamilleSearchForm(BaseSearchForm):
+    search_blocks = []
     ordering_dict = {
         "-updated_at": u"Le plus récent",
          "geolocation": "Le plus proche",
          "-rating": u"Le mieux noté"
     }
+    type_attente_famille = forms.MultipleChoiceField(
+        label=u"Type d'attentes", required=False, choices=Famille.TYPE_ATTENTES_FAMILLE,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
     enfants__school = forms.CharField(
         label=u"Ecole des enfants", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
     )
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    )
-    cdt_periscolaire = forms.BooleanField(
-        label=u"Conduite périscolaire", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    sortie_ecole = forms.BooleanField(
-        label=u"Sortie d'école", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    enfants__length = forms.CharField(
+        label=u"Nombre d'enfants", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
     )
 
 

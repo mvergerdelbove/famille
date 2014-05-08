@@ -7,12 +7,12 @@
     <div class="panel panel-info">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#c-classic">
-                    Critères classiques
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-general">
+                    Informations générales
                 </a>
             </h4>
         </div>
-        <div id="c-classic" class="panel-collapse collapse in">
+        <div id="c-general" class="panel-collapse collapse in">
             <div class="panel-body">
                 <form class="form form-search">
                     {% bootstrap_field search_form.pc %}
@@ -35,63 +35,42 @@
                         {% endbuttons %}
                         {% bootstrap_field search_form.distance %}
                     {% endif %}
+                    {% block formbox1 %}
+                    {% bootstrap_field search_form.type %}
+                    {% bootstrap_field search_form.type_garde %}
                     <div class="form-group">
                         {% bootstrap_label search_form.tarif.label %}<br/>
-                        <b>5€</b>
+                        <b>3€</b>
                         {{ search_form.tarif }}
-                        <b>100€</b>
+                        <b>20€</b>
                     </div>
                     {% bootstrap_field search_form.plannings__weekday__id %}
                     {% bootstrap_field search_form.plannings__schedule__id %}
                     {% bootstrap_field search_form.plannings__frequency %}
-                    {% bootstrap_field search_form.type_garde %}
-                    {% bootstrap_field search_form.diploma %}
-                    {% bootstrap_field search_form.language %}
-                    {% bootstrap_field search_form.age %}
+                    {% endblock %}
                 </form>
             </div>
         </div>
     </div>
+    {% for block in search_form.search_blocks %}
     <div class="panel panel-info">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#c-plus">
-                    Plus de critères
+                <a data-toggle="collapse" data-parent="#accordion" href="#c-{{ block.key }}">
+                    {{ block.label }}
                 </a>
             </h4>
         </div>
-        <div id="c-plus" class="panel-collapse collapse">
+        <div id="c-{{ block.key }}" class="panel-collapse collapse">
             <div class="panel-body">
                 <form class="form form-search">
-                    {% bootstrap_field search_form.cdt_periscolaire %}
-                    {% bootstrap_field search_form.sortie_ecole %}
-                    {% bootstrap_field search_form.baby %}
-                    {% bootstrap_field search_form.devoirs %}
-                    {% bootstrap_field search_form.menage %}
-                    {% bootstrap_field search_form.repassage %}
+                {% for field_name in block.fields %}
+                    {% bootstrap_field search_form|get_form_field:field_name %}
+                {% endfor %}
                 </form>
             </div>
         </div>
     </div>
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#c-other">
-                    Autres critères
-                </a>
-            </h4>
-        </div>
-        <div id="c-other" class="panel-collapse collapse">
-            <div class="panel-body">
-                <form class="form form-search">
-                    {% bootstrap_field search_form.permis %}
-                    {% bootstrap_field search_form.urgence %}
-                    {% bootstrap_field search_form.psc1 %}
-                    {% bootstrap_field search_form.nuit %}
-                    {% bootstrap_field search_form.non_fumeur %}
-                </form>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}
