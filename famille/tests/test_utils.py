@@ -2,13 +2,14 @@ from datetime import date, datetime
 import json
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.signing import BadSignature
 from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
+from postman.models import Message
 
 from famille import utils, models, errors
 from famille.models.users import Geolocation
@@ -304,3 +305,36 @@ class PaymentTestCase(TestCase):
         famille = models.Famille.objects.get(pk=self.famille.pk)
         self.assertTrue(famille.is_premium)
         self.assertEqual(famille.ipn, self.ipn)
+
+
+class MailTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User(username="test@email.com", email="test@email.com", password="p")
+        self.user.save()
+        self.user_no_related = User(username="test2@email.com", email="test2@email.com", password="p")
+        self.user_no_related.save()
+        self.presta = models.Prestataire(user=self.user)
+        self.presta.save()
+
+    def tearDown(self):
+        self.presta.delete()
+        self.user_no_related.delete()
+        self.user.delete()
+
+    def test_email_moderation_no_related(self):
+        m = Message(sender=self.user_no_related)
+        rating, _ = mail.email_moderation(m)
+        self.assertFalse(rating)
+
+    def test_email_moderation_no_premium(self):
+        m = Message(sender=self.user)
+        rating, _ = mail.email_moderation(m)
+        self.assertFalse(rating)
+
+    def test_email_moderation_ok(self):
+        self.presta.plan = self.presta.PLANS["premium"]
+        self.presta.save()
+        m = Message(sender=self.user)
+        rating = mail.email_moderation(m)
+        self.assertTrue(rating)
