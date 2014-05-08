@@ -1,12 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 
 from famille import forms, models
 from famille.utils.http import require_JSON, require_related, login_required, JsonResponse
+from famille.utils.lookup import PostmanUserLookup
 
-
-__all__ = ["contact_favorites", "plannings", "profile_pic", "submit_rating"]
+__all__ = ["contact_favorites", "plannings", "profile_pic", "submit_rating", "message_autocomplete"]
 
 
 @require_related
@@ -97,3 +97,25 @@ def submit_rating(request, type, uid):
         })
 
     return JsonResponse(form.errors, status=403)
+
+
+lookup = PostmanUserLookup()
+
+
+@require_related
+@require_GET
+@login_required
+def message_autocomplete(request):
+    """
+    Retrieve users when writing messages (auto completion).
+    """
+    if not lookup.check_auth(request):
+        return JsonResponse(status=403)
+
+    query = request.GET.get("query")
+    results = lookup.get_query_results(query)
+    data = [lookup.format_result(result) for result in results]
+
+    return JsonResponse({
+        "objects": data
+    })

@@ -5,10 +5,12 @@ from django.contrib import admin
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import TemplateView
 from password_reset.views import Recover
+from postman.views import WriteView, ReplyView
 from tastypie.api import Api
 
 from famille import resources
 from famille.forms import CustomAuthenticationForm
+from famille.utils.mail import email_moderation
 
 
 admin.autodiscover()
@@ -58,6 +60,7 @@ urlpatterns = patterns(
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
     url(r'^profile-pic/$', 'famille.views.profile_pic', name="profile_pic"),
     url(r'^submit-rating/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.submit_rating", name="submit_rating"),
+    url(r'^autocomplete/', "famille.views.message_autocomplete", name="message_autocomplete"),
     url(r'^api/', include(api.urls)),
 
     # static pages
@@ -80,5 +83,7 @@ urlpatterns = patterns(
     url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
     url(r'', include('password_reset.urls')),  # password reset
+    url(r'^messages/write/(?:(?P<recipients>[^/#]+)/)?$', WriteView.as_view(auto_moderators=email_moderation), name='postman_write'),
+    url(r'^messages/reply/(?P<message_id>[\d]+)/$', ReplyView.as_view(auto_moderators=email_moderation), name='postman_reply'),
     url(r'^messages/', include('postman.urls')),  # postman
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
