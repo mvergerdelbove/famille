@@ -180,6 +180,8 @@ def get_user_pseudo_safely(user):
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_DISALLOW_MULTIRECIPIENTS = False
 POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
+POSTMAN_DISABLE_USER_EMAILING = False
+POSTMAN_NOTIFIER_APP = None
 
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging
