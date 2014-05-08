@@ -571,9 +571,18 @@ class AdvancedForm(forms.ModelForm):
 
     class Meta:
         labels = {
-            "visibility_family": u"Visible auprès des familles",
-            "visibility_prestataire": u"Visible auprès des prestataires",
-            "visibility_global": u"Visible globalement sur le site",
+            "visibility_family": (
+                u"Je ne souhaite pas être visible (divulguer mes "
+                u"informations) auprès des familles inscrites sur le site."
+            ),
+            "visibility_prestataire": (
+                u"Je ne souhaite pas être visible (divulguer mes "
+                u"informations) auprès  des prestataires de garde d’enfants inscrits sur le site."
+            ),
+            "visibility_global": (
+                u"Je ne souhaite plus être visible sur le site pour le moment, "
+                u"car j’ai trouvé ce que je recherchais."
+            ),
             "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
