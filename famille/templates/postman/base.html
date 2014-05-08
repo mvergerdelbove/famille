@@ -9,8 +9,9 @@
 {# dj v1.2 #}{# {{ MEDIA_URL }}postman/css/postman.css #}
 " />{% endblock %}
 {% block mainContent %}
-{% postman_unread as unread_count %}
     <div class="col-md-offset-1 col-md-7">
+    {% if request.related_user.is_premium %}
+        {% postman_unread as unread_count %}
         <ul class="nav nav-tabs" id="message-tabs">
             <li id="inboxLink"><a href="{% url 'postman_inbox' %}">
                 <span class="badge">{{ unread_count }}</span> Boîte de réception
@@ -25,6 +26,12 @@
                 {% block postman_content %}{% endblock %}
             </div>
         </div>
+    {% else %}
+    <h1>Vous n'avez pas accès à cette fonctionnalité</h1>
+    <p>
+        blah blah blah <a href="{% url 'premium' %}" class="btn btn-success">Créer un compte premium</a>
+    </p>
+    {% endif %}
     </div>
 {% endblock %}
 
