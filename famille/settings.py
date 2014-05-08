@@ -35,7 +35,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'djrill',
-    'ajax_select',
     'bootstrap3',
     'south',
     'localflavor',
@@ -177,16 +176,8 @@ def get_user_pseudo_safely(user):
     return get_user_pseudo(user)
 
 POSTMAN_DISALLOW_ANONYMOUS = True
-POSTMAN_DISALLOW_MULTIRECIPIENTS = True  # for now...
+POSTMAN_DISALLOW_MULTIRECIPIENTS = False
 POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
-POSTMAN_AUTOCOMPLETER_APP = {
-    'arg_default': 'postman_users',
-}
-
-# ajax_select
-AJAX_LOOKUP_CHANNELS = {
-    'postman_users': ("famille.utils.lookup", "PostmanUserLookup"),
-}
 
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging

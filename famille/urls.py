@@ -81,5 +81,4 @@ urlpatterns = patterns(
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
     url(r'', include('password_reset.urls')),  # password reset
     url(r'^messages/', include('postman.urls')),  # postman
-    url('', include('ajax_select.urls')),  # ajax_select
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
