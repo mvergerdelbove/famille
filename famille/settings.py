@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'storages',
     'tastypie',
     'tinymce',
+    'verification',
     'social.apps.django_app.default',
     'famille',
 )
