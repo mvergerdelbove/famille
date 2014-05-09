@@ -6,8 +6,10 @@ django-bootstrap3==2.5.1
 django-grappelli==2.5.0
 django-log-request-id==1.0.0
 django-localflavor==1.0
+django-pagination==1.0.7
 django-password-reset==0.7
 git+https://github.com/spookylukey/django-paypal.git@c3f1dc1dad197584431b3853205722577c0a8912
+django-postman==3.1.0
 django-storages==1.1.8
 django-tastypie==0.11.0
 django-tinymce==1.5.2

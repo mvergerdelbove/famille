@@ -3,7 +3,7 @@ from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
 
 from famille.admin import forms
-from famille.models import Prestataire, Famille
+from famille.models import Prestataire, Famille, DownloadableFile
 from famille.utils import admin_display
 
 
@@ -27,11 +27,19 @@ class PrestataireAdmin(admin.ModelAdmin):
     search_fields = ['first_name', 'name', 'email']
 
 
+class DownloadableFileAdmin(admin.ModelAdmin):
+    model = DownloadableFile
+    form = forms.DownloadableFileForm
+    list_display = ('name', 'file_type')
+    search_fields = ['name', 'description']
+
+
 # registering onto the admin site
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, TinyMCEFlatPageAdmin)
 admin.site.register(Famille, FamilleAdmin)
 admin.site.register(Prestataire, PrestataireAdmin)
+admin.site.register(DownloadableFile, DownloadableFileAdmin)
 
 # TODO:
 #       - display photo on rows ?

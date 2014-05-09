@@ -68,6 +68,7 @@ function App (){
     $("select:not(.empty-planning-form select)").select2();
 
     // init
+    $("#accordion .panel-collapse:first").collapse("show");
     showTab();
     displaySuccessNotification("Vos informations ont été mises à jour avec succès.");
     initDatepicker($("#planning .date"), datePickerOptions.planning);

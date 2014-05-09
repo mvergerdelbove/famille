@@ -23,6 +23,26 @@ var constructTarifFilter = function (name, value) {
     }
 };
 
+
+var constructAgeFilter = function(name, value) {
+    var birhdayField = "birthday";
+    var today = new Date();
+    var birthDate;
+    switch(value) {
+        case "16-":
+            birthDate = new Date(today.setYear(today.getYear() - 16));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18-":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18+":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__lte="+ birthDate.toISOString().split('T')[0];
+        default:
+            return "";
+    }
+};
+
 module.exports = Backbone.View.extend({
     events: {
         "click .next": "displayNext",
@@ -34,7 +54,8 @@ module.exports = Backbone.View.extend({
         "onkeyup .form-search [type=text]": "doSearch",
         "slideStop #id_tarif": "doSearch",
         "click .form-search [data-distance]": "doDistanceSearch",
-        "change #search-sort": "doSearch"
+        "change #search-sort": "doSearch",
+        "change #id_age": "doSearch"
     },
 
     initialize: function(options){
@@ -44,6 +65,9 @@ module.exports = Backbone.View.extend({
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
         this.$sortSelect = this.$("#search-sort");
+        if (!this.isAuthenticated()) {
+            this.disableForm();
+        }
     },
 
     buildQuery: function($els){
@@ -52,6 +76,7 @@ module.exports = Backbone.View.extend({
                 name = $this.attr("name"),
                 value = $this.val(),
                 query = $this.data("api");
+            if (value && name == "age") return constructAgeFilter(name, value);
             if (value && query) return constructFilter(name, query, value);
             if (value && name == "language") return constructLanguageFilter(name, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
@@ -139,6 +164,40 @@ module.exports = Backbone.View.extend({
         notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
     },
 
+    disableForm: function () {
+        var postalCode = this.$(".form-control[name=pc]")[0];
+        this.$("#id_tarif").slider('disable');
+        this.attachDisabledPopover(this.$(".slider-disabled"));
+        _.each(this.$(".form-control,[type=checkbox]", ".form-search"), function (el) {
+            if (el === postalCode) return;
+
+            var $el = $(el);
+            if (el.tagName == "SELECT") {
+                $el.select2("readonly", true);
+            }
+            else {
+                $el.prop("disabled", "disabled");
+            }
+            this.attachDisabledPopover($el);
+        }, this);
+    },
+    /**
+     * Attach the popover to the elements that are disabled.
+     * in order to notify the user that he can create an account.
+     */
+    attachDisabledPopover: function ($el, select) {
+        $el.attr("data-toggle", "popover");
+        if ($el.attr("type") === "checkbox") {
+            $el = $el.parent();
+        }
+        $el.popover({
+            placement: "bottom",
+            trigger: "click",
+            title: "Fonctionalité indisponible",
+            content: "Créez un compte pour pouvoir l'utiliser :-)"
+        });
+    },
+
     /****************************************/
     /************      Sort     *************/
     /****************************************/
@@ -191,7 +250,7 @@ module.exports = Backbone.View.extend({
     },
 
     isAuthenticated: function(){
-        return (this.$("[data-authenticated]").length == 1);
+        return window._auth;
     },
 
     switchSearch: function(e){

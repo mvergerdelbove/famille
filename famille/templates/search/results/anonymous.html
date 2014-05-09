@@ -1,14 +1,14 @@
-        <div class="row margin-top-little">
+<div class="row margin-top-little">
 
-              <div class="row one-search-result">
-                <div class="col-md-12">
-                  <div class="row">
-                    <div class="col-md-2">
-                      <div class="row">
-                      <img src="../../static/img/pola.png" width="100%;">
-                      <img  class="profil-pict" src="../../static/img/photo.jpg" width="50%;">
-                      </div>
-                      <div class="row">
+    <div class="row one-search-result">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row">
+                        <img src="../../static/img/pola.png" width="100%;">
+                        <img  class="profil-pict" src="../../static/img/photo.jpg" width="50%;">
+                    </div>
+                    <div class="row">
                         <div class="col-md-3 col-md-offset-1 little-padding">
                             <img src="../../static/img/flag/england.png" width="100%;" data-toggle="tooltip" data-original-title="Anglais">
                         </div>
@@ -18,113 +18,118 @@
                         <div class="col-md-3 col-md-offset-1 little-padding">
                             <img src="../../static/img/flag/france.png" width="100%;"data-toggle="tooltip" data-original-title="Francais">
                         </div>
-                      </div>
-                      <div class="row margin-top-0">
+                    </div>
+                    <div class="row margin-top-0">
                         <div class="col-md-3 title-blue nav-title">{{ result.total_rating }}</div>
                         <div class="col-md-9">
-                          <div class="progress link tooltip-link" data-toggle="tooltip" data-original-title="15 évaluations">
-                            <div class="progress-bar btn-blue-min" style="width:50%;"></div>
-                          </div>
+                            <div class="progress link tooltip-link" data-toggle="tooltip" data-original-title="15 évaluations">
+                                <div class="progress-bar btn-blue-min" style="width:50%;"></div>
+                            </div>
                         </div>
-                      </div>    
                     </div>
-                    <div class="col-md-7">
-                      <div class="row">
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
                         <div class="col-md-7 nav-title text-blue">{{ result.name }} {{ result.first_name }}</div>
-                      </div>
-                      <div class="row">
+                    </div>
+                    <div class="row">
                         <div class="col-md-7 nav-title title-blue subtlt">BABY-SITTER - {{ result.city }}</div>
-                      </div>
-                      <div class="col-md-12 badges_rank"> <!--badges-->
+                    </div>
+                    <div class="col-md-12 badges_rank"> <!--badges-->
                         <div class="row rgt l1">
-                          <div class="col-md-3 categorie title-green nav-title">Type de garde</div>
-                          <div class="col-md-9">
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je suis disponible pour des dépannages">
-                              <img src="../../static/img/badges/gardeurgence.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je peux faire des gardes de nuit">
-                              <img src="../../static/img/badges/jouretnuit.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte les gardes partagées">
-                              <img src="../../static/img/badges/gardepartagee.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je vais chercher vos enfants aux sorties d'école">
-                              <img class="none" src="../../static/img/badges/nosortieecole.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'accepte les horaires décalés (tôt le matin ou tard le soir)">
-                              <img class="none" src="../../static/img/badges/noheuredecalee.png" width="90%;">
-                            </div> 
-                          </div>
+                            <div class="col-md-3 categorie title-green nav-title">Type de garde</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je suis disponible pour des dépannages">
+                                    <img src="../../static/img/badges/gardeurgence.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je peux faire des gardes de nuit">
+                                    <img src="../../static/img/badges/jouretnuit.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte les gardes partagées">
+                                    <img src="../../static/img/badges/gardepartagee.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je vais chercher vos enfants aux sorties d'école">
+                                    <img class="none" src="../../static/img/badges/nosortieecole.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'accepte les horaires décalés (tôt le matin ou tard le soir)">
+                                    <img class="none" src="../../static/img/badges/noheuredecalee.png" width="90%;">
+                                </div>
+                            </div>
                         </div>
                         <div class="row rgt l1">
-                          <div class="col-md-3 categorie title-green nav-title">Expertise</div>
-                          <div class="col-md-9">
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'ai un diplôme ou une attestation dans la garde d'enfants">
-                              <img src="../../static/img/badges/diplome.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
-                              <img src="../../static/img/badges/bebe.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai mon permis">
-                              <img src="../../static/img/badges/permis.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je peux m'occuper d'enfants handicapés">
-                              <img class="none" src="../../static/img/badges/nohandi.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai suivi une formation aux premiers secours">
-                              <img class="none" src="../../static/img/badges/nopremiersecours.png" width="90%;">
-                            </div> 
-                          </div>
+                            <div class="col-md-3 categorie title-green nav-title">Expertise</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'ai un diplôme ou une attestation dans la garde d'enfants">
+                                    <img src="../../static/img/badges/diplome.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
+                                    <img src="../../static/img/badges/bebe.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai mon permis">
+                                    <img src="../../static/img/badges/permis.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je peux m'occuper d'enfants handicapés">
+                                    <img class="none" src="../../static/img/badges/nohandi.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai suivi une formation aux premiers secours">
+                                    <img class="none" src="../../static/img/badges/nopremiersecours.png" width="90%;">
+                                </div>
+                            </div>
                         </div>
                         <div class="row rgt l1">
-                          <div class="col-md-3 categorie title-green nav-title">Les p'tits plus</div>
-                          <div class="col-md-9">
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte de faire du repassage">
-                              <img src="../../static/img/badges/repassage.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accpete de faire du ménage'">
-                              <img src="../../static/img/badges/menage.png" width="90%;"></div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je ne fume pas">
-                              <img src="../../static/img/badges/nonfumeur.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais cuisiner">
-                              <img src="../../static/img/badges/cuisine.png" width="90%;">
-                            </div> 
-                            <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'aide vos enfants dans leur devoirs'">
-                              <img class="none" src="../../static/img/badges/nosoutien.png" width="90%;">
-                            </div> 
-                          </div>
+                            <div class="col-md-3 categorie title-green nav-title">Les p'tits plus</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte de faire du repassage">
+                                    <img src="../../static/img/badges/repassage.png" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accpete de faire du ménage'">
+                                    <img src="../../static/img/badges/menage.png" width="90%;"></div>
+                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je ne fume pas">
+                                        <img src="../../static/img/badges/nonfumeur.png" width="90%;">
+                                    </div>
+                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais cuisiner">
+                                        <img src="../../static/img/badges/cuisine.png" width="90%;">
+                                    </div>
+                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'aide vos enfants dans leur devoirs'">
+                                        <img class="none" src="../../static/img/badges/nosoutien.png" width="90%;">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
                     <div class="col-md-2">
-                      <div class="row">
-                        <button type="submit" class="btn btn-color btn-brown-min btn-block" data-toggle="tooltip" data-placement="top"
+                        <div class="row">
                             {% if user.is_authenticated %}
-                            title="Mettre en favori"
+                            <button class="btn btn-color btn-brown-min btn-block">
+                                <i class="glyphicon glyphicon-star"></i> Favori
+                            </button>
                             {% else %}
+                            <button class="btn btn-color btn-brown-min btn-block"
+                            data-toggle="popover" data-placement="top" data-trigger="hover"
                             title="Créez un compte pour pouvoire utiliser les favoris"
-                            {% endif %}><span class="glyphicon glyphicon-star"></span> Favoris</button>
-                      </div>
-                      <div class="row margin-top-2">
+                            data-content=":-)">
+                            <i class="glyphicon glyphicon-star"></i> Favori
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div class="row margin-top-2">
                         <button href="#" class="btn btn-color btn-brown-min btn-block">
                             <span class="glyphicon glyphicon-user"></span> contacter
                         </button>
-                      </div>
-                      <div class="row margin-top-little">
+                    </div>
+                    <div class="row margin-top-little">
                         <button type="submit" class="btn btn-color btn-brown-min btn-block">
                             <span class="glyphicon glyphicon-stats"></span> noter
                         </button>
-                      </div>
-                      <div class="row margin-top-little">
+                    </div>
+                    <div class="row margin-top-little">
                         <button type="submit" class="btn btn-color btn-brown-min btn-block">
                             <span class="glyphicon glyphicon-bell"></span> Signaler
                         </button>
-                      </div>
                     </div>
-                  </div>
                 </div>
-                <span data-field="resource_uri" class="hidden">/api/v1/{{ search_type }}s/{{ result.pk }}/</span>
-              </div>
-              <hr>
-          </div>
+            </div>
+        </div>
+        <span data-field="resource_uri" class="hidden">/api/v1/{{ search_type }}s/{{ result.pk }}/</span>
+    </div>
+</div>

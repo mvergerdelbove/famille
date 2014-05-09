@@ -5,6 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.signing import TimestampSigner, BadSignature
 
 
+logger = logging.getLogger(__name__)
+
+
 class PaymentSigner(TimestampSigner):
     SEP = ":"
     PREFIX = "VDF_"
@@ -75,13 +78,14 @@ class PaymentSigner(TimestampSigner):
         This method is a callback for django paypal signal,
         it links the payment to the user and mark the user as premium.
         """
+        logger.info("Premium signup...")
         if self.transaction_is_legit(sender):
             user = self.user_from_ipn(sender)
             user.ipn_id = sender.pk
             user.plan = user.PLANS["premium"]
             user.save()
         else:
-            logging.warning("Paypal transaction not legit, pk %s", sender.pk)
+            logger.warning("Paypal transaction not legit, pk %s", sender.pk)
 
 
 signer = PaymentSigner()

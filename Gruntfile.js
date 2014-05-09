@@ -40,13 +40,17 @@ module.exports = function(grunt) {
                 dest: BUILD_ROOT + "profile.js",
                 src: [JS_ROOT + "profile/app.js"]
             },
-            visibility: {
-                dest: BUILD_ROOT + "visibility.js",
-                src: [JS_ROOT + "account/visibility.js"]
+            advanced: {
+                dest: BUILD_ROOT + "advanced.js",
+                src: [JS_ROOT + "account/advanced.js"]
             },
             premium: {
                 dest: BUILD_ROOT + "premium.js",
                 src: [JS_ROOT + "account/premium.js"]
+            },
+            messages: {
+                dest: BUILD_ROOT + "messages.js",
+                src: [JS_ROOT + "account/messages.js"]
             }
         },
         watch: {
@@ -77,7 +81,8 @@ module.exports = function(grunt) {
         'browserify:famille_account',
         'browserify:prestataire_account',
         'browserify:profile',
-        'browserify:visibility',
-        'browserify:premium'
+        'browserify:advanced',
+        'browserify:premium',
+        'browserify:messages'
     ]);
 };
