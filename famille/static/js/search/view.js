@@ -224,19 +224,19 @@ module.exports = Backbone.View.extend({
         if (!this.isAuthenticated()) return;
         var self = this;
         _.each(famille.userData.favorites, function(uri){
-            self.$(".one-search-result:contains("+ uri +") .favorite")
-            .addClass("glyphicon-star")
-            .removeClass("glyphicon-star-empty");
+            self.$(".one-search-result:contains("+ uri +") .favorite .glyphicon")
+            .addClass("favorited");
         });
     },
 
     toggleFavorite: function(e){
         if (!this.isAuthenticated()) return;
         var $target = $(e.target),
-        resource_uri = $("[data-field=resource_uri]", $target.parents(".panel-heading")).html(),
-        action = ($target.hasClass("glyphicon-star-empty")) ? "add": "remove";
+        $star = $(".glyphicon", $target),
+        resource_uri = $("[data-field=resource_uri]", $target.parents(".one-search-result")).html(),
+        action = ($star.hasClass("favorited")) ? "remove": "add";
 
-        $target.toggleClass("glyphicon-star").toggleClass("glyphicon-star-empty");
+        $star.toggleClass("favorited");
         if (action == "add") famille.userData.favorites.push(resource_uri);
         else famille.userData.favorites = _.without(famille.userData.favorites, resource_uri);
 

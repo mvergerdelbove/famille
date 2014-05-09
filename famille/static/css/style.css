@@ -148,3 +148,7 @@ h4{font-weight: bold;font-size: 25px;text-align: center;color:#555555;}
     left: 64%;
     top:2%;
 }
+
+.favorited {
+    color: rgb(255, 235, 0);
+}
