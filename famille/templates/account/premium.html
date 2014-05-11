@@ -13,7 +13,16 @@
 <div class="row">
     <div class="col-md-offset-2 col-md-8">
         {% if action != "valider" %}
-            {{ form.render }}
+            {% for form in payment_forms %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.initial.item_name }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.render }}
+                </div>
+            </div>
+            {% endfor %}
         {% endif %}
     </div>
 </div>

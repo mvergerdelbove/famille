@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import json
 
 from django.conf import settings
@@ -7,6 +7,7 @@ from django.core.signing import BadSignature
 from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict, HttpRequest
 from django.test import TestCase
+from django.utils.timezone import utc
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
 from postman.models import Message
@@ -197,7 +198,7 @@ DUMMY_IPN = {
     "auth_status": "a",
     "invoice": "a",
     "item_name": "a",
-    "item_number": settings.PREMIUM_ID,
+    "item_number": payment.PREMIUM_IDS["1f"],
     "mc_currency": "USD",
     "memo": "a",
     "memo": "a",
@@ -304,7 +305,25 @@ class PaymentTestCase(TestCase):
         payment.signer.premium_signup(self.ipn)
         famille = models.Famille.objects.get(pk=self.famille.pk)
         self.assertTrue(famille.is_premium)
+        expected_expires = datetime.now(utc) + timedelta(days=31)
+        expected_expires = expected_expires.replace(hour=0, minute=0, second=0, microsecond=0)
+        self.assertEqual(famille.plan_expires_at, expected_expires)
         self.assertEqual(famille.ipn, self.ipn)
+
+    def test_compute_expires_at_invalid(self):
+        self.ipn.item_number = "blah"
+        self.assertRaises(ValueError, payment.compute_expires_at, self.ipn)
+
+    def test_compute_expires_at_presta(self):
+        self.ipn.item_number = payment.PREMIUM_IDS["12p"]
+        expires_at = payment.compute_expires_at(self.ipn)
+        expected = date.today() + timedelta(weeks=52)
+        self.assertEqual(expires_at, expected)
+
+    def test_compute_expires_at_famille(self):
+        expires_at = payment.compute_expires_at(self.ipn)
+        expected = date.today() + timedelta(days=31)
+        self.assertEqual(expires_at, expected)
 
 
 class MailTestCase(TestCase):

@@ -161,8 +161,6 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/mon-compte/"
 
 # paypal
 PAYPAL_RECEIVER_EMAIL = "contact.uneviedefamille@gmail.com"
-PREMIUM_ID = "9b1818-a28819"
-PREMIUM_PRICE = "10.00"
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"
