@@ -165,7 +165,8 @@ PREMIUM_ID = "9b1818-a28819"
 PREMIUM_PRICE = "10.00"
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
-
+PAYPAL_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"
+PAYPAL_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"
 
 # postman
 def get_user_pseudo_safely(user):
