@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 
@@ -195,7 +195,7 @@ def premium(request):
     Page to become premium.
     """
     if request.related_user.is_premium:
-        return render_to_response("account/already_premium.html")
+        return render(request, "account/already_premium.html", get_context())
 
     forms = payment.get_payment_forms(request.related_user, request)
     return render(request, "account/premium.html", get_context(payment_forms=forms))
