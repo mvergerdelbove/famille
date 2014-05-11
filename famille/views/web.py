@@ -203,7 +203,6 @@ def premium(request):
 
 @login_required
 @require_related
-@require_POST
 @csrf_exempt
 def premium_success(request):
     return render(request, "account/premium.html", get_context(action="success"))
@@ -211,7 +210,6 @@ def premium_success(request):
 
 @login_required
 @require_related
-@require_POST
 @csrf_exempt
 def premium_cancel(request):
     return HttpResponseRedirect("/devenir-premium/")
