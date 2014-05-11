@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 
 from famille import forms
@@ -21,7 +22,8 @@ from famille.utils.http import require_related, login_required, assert_POST
 __all__ = [
     "home", "search", "register", "account",
     "favorite", "profile", "premium",
-    "tools", "advanced", "delete_account"
+    "tools", "advanced", "delete_account",
+    "premium_success", "premium_cancel"
 ]
 
 
@@ -188,18 +190,31 @@ def profile(request, type, uid):
 @login_required
 @require_related
 @require_GET
-def premium(request, action=None):
+def premium(request):
     """
     Page to become premium.
     """
     if request.related_user.is_premium:
         return render_to_response("account/already_premium.html")
 
-    if action == "valider":
-        return render(request, "account/premium.html", get_context(action=action))
-
     forms = payment.get_payment_forms(request.related_user, request)
-    return render(request, "account/premium.html", get_context(payment_forms=forms, action=action))
+    return render(request, "account/premium.html", get_context(payment_forms=forms))
+
+
+@login_required
+@require_related
+@require_POST
+@csrf_exempt
+def premium_success(request):
+    return render(request, "account/premium.html", get_context(action="success"))
+
+
+@login_required
+@require_related
+@require_POST
+@csrf_exempt
+def premium_cancel(request):
+    return HttpResponseRedirect("/devenir-premium/")
 
 
 @login_required

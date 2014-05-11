@@ -88,7 +88,7 @@ def get_payment_forms(user, request):
         data.update(
             invoice=signer.sign_user(user),
             notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
-            return_url=request.build_absolute_uri('/devenir-premium/valider/'),
+            return_url=request.build_absolute_uri('/devenir-premium/succes/'),
             cancel_return=request.build_absolute_uri('/devenir-premium/annuler/'),
             **product
         )
