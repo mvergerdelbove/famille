@@ -16,15 +16,15 @@
             <div class="btn-group search-header">
                 {% if search_type == "famille" %}
                 <button type="button" class="btn btn-default choose-search" data-search="prestataire">Un prestataire</button>
-                <button type="button" class="btn btn-success active">Une famille</button>
+                <button type="button" class="btn btn-color btn-blue-min active">Une famille</button>
                 {% else %}
-                <button type="button" class="btn btn-success active">Un prestataire</button>
+                <button type="button" class="btn btn-color btn-green-min active">Un prestataire</button>
                 <button type="button" class="btn btn-default choose-search" data-search="famille">Une famille</button>
                 {% endif %}
             </div>
             {% block form %}{% endblock %}
     </div>
-    <div class="col-md-6 col-md-offset-1">
+    <div class="col-md-6 col-md-offset-1 margin-top-r">
         <div class="row">
             <div class="col-md-4">
                 <h3>{{ total_search_results }} Résultats</h3>

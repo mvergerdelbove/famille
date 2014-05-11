@@ -3,46 +3,75 @@
 {% load bootstrap3 %}
 
 {% block content %}
-<main class="row">
-    <section class="col-md-7"><!-- TODO: video --></section>
-    <section class="col-md-5">
-        <article class="row margin-top-1">
-            <header>
-                <h4>je commence mes recherches</h4>
-            </header>
-            <div class="col-md-12">
-                <p>Consultez gratuitement toutes les propositions près de chez vous</p>
-                <form class="form-inline" role="search" method="post" action="{% url 'search' %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% for field in search_form %}
-                            {% bootstrap_field field show_label=False %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3 margin-top-little">
-                            <button type="submit" class="btn btn-warning">Rechercher</button>
-                        </div>
-                    </div>
-                </form>
+<main class="row home">
+  <section class="col-lg-offset-1 col-lg-3">
+    <div class="row">
+      <article class="row margin-top-2">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3 visible-md visible-sm visible-xs">
+            <img class="logo-md" src="bootstrap/img/confiance_proximite(white).png" width="50%">
+          </div>
+        </div>
+        <div class="row margin-top-2">
+          <div class="col-md-12 visible-lg">
+            <img src="{% static "img/vid.png" %}" width="447.6" height="252">
+              <!-- <iframe width="447.6" height="252" src="//www.youtube.com/embed/a5wGysrzTj4" frameborder="0" allowfullscreen></iframe> -->
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="col-lg-offset-1 col-lg-6">
+    <div class="row">
+      <article class="row margin-top-1">
+        <header>
+          <h4 class="col-md-offset-1">Je commence mes recherches</h4>
+        </header>
+        <div class="col-lg-offset-2 col-md-10 col-md-offset-1 col-md-9 col-sm-12 crea-compte-md crea-compte">
+          <p>Consultez gratuitement toutes les propositions près de chez vous</p>
+          <form class="form-inline" role="search" method="post" action="{% url 'search' %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-12">
+                {% for field in search_form %}
+                {% bootstrap_field field show_label=False %}
+                {% endfor %}
+              </div>
             </div>
-        </article>
-        <article class="row margin-top-0">
-            <header>
-	            <h4>je crée mon compte</h4>
-            </header>
-            <div class="col-md-6">
-	            <p>Je recherche une personne de confiance pour garder mes enfants</p>
-	            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#createFamille">Familles</a>
+            <div class="row">
+              <div class="col-md-6 margin-top-little">
+                <button type="submit" class="btn btn-color btn-brown">
+                  <span class="glyphicon glyphicon-search"></span> Rechercher
+                </button>
+              </div>
             </div>
-            <div class="col-md-6">
-	            <p>J'améliore ma visibilité auprès des familles</p>
-	            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createPresta">Prestataires</a>
-            </div>
-        </article>
-    </section>
+          </form>
+        </div>
+      </article>
+    </div>
+    <div class="row">
+    <hr class="col-md-4 col-md-offset-1 margin-top-0">
+    <p class="col-md-2 margin-top-little text-center">ou</p>
+    <hr class="col-md-4 margin-top-0">
+    </div>
+    <div class="row">
+      <article class="row margin-top-0">
+        <header>
+          <h4 class="col-md-offset-1">
+            Je crée mon compte
+          </h4>
+        </header>
+        <div class="col-lg-offset-1 col-lg-5 col-md-offset-1 col-md-4 col-xs-5 crea-compte">
+          <p class="text-center">Je recherche une personne de confiance pour garder mes enfants</p>
+          <a href="#" class="btn btn-color col-md-offset-4 btn-green-min" data-toggle="modal" data-target="#createFamille">Familles</a>
+        </div>
+        <div class="col-lg-offset-1 col-lg-5 col-md-offset-2 col-md-4 col-xs-offset-2 col-xs-5 crea-compte">
+          <p class="text-center">J'améliore ma visibilité auprès des familles à proximité de chez moi</p>
+          <a href="#" class="btn btn-color col-md-offset-4 btn-blue-min" data-toggle="modal" data-target="#createPresta">Prestataires</a>
+        </div>
+      </article>
+    </div>  
+  </section>
 </main>
 <aside>
   <!-- Modals -->
