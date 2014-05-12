@@ -37,7 +37,7 @@ class RegistrationForm(forms.Form):
 
         return not user_exists
 
-    def save(self):
+    def save(self, request):
         # Create user
         dj_user = User.objects.create_user(
             self.cleaned_data["email"],
@@ -48,7 +48,7 @@ class RegistrationForm(forms.Form):
         dj_user.save()
         # Create famille / prestataire and link to user
         user = UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
-        user.send_verification_email()
+        user.send_verification_email(request)
 
 
 class UserForm(forms.ModelForm):

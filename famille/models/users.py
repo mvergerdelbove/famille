@@ -355,7 +355,7 @@ class UserInfo(BaseModel):
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
-    def send_verification_email(self):
+    def send_verification_email(self, request):
         """
         Send a verification email to a user after signup.
         """
@@ -365,6 +365,7 @@ class UserInfo(BaseModel):
         key.claimed = None
         key.save()
         activate_url = reverse('verification-claim-get', kwargs={'key': key, 'group': key.group})
+        activate_url = request.build_absolute_uri(activate_url)
         send_mail_from_template_with_noreply(
             "email/verification.html", {"activate_url": activate_url},
             subject=u"Email de vérification", recipient_list=[self.email, ]

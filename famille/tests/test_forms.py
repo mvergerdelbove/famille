@@ -41,7 +41,7 @@ class RegistrationFormTestCase(TestCase):
         }
         self.form.data = {"type": "famille"}
 
-        self.form.save()
+        self.form.save(None)
         user = User.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(user)
         model = models.Famille.objects.filter(email="valid@email.com").first()
@@ -51,7 +51,7 @@ class RegistrationFormTestCase(TestCase):
 
         self.form.data = {"type": "prestataire"}
         user.delete()
-        self.form.save()
+        self.form.save(None)
         model = models.Prestataire.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(model)
         self.assertIsInstance(model.user, User)

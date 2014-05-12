@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
+from django.http.request import HttpRequest
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
@@ -244,7 +245,9 @@ class ModelsTestCase(TestCase):
 
     @patch("django.core.mail.send_mail")
     def test_send_verification_email(self, send_mail):
-        self.presta.send_verification_email()
+        req = HttpRequest()
+        req.META = {"HTTP_HOST": "toto.com"}
+        self.presta.send_verification_email(req)
         self.assertTrue(send_mail.called)
         self.assertEqual(Key.objects.filter(claimed_by=self.presta.user, claimed=None).count(), 1)
 

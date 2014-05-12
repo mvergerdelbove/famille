@@ -90,7 +90,7 @@ def register(request, social=None, type=None):
         if request.method == "POST":
             form = forms.RegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                form.save(request)
         else:
             form = forms.RegistrationForm()
             return render(request, "registration/register.html", get_context(social=social, form=form))
