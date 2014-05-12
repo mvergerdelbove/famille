@@ -1,11 +1,99 @@
+from datetime import date, timedelta
 import logging
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.signing import TimestampSigner, BadSignature
+from django.core.urlresolvers import reverse
+from paypal.standard.forms import PayPalPaymentsForm
 
 
 logger = logging.getLogger(__name__)
+
+PREMIUM_ID_TPL = "9b1818-%s%s"
+PREMIUM_IDS = {
+    "1f": PREMIUM_ID_TPL % ("f", "1"),
+    "3f": PREMIUM_ID_TPL % ("f", "3"),
+    "12f": PREMIUM_ID_TPL % ("f", "12"),
+    "12p": PREMIUM_ID_TPL % ("p", "12"),
+}
+
+PRODUCTS = {
+    "famille": [
+        {
+            "amount": "10.00",
+            "item_name": "Compte premium Une vie de famille (1 mois)",
+            "item_number": PREMIUM_IDS["1f"],
+            "button_type": PayPalPaymentsForm.BUY
+        },
+        {
+            "amount": "7.00",
+            "item_name": "Compte premium Une vie de famille (3 mois)",
+            "item_number": PREMIUM_IDS["3f"],
+            "button_type": PayPalPaymentsForm.SUBSCRIBE
+        },
+        {
+            "amount": "5.00",
+            "item_name": "Compte premium Une vie de famille (1 an)",
+            "item_number": PREMIUM_IDS["12f"],
+            "button_type": PayPalPaymentsForm.SUBSCRIBE
+        }
+    ],
+    "prestataire": [
+        {
+            "amount": "5.00",
+            "item_name": "Compte premium Une vie de famille (1 an)",
+            "item_number": PREMIUM_IDS["12p"],
+            "button_type": PayPalPaymentsForm.BUY
+        }
+    ]
+}
+
+BASE_PRODUCT_INFO = {
+    "src": "1",
+    "currency_code": "EUR",
+    "business": settings.PAYPAL_RECEIVER_EMAIL,
+}
+
+
+def compute_expires_at(ipn):
+    """
+    Compute the expiration date of the payment.
+
+    :param ipn:      the ipn object
+    """
+    for key, value in PREMIUM_IDS.iteritems():
+        if ipn.item_number == value:
+            number_of_months = int(key.replace("p", "").replace("f", ""))
+            break
+    else:
+        raise ValueError("Invalid item number")
+
+    delta = timedelta(weeks=52) if number_of_months == 12 else timedelta(days=number_of_months * 31)
+    return date.today() + delta
+
+
+def get_payment_forms(user, request):
+    """
+    Retrieve the payment forms for given user and request.
+
+    :param user:      the user that wants to see the forms
+    :param request:   a django HttpRequest
+    """
+    user_type = user.__class__.__name__.lower()
+    products = PRODUCTS[user_type]
+    forms = []
+    for product in products:
+        data = BASE_PRODUCT_INFO.copy()
+        data.update(
+            invoice=signer.sign_user(user),
+            notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
+            return_url=request.build_absolute_uri('/devenir-premium/succes/'),
+            cancel_return=request.build_absolute_uri('/devenir-premium/annuler/'),
+            **product
+        )
+        forms.append(PayPalPaymentsForm(button_type=product["button_type"], initial=data))
+    return forms
 
 
 class PaymentSigner(TimestampSigner):
@@ -49,7 +137,7 @@ class PaymentSigner(TimestampSigner):
 
         :param ipn:            the ipn that fired a signal
         """
-        if ipn.item_number != settings.PREMIUM_ID:
+        if ipn.item_number not in PREMIUM_IDS.values():
             return False
 
         try:
@@ -83,6 +171,7 @@ class PaymentSigner(TimestampSigner):
             user = self.user_from_ipn(sender)
             user.ipn_id = sender.pk
             user.plan = user.PLANS["premium"]
+            user.plan_expires_at = compute_expires_at(sender)
             user.save()
         else:
             logger.warning("Paypal transaction not legit, pk %s", sender.pk)

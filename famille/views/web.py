@@ -3,11 +3,10 @@ from collections import defaultdict
 from django.conf import settings
 from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
-from paypal.standard.forms import PayPalPaymentsForm
 
 from famille import forms
 from famille.models import (
@@ -23,7 +22,8 @@ from famille.utils.http import require_related, login_required, assert_POST
 __all__ = [
     "home", "search", "register", "account",
     "favorite", "profile", "premium",
-    "tools", "advanced", "delete_account"
+    "tools", "advanced", "delete_account",
+    "premium_success", "premium_cancel"
 ]
 
 
@@ -187,37 +187,32 @@ def profile(request, type, uid):
     return render(request, "profile/base.html", get_context(profile=user, **context))
 
 
-premium_dict = {
-    "business": settings.PAYPAL_RECEIVER_EMAIL,
-    "amount": settings.PREMIUM_PRICE,
-    "item_name": "Compte premium Une vie de famille",
-    "item_number": settings.PREMIUM_ID,
-    "src": "1",
-    "currency_code": "EUR"
-}
-
 @login_required
 @require_related
 @require_GET
-def premium(request, action=None):
+def premium(request):
     """
     Page to become premium.
     """
     if request.related_user.is_premium:
-        return render_to_response("account/already_premium.html")
+        return render(request, "account/already_premium.html", get_context())
 
-    if action == "valider":
-        return render(request, "account/premium.html", get_context(action=action))
+    forms = payment.get_payment_forms(request.related_user, request)
+    return render(request, "account/premium.html", get_context(payment_forms=forms))
 
-    data = premium_dict.copy()
-    data.update(
-        invoice=payment.signer.sign_user(request.related_user),
-        notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
-        return_url=request.build_absolute_uri('/devenir-premium/valider/'),
-        cancel_return=request.build_absolute_uri('/devenir-premium/annuler/')
-    )
-    form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
-    return render(request, "account/premium.html", get_context(form=form, action=action))
+
+@csrf_exempt  # Make sure this is the last decorator
+@login_required
+@require_related
+def premium_success(request):
+    return render(request, "account/premium.html", get_context(action="success"))
+
+
+@csrf_exempt
+@login_required
+@require_related
+def premium_cancel(request):
+    return HttpResponseRedirect("/devenir-premium/")
 
 
 @login_required

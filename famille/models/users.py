@@ -166,6 +166,7 @@ class UserInfo(BaseModel):
         max_upload_size=2621440  # 2.5MB
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
+    plan_expires_at = models.DateTimeField(blank=True, null=True)
     newsletter = models.BooleanField(blank=True, default=True)
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
