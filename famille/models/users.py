@@ -1,11 +1,11 @@
 # -*- coding=utf-8 -*-
 from datetime import datetime
+import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.dispatch import receiver
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.ipn.signals import payment_was_successful
 from verification.models import Key, KeyGroup
@@ -362,20 +362,26 @@ class UserInfo(BaseModel):
         """
         keygroup = KeyGroup.objects.get(name="activate_account")
         key = Key.generate(group=keygroup)
-        activate_url = reverse('verification-claim-post-url', kwargs={'key': key, 'group': key.group})
+        key.claimed_by = self.user
+        key.claimed = None
+        key.save()
+        activate_url = reverse('verification-claim-get', kwargs={'key': key, 'group': key.group})
         send_mail_from_template_with_noreply(
             "email/verification.html", {"activate_url": activate_url},
             subject=u"Email de vérification", recipient_list=[self.email, ]
         )
 
-    @receiver(key_claimed)
-    def verify_user(self, sender, **kwargs):
+    @classmethod
+    def verify_user(*args, **kwargs):
         """
         Verify a user.
         """
         claimant = kwargs['claimant']
-        claimant.verified = True
-        claimant.save()
+        if has_user_related(claimant):
+            claimant.is_active = True
+            claimant.save()
+        else:
+            logging.warning("Cannot verify user since claimant is unrelated.")
 
 
 class Criteria(UserInfo):
@@ -637,3 +643,4 @@ FAVORITE_CLASSES = {
 
 # signals
 payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")
+key_claimed.connect(UserInfo.verify_user, dispatch_uid="famille.verify")

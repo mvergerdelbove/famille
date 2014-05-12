@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
+from verification.views import ClaimSuccessView as VerificationClaimSuccessView
 
 from famille import forms
 from famille.models import (
@@ -92,7 +93,7 @@ def register(request, social=None, type=None):
                 form.save()
         else:
             form = forms.RegistrationForm()
-        return render(request, "registration/register.html", get_context(social=social, form=form))
+            return render(request, "registration/register.html", get_context(social=social, form=form))
     else:
         if not has_user_related(request.user):
             UserInfo.create_user(dj_user=request.user, type=type)
@@ -261,3 +262,11 @@ def delete_account(request):
     request.user.save()
     logout(request)
     return HttpResponseRedirect('/')
+
+
+class ClaimSuccessView(VerificationClaimSuccessView):
+    slug_field = "key"
+    slug_url_kwarg = "key"
+
+    def get_queryset(self):
+        return self.model.objects.all()

@@ -11,6 +11,7 @@ from tastypie.api import Api
 from famille import resources
 from famille.forms import CustomAuthenticationForm
 from famille.utils.mail import email_moderation
+from famille.views.web import ClaimSuccessView
 
 
 admin.autodiscover()
@@ -88,5 +89,9 @@ urlpatterns = patterns(
     url(r'^messages/write/(?:(?P<recipients>[^/#]+)/)?$', WriteView.as_view(auto_moderators=email_moderation), name='postman_write'),
     url(r'^messages/reply/(?P<message_id>[\d]+)/$', ReplyView.as_view(auto_moderators=email_moderation), name='postman_reply'),
     url(r'^messages/', include('postman.urls')),  # postman
-    url(r'verification/', include('verification.urls')),  # verification
+    url(
+        r'^verification/(?P<group>[-\w]+)/(?P<key>[-\w]+)/success/$',
+        ClaimSuccessView.as_view(), name='verification-success'
+    ),  # verification
+    url(r'^verification/', include('verification.urls')),  # verification
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -7,7 +7,7 @@ from django.db.models.signals import pre_save
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
-from verification.models import KeyGroup
+from verification.models import KeyGroup, Key
 
 from famille import models, errors
 from famille.models import utils
@@ -246,11 +246,12 @@ class ModelsTestCase(TestCase):
     def test_send_verification_email(self, send_mail):
         self.presta.send_verification_email()
         self.assertTrue(send_mail.called)
+        self.assertEqual(Key.objects.filter(claimed_by=self.presta.user, claimed=None).count(), 1)
 
     def test_verify_user(self):
-        self.presta.verify_user(self.presta, claimant=self.presta)
-        presta = models.Prestataire.objects.get(pk=self.presta.pk)
-        self.assertTrue(presta.verified)
+        self.presta.verify_user(claimant=self.presta.user)
+        presta = User.objects.get(pk=self.presta.user.pk)
+        self.assertTrue(self.presta.user.is_active)
 
 
 class GeolocationTestCase(TestCase):

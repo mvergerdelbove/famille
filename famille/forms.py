@@ -44,6 +44,8 @@ class RegistrationForm(forms.Form):
             self.cleaned_data["email"],
             self.cleaned_data["password"]
         )
+        dj_user.is_active = False
+        dj_user.save()
         # Create famille / prestataire and link to user
         user = UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
         user.send_verification_email()
@@ -600,4 +602,7 @@ class PrestataireAdvancedForm(AdvancedForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     error_messages = AuthenticationForm.error_messages
-    error_messages["inactive"] = u"Ce compte est inactif. Veuillez nous contacter pour le réactiver"
+    error_messages["inactive"] = (
+        u"Ce compte est inactif. Vous devez avoir reçu un "
+        u"email d'activation. Dans le cas contraire, veuillez nous contacter"
+    )
