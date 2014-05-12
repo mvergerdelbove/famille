@@ -88,4 +88,5 @@ urlpatterns = patterns(
     url(r'^messages/write/(?:(?P<recipients>[^/#]+)/)?$', WriteView.as_view(auto_moderators=email_moderation), name='postman_write'),
     url(r'^messages/reply/(?P<message_id>[\d]+)/$', ReplyView.as_view(auto_moderators=email_moderation), name='postman_reply'),
     url(r'^messages/', include('postman.urls')),  # postman
+    url(r'verification/', include('verification.urls')),  # verification
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

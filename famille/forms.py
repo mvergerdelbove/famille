@@ -45,10 +45,8 @@ class RegistrationForm(forms.Form):
             self.cleaned_data["password"]
         )
         # Create famille / prestataire and link to user
-        UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
-
-        # TODO: Send mail to verify user
-        pass
+        user = UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
+        user.send_verification_email()
 
 
 class UserForm(forms.ModelForm):

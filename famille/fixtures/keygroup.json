@@ -1,1 +1,1 @@
-[{"pk": "activate_account", "model": "verification.keygroup", "fields": {"has_fact": false, "generator": "sha1", "ttl": null}}]
+[{"pk": "activate_account", "model": "verification.keygroup", "fields": {"has_fact": false, "generator": "sha1-hex", "ttl": null}}]

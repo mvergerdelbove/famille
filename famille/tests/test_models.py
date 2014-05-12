@@ -7,6 +7,7 @@ from django.db.models.signals import pre_save
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
+from verification.models import KeyGroup
 
 from famille import models, errors
 from famille.models import utils
@@ -35,10 +36,8 @@ class ModelsTestCase(TestCase):
             object_type="Famille", object_id=self.famille.pk, prestataire=self.presta
         )
         self.prestataire_fav.save()
-
-    def test_simple_id(self):
-        self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
-        self.assertEqual(self.presta.simple_id, "prestataire__%s" % self.presta.pk)
+        self.keygroup = KeyGroup(name='activate_account', generator="sha1-hex")
+        self.keygroup.save()
 
     def tearDown(self):
         User.objects.all().delete()
@@ -47,6 +46,11 @@ class ModelsTestCase(TestCase):
         models.Geolocation.objects.all().delete()
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
+        self.keygroup.delete()
+
+    def test_simple_id(self):
+        self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
+        self.assertEqual(self.presta.simple_id, "prestataire__%s" % self.presta.pk)
 
     def test_get_user_related(self):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
@@ -237,6 +241,16 @@ class ModelsTestCase(TestCase):
 
         f = models.compute_user_visibility_filters(self.user2)
         self.assertEqual(f.children, [('visibility_global', True), ('visibility_prestataire', True)])
+
+    @patch("django.core.mail.send_mail")
+    def test_send_verification_email(self, send_mail):
+        self.presta.send_verification_email()
+        self.assertTrue(send_mail.called)
+
+    def test_verify_user(self):
+        self.presta.verify_user(self.presta, claimant=self.presta)
+        presta = models.Prestataire.objects.get(pk=self.presta.pk)
+        self.assertTrue(presta.verified)
 
 
 class GeolocationTestCase(TestCase):

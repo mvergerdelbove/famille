@@ -142,6 +142,8 @@ for key in os.environ:
 
 NB_SEARCH_RESULTS = 5
 POSTAL_CODE_DISTANCE = 20.0
+CONTACT_EMAIL = "contact@uneviedefamille.fr"
+NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
 
 ################################################################################
 #                         Plugins settings                                     #
@@ -161,7 +163,7 @@ TINYMCE_COMPRESSOR = True
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/mon-compte/"
 
 # paypal
-PAYPAL_RECEIVER_EMAIL = "contact.uneviedefamille@gmail.com"
+PAYPAL_RECEIVER_EMAIL = CONTACT_EMAIL
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"

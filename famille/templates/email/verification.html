@@ -1,0 +1,17 @@
+{% extends "email/base.html" %}
+
+{% block title %}
+Email de vérification
+{% endblock %}
+
+{% block content %}
+Bonjour,<br/><br/>
+Une vie de famille vous souhaite la bienvenue ! Vous venez de vous inscrire sur notre site internet. Pour confirmer votre inscription, cliquez sur le lien ci-dessous afin de valider votre compte.<br/><br/>
+
+<strong>{{ activate_url }}</strong><br/><br/>
+
+<em>*Si vous ne parvenez pas à cliquer sur le lien, copiez-le et collez-le dans la barre d’adresse de votre navigateur</em><br/><br/>
+
+A bientôt sur www.uneviedefamille.fr<br/><br/>
+L’équipe d’Une vie de famille.
+{% endblock %}

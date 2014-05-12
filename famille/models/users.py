@@ -3,9 +3,13 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.dispatch import receiver
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.ipn.signals import payment_was_successful
+from verification.models import Key, KeyGroup
+from verification.signals import key_claimed
 
 from famille import errors
 from famille.models.base import BaseModel
@@ -167,6 +171,7 @@ class UserInfo(BaseModel):
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
     plan_expires_at = models.DateTimeField(blank=True, null=True)
+    verified = models.BooleanField(blank=True, default=False)
     newsletter = models.BooleanField(blank=True, default=True)
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
@@ -350,6 +355,27 @@ class UserInfo(BaseModel):
 
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
+
+    def send_verification_email(self):
+        """
+        Send a verification email to a user after signup.
+        """
+        keygroup = KeyGroup.objects.get(name="activate_account")
+        key = Key.generate(group=keygroup)
+        activate_url = reverse('verification-claim-post-url', kwargs={'key': key, 'group': key.group})
+        send_mail_from_template_with_noreply(
+            "email/verification.html", {"activate_url": activate_url},
+            subject=u"Email de vérification", recipient_list=[self.email, ]
+        )
+
+    @receiver(key_claimed)
+    def verify_user(self, sender, **kwargs):
+        """
+        Verify a user.
+        """
+        claimant = kwargs['claimant']
+        claimant.verified = True
+        claimant.save()
 
 
 class Criteria(UserInfo):
