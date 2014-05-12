@@ -201,16 +201,16 @@ def premium(request):
     return render(request, "account/premium.html", get_context(payment_forms=forms))
 
 
+@csrf_exempt  # Make sure this is the last decorator
 @login_required
 @require_related
-@csrf_exempt
 def premium_success(request):
     return render(request, "account/premium.html", get_context(action="success"))
 
 
+@csrf_exempt
 @login_required
 @require_related
-@csrf_exempt
 def premium_cancel(request):
     return HttpResponseRedirect("/devenir-premium/")
 
