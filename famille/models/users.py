@@ -171,7 +171,6 @@ class UserInfo(BaseModel):
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
     plan_expires_at = models.DateTimeField(blank=True, null=True)
-    verified = models.BooleanField(blank=True, default=False)
     newsletter = models.BooleanField(blank=True, default=True)
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
