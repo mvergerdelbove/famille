@@ -24,7 +24,7 @@ App installation
 - Edit .env file (secret keys, database config).
 - Start postgres server.
 - Create a famille database in Postgres: `psql -h localhost -d postgres` and `create database famille;`.
-- Load application fixtures: `./manage.py loaddata prestataires.json`.
+- Load application fixtures: `./manage.py loaddata prestataires.json keygroup.json`.
 
 Up and running
 --------------
