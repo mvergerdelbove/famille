@@ -5,7 +5,7 @@
 {% block formbox1 %}
 {% if request.user|user_type == "Famille" %}
     {% bootstrap_field search_form.enfants__school %}
-    {% bootstrap_field search_form.enfants__length %}
+    {% bootstrap_field search_form.n_enfants %}
     {% bootstrap_field search_form.type_attente_famille %}
     {% bootstrap_field search_form.plannings__weekday__id %}
     {% bootstrap_field search_form.plannings__schedule__id %}

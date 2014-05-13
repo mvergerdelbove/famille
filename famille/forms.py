@@ -511,11 +511,11 @@ class FamilleSearchForm(BaseSearchForm):
     )
     enfants__school = forms.CharField(
         label=u"Ecole des enfants", required=False,
-        widget=forms.TextInput(attrs={"data-api": "iexact"})
+        widget=forms.TextInput(attrs={"data-api": "icontains"})
     )
-    enfants__length = forms.CharField(
+    n_enfants = forms.IntegerField(
         label=u"Nombre d'enfants", required=False,
-        widget=forms.TextInput(attrs={"data-api": "iexact"})
+        widget=forms.NumberInput(attrs={"data-api": "length"})
     )
 
 
