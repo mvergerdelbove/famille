@@ -122,6 +122,7 @@ class SearchResource(object):
         distance = request.GET.get("distance__iexact")
         postal_code = request.GET.get("pc__iexact")
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
+        qs = qs.distinct()  # for enfants__school filtering, can return duplicates
 
         if not settings.ALLOW_BASIC_PLAN_IN_SEARCH:
             qs = qs.filter(plan=self._meta.object_class.PLANS["premium"])
