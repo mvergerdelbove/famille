@@ -24,13 +24,20 @@ App installation
 - Edit .env file (secret keys, database config).
 - Start postgres server.
 - Create a famille database in Postgres: `psql -h localhost -d postgres` and `create database famille;`.
-- Load application fixtures: `./manage.py loaddata prestataires.json keygroup.json`.
+- Load application fixtures: `make fixtures`.
 
 Up and running
 --------------
 
 - Setup the database: `foreman run ./manage.py syncdb` and `foreman run ./manage.py migrate`.
 - Execute `foreman run ./manage.py runserver` and access to http://localhost:8000.
+
+Updating your environment
+-------------------------
+
+Whenever changes are pulled from remote repository, both database schema and dependencies might be
+updated. You just have to run `make up` to be up to date.
+
 
 Static pages (Flat pages)
 -------------------------

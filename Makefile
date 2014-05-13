@@ -12,6 +12,8 @@ install: venv settings dependencies
 
 install_test: venv settings pydependencies
 
+up: dependencies migrate fixtures
+
 dependencies: pydependencies jsdependencies
 
 pydependencies:
@@ -36,3 +38,6 @@ schemamigration:
 
 migrate:
 	foreman run ./manage.py migrate famille || ./manage.py migrate famille
+
+fixtures:
+	foreman run ./manage.py loaddata prestataires.json keygroup.json
