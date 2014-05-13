@@ -2,6 +2,8 @@ ROOTDIR = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 PYTHONHOME = ${ROOTDIR}/venv/
 LOCAL_ENV = ${ROOTDIR}/.env
 LOCAL_ENV_TPL = ${LOCAL_ENV}.tpl
+ACTIVATE_VENV = . ${PYTHONHOME}bin/activate
+PYTHON_RUNNER = ${ACTIVATE_VENV} &&
 
 .SILENT: install venv settings test dependencies
 
@@ -17,7 +19,7 @@ up: dependencies migrate fixtures
 dependencies: pydependencies jsdependencies
 
 pydependencies:
-	${PYTHONHOME}bin/pip install -q -r requirements.txt
+	${PYTHON_RUNNER} pip install -q -r requirements.txt
 
 jsdependencies:
 	npm install --loglevel error
@@ -34,10 +36,10 @@ test:
 	set -a && . ${LOCAL_ENV} && set +a && ${PYTHONHOME}/bin/python manage.py test --noinput
 
 schemamigration:
-	foreman run ./manage.py schemamigration famille --auto
+	${PYTHON_RUNNER} foreman run ./manage.py schemamigration famille --auto
 
 migrate:
-	foreman run ./manage.py migrate famille || ./manage.py migrate famille
+	${PYTHON_RUNNER} foreman run ./manage.py migrate famille || ./manage.py migrate famille
 
 fixtures:
-	foreman run ./manage.py loaddata prestataires.json keygroup.json
+	${PYTHON_RUNNER} foreman run ./manage.py loaddata prestataires.json keygroup.json
