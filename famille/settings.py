@@ -144,6 +144,7 @@ NB_SEARCH_RESULTS = 5
 POSTAL_CODE_DISTANCE = 20.0
 CONTACT_EMAIL = "contact@uneviedefamille.fr"
 NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
+ALLOW_BASIC_PLAN_IN_SEARCH = False
 
 ################################################################################
 #                         Plugins settings                                     #

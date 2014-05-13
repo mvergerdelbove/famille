@@ -59,3 +59,10 @@ you just need to execute `make schemamigration` to migrate the database schema. 
 you need to apply it to the database by doing `make migrate`. While deploying on servers,
 you only need to migrate since the schemamigration files are already there, because they are
 versionned.
+
+App settings
+------------
+
+Some settings are tweakable:
+
+- `ALLOW_BASIC_PLAN_IN_SEARCH`: set to `True` to allow basic plans to be in search results.

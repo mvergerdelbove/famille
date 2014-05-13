@@ -110,9 +110,21 @@ class SearchResource(object):
             return super(SearchResource, self).apply_sorting(obj_list, options)
 
     def apply_filters(self, request, applicable_filters):
+        """
+        Apply filtering on the objects. It first filters user that
+        are premium (depending on the setting ALLOW_BASIC_PLAN_IN_SEARCH),
+        and then apply (if needed) the filtering on distance and
+        postal code.
+
+        :param request:                a django HttpRequest object
+        :param applicable_filters:     a dict of resource filters
+        """
         distance = request.GET.get("distance__iexact")
         postal_code = request.GET.get("pc__iexact")
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
+
+        if not settings.ALLOW_BASIC_PLAN_IN_SEARCH:
+            qs = qs.filter(plan=self._meta.object_class.PLANS["premium"])
 
         if postal_code:
             return self.filter_postal_code(postal_code, qs)
