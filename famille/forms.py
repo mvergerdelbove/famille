@@ -453,7 +453,7 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     diploma = forms.MultipleChoiceField(
-        label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False,
+        label=u"Diplômes liés à la garde d'enfant", choices=Prestataire.DIPLOMA.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     experience_type = forms.MultipleChoiceField(
