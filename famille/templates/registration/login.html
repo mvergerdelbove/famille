@@ -6,15 +6,16 @@
 
 {% block content %}
 {% url 'auth_login' as login_url %}
-<div class="row">
-    <div class="col-md-offset-4">
+<div class="row connex">
+<div class="row margin-top-1">
+    <div class="col-md-12 text-center">
         <h1>{% block h1 %}Connexion{% endblock %}</h1>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-offset-1 col-md-5">
+    <div class="col-md-offset-1 col-md-5 divider-right">
         <form action="{% block action %}{{ login_url }}{% endblock %}" method="post" class="form-horizontal" role="form">
-            <h2>{% block h2 %}Connexion manuelle{% endblock %}</h2>
+            <h4 class="col-md-10">{% block h2 %}Connexion manuelle{% endblock %}</h4>
             {% csrf_token %}
             {% block form %}
                 {% bootstrap_form form layout="horizontal" field_class="col-md-5" label_class="col-md-4" %}
@@ -25,8 +26,8 @@
                 </div>
             {% endblock %}
             <div class="form-group">
-                <div class="col-md-2 col-md-offset-6">
-                    <input type="submit" class="btn btn-success" value="Connexion"/>
+                <div class="col-md-2 col-md-offset-4">
+                    <input type="submit" class="btn btn-green-min btn-color" value="Connexion"/>
                 </div>
             </div>
             {% if next %}
@@ -38,15 +39,15 @@
     </div>
     <div class="col-md-5">
         <form class="form-horizontal" role="form">
-            <h2>{% block h2bis %}Connexion via les réseaux sociaux{% endblock %}</h2>
+            <h4>{% block h2bis %}Connexion via les réseaux sociaux{% endblock %}</h4>
             <div class="form-group">
-                <div class="radio col-md-3 col-md-offset-1">
+                <div class="radio col-md-2 col-md-offset-4">
                     <label>
                         <input type="radio" name="social_type" id="id_type_famille" value="famille" checked>
                         Famille
                     </label>
                 </div>
-                <div class="radio col-md-3">
+                <div class="radio col-md-2">
                     <label>
                         <input type="radio" name="social_type" id="id_type_prestataire" value="prestataire">
                         Prestataire
@@ -55,13 +56,14 @@
             </div>
             {% block social_auth %}
                 {% buttons %}
-                    {% with action="register" type="famille" class="col-md-offset-2"%}
+                    {% with action="register" type="famille" class="col-md-offset-3"%}
                         {% include 'helpers/social_auth.html' %}
                     {% endwith %}
                 {% endbuttons %}
             {% endblock %}
         </form>
     </div>
+</div>
 </div>
 {% endblock %}
 

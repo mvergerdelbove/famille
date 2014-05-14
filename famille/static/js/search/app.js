@@ -32,11 +32,18 @@ App.prototype.initialize = function(){
 App.prototype.initEvents = function(){
     $("select").select2();
     $('[data-toggle="tooltip"]').tooltip();
-    if ($("#id_tarif").length){
+    $('[data-toggle="popover"]').popover();
+    if ($("#id_tarif").length) {
         this.initSlider($("#id_tarif"));
         $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
+    $('body').on('click', function (e) {
+        if ($(e.target).data('toggle') !== 'popover'
+            && $(e.target).parents('.popover.in').length === 0) {
+            $('[data-toggle="popover"]').popover('hide');
+        }
+    });
 };
 
 App.prototype.initSlider = function($el){

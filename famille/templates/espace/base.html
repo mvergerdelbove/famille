@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% load flatpages %}
+
+{% block bodyattrs %}data-spy="scroll" data-target=".side-bar"{% endblock %}
+
+{% block content %}
+{% get_flatpages "/faq/" as faq_pages %}
+{% with faq_page=faq_pages|first %}
+<div class="row little-margin">
+    <div class="col-md-3 side-bar" style="z-index:100;">
+        <ul class="nav  nav-stacked" data-spy="affix" data-offset-top="0">
+            <li><a href="#">Description du service</a></li>
+            <li><a href="#fonctionnement">Fonctionnement</a></li>
+            <li><a href="#avantages">Avantages offerts</a></li>
+            <li><a href="#premium">Avantages premium</a></li>
+            <li><a href="#faq">Foire aux questions</a></li>
+        </ul>
+    </div>
+    <section class="col-md-12">
+        <article id="description" class="row padding-min ">
+            <div class="col-md-8 col-md-offset-2 margin-top-little">
+                <header><h1>Description du service</h1></header>
+                <div class="row margin-top-little margin-bottom-big" >
+                    <p class="col-md-7 text-justify">
+                        « Une vie de famille », est un réseau de confiance et de proximité pour faciliter la recherche de garde d’enfants, un service de mise en relation des familles avec des prestataires de garde d’enfants (nounou, baby-sitter, assistante maternelle, etc) !
+                    </p>
+                    <p class="col-md-12 text-justify">
+                        Grâce à une recherche personnalisée et de nombreux critères de choix, les familles pourront maximiser leur chance de trouver « la perle rare » près de chez elles.
+                        Les prestataires de garde d’enfants, pourront quant à eux, trouver de l’emploi plus facilement, en se mettant en contact avec les familles près de chez eux ; 
+                    </p>
+                    <p class="col-md-12 text-justify">    
+                        Gardes à temps plein, gardes d’urgence, gardes partagées, gardes après l’école, tous les types de gardes à domicile sont possibles avec « Une vie de famille ». 
+                    </p>
+                </div>
+            </div>
+        </article>
+        <article id="fonctionnement" class="row padding-min">
+            <div class="col-md-8 col-md-offset-2 text-center">
+                <header><h1>Fonctionnement</h1></header>
+                <div class="col-md-10 col-md-offset-1">
+                    <ul class="timeline">
+                        <li>
+                          <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record"></i></a></div>
+                          <div class="timeline-panel text-center">
+                            <div class="timeline-body">
+                                <h2 class="lead">1. je créé un compte</h2>
+                                <img src="../static/img/fonctio1.png" width="30%" class="margin-bottom-little"> 
+                            </div>            
+                            <div class="timeline-footer">                      
+                                <p>Je créé mon compte gratuitement afin de pouvoir commencer ma recherche personnalisée</p>    
+                            </div>
+                          </div>
+                        </li>        
+                        <li  class="timeline-inverted">
+                          <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert"></i></a></div>
+                          <div class="timeline-panel text-center">
+                            <div class="timeline-body">
+                                <h2 class="lead">2. Je complète mon profil</h2>
+                                <img src="../static/img/fonctio2.png" width="50%" class="margin-bottom-little">
+                            </div>            
+                            <div class="timeline-footer">
+                                <p>Les familles renseignent leurs besoins, et leurs exigences.<br>
+                                 Les prestataires renseignent leurs disponibilités et leurs compétences.</p>         
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record"></i></a></div>
+                          <div class="timeline-panel text-center">
+                            <div class="timeline-body">
+                                <h2 class="lead">3. Je consulte les résultats</h2>
+                                <img src="../static/img/fonctio3.png" width="30%" class="margin-bottom-little"> 
+                            </div>            
+                            <div class="timeline-footer">                      
+                                <p>Découvrez alors les personnes que vous recherchez à proximité de chez vous</p>    
+                            </div>
+                          </div>
+                        </li>
+                        <li  class="timeline-inverted">
+                          <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert"></i></a></div>
+                          <div class="timeline-panel text-center">
+                            <div class="timeline-body">
+                                <h2 class="lead">4. Je prends contact</h2>
+                                <img src="../static/img/fonctio4.png" width="30%" class="margin-bottom-little">
+                            </div>            
+                            <div class="timeline-footer">
+                                <p>Grace au site, je prends facilement contact avec les personnes que j'ai sélectionnées, et je les rencontre.</p>         
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record"></i></a></div>
+                          <div class="timeline-panel text-center">
+                            <div class="timeline-body">
+                                <h2 class="lead">5. Je gère le visibilité de mon profil</h2>
+                                <img src="../static/img/fonctio5.png" width="20%" class="margin-bottom-little"> 
+                            </div>            
+                            <div class="timeline-footer">                      
+                                <p>La gestion de la visibilité vous permet d'apparaître sur le site et de n'être contacté que lorsque vous en avez besoin.</p>    
+                            </div>
+                          </div>
+                        </li>
+                        <li class="clearfix" style="float: none;"></li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+        <article id="avantages" class="row">
+            <div class="col-md-8 col-md-offset-2 margin-top-little">
+                <header><h1>Avantages offerts</h1></header>
+                <div class="col-md-12 margin-top-little">
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_recherche.png" width="30%">
+                        <h5 class="lead">Une grande variété de profils</h5>
+                        <p >Accédez à un large éventail de choix dans vos recherches</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_confiance.png" width="30%">
+                        <h5 class="lead">Des personnes de confiance</h5>
+                        <p>Recommandations, références et profils vérifiés</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_temps.png" width="30%">
+                        <h5 class="lead">Gain de temps assuré</h5>
+                        <p>Grace à un algorritme de recherche bien étudié</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_cocreer.png" width="30%">
+                        <h5 class="lead">Co-créé avec les utilisateurs</h5>
+                        <p>Aidez-nous à nous améliorer en nous donnant vos feed-back</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_astuce.png" width="30%">
+                        <h5 class="lead">Conseils et astuces variés</h5>
+                        <p >Profitez de nos nombreuses fiches pratiques et de l'expérience de toute une communauté</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_criteres.png" width="30%">
+                        <h5 class="lead">Nombreux critères de recherche</h5>
+                        <p>Ne laissez rien au hasard, recherchez avec précision la perle rare</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_visible.png" width="30%">
+                        <h5 class="lead">Gestion de la visibilité du profil</h5>
+                        <p>La gestion de votre visibilité vous permet de ne plus être contacté ponctuellement</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_geoloc.png" width="30%">
+                        <h5 class="lead">Recherche géolocalisée</h5>
+                        <p>"Une vie de famille" est un service de proximité, entrez en contact avec les personnes autour de vous</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_support.png" width="30%">
+                        <h5 class="lead">Service d'aide en ligne</h5>
+                        <p>Vous n'êtes pas seul, une équipe est disponible pour vous aider à naviguer sur notre plateforme</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_local.png" width="30%">
+                        <h5 class="lead">Un développement local</h5>
+                        <p>Votre ville est pleine de ressources, nous vous aidons à les exploiter en améliorant leur visibilité</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_commission.png" width="30%">
+                        <h5 class="lead">Tarifs sans commission</h5>
+                        <p>Fixez vous-même les tarifs de vos prestations, nous ne prenons aucune commission</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="../static/img/avtg_cesu.png" width="30%">
+                        <h5 class="lead">50% de réduction d'impôts</h5>
+                        <p>Ayez le reflexe d'utiliser les chèques CESU et déduisez de vos impôts 50% de vos frais de garde d'enfants/p>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article id="premium" class="row margin-top-little">
+            <div class="col-md-8 col-md-offset-2">
+                <header><h1>Avantages premium</h1></header>
+                <div class="avantages-premium">
+                    {% block avantages_premium %}{% endblock %}
+                </div>
+            </div>
+        </article>
+        <article id="faq">
+            <div class="col-md-8 col-md-offset-2">
+                <header><h1>Foire aux questions</h1></header>
+                <div>
+                    {{ faq_page.content|safe }}
+                    <div class="panel-group col-md-5 margin-top-little" id="accordion-cat-1">
+                        <div class="panel panel-default panel-faq">
+                            <div class="panel-heading">
+                                <a data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-1-sub-1">
+                                    <h4 class="panel-title">
+                                        FAQ  #1 Question
+                                        <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+                                    </h4>
+                                </a>
+                            </div>
+                            <div id="faq-cat-1-sub-1" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default panel-faq">
+                            <div class="panel-heading">
+                                <a data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-1-sub-2">
+                                    <h4 class="panel-title">
+                                        FAQ  #2 Question
+                                        <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+                                    </h4>
+                                </a>
+                            </div>
+                            <div id="faq-cat-1-sub-2" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="panel-group col-md-5 margin-top-little" id="accordion-cat-1">
+                        <div class="panel panel-default panel-faq">
+                            <div class="panel-heading">
+                                <a data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-3-sub-1">
+                                    <h4 class="panel-title">
+                                        FAQ  #3 Question
+                                        <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+                                    </h4>
+                                </a>
+                            </div>
+                            <div id="faq-cat-3-sub-1" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default panel-faq">
+                            <div class="panel-heading">
+                                <a data-toggle="collapse" data-parent="#accordion-cat-1" href="#faq-cat-4-sub-2">
+                                    <h4 class="panel-title">
+                                        FAQ  #4 Question
+                                        <span class="pull-right"><i class="glyphicon glyphicon-plus"></i></span>
+                                    </h4>
+                                </a>
+                            </div>
+                            <div id="faq-cat-4-sub-2" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+</div>
+{% endwith %}
+{% endblock %}

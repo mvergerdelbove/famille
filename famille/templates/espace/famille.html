@@ -1,0 +1,113 @@
+{% extends "espace/base.html" %}
+{% block title %}Une vie de famille - Espace famille{% endblock %}
+
+{% block avantages_premium %}
+<div class="row margin-top-little">
+	<div class="col-md-10 col-md-offset-1">
+	  <table class="table">
+	  	<thead>
+	  		<tr>
+	  			<td class="radius-bottom-right"></td>
+	  			<td class="bg-green radius-top-left mea">Aucune inscription</td>
+	  			<td class="bg-green mea">Inscription gratuite</td>
+	  			<td class="bg-green radius-top-right mea">Membre privilégié</td>
+	  		</tr>
+	  	</thead>
+	  	<tbody>
+	  		<tr>
+	  			<td class="align-left mea col-md-6 border-right">Connaître le nombre de prestataires 	près de chez moi</td>
+	  			<td class="col-md-2"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="col-md-2"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="col-md-2 border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr class="bg-grey">
+	  			<td class="align-left mea border-right">Recevoir les newsletters</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr>
+	  			<td class="align-left mea border-right">Personnaliser mes recherches</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr class="bg-grey">
+	  			<td class="align-left mea border-right">Consulter les profils détaillés des autres utilisateurs</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr>
+	  			<td class="align-left mea border-right">Selectionner des favoris</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr class="bg-grey">
+	  			<td class="align-left mea border-right">Profiter des outils et fiches pratiques</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr class="border-bottom">
+	  			<td class="align-left mea border-right radius-bottom-left">Obtenir les coordonnées des autres utilisateurs</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big radius-bottom-right"></span></td>
+	  		</tr>
+	  		<!-- <tr>
+	  			<td>--</td>
+	  			<td>--</td>
+	  			<td>--</td>
+	  			<td>--</td>
+	  		</tr>
+	  		<tr>
+	  			<td class="mea border-right bg-blue title-white align-left">S'abonner pour une durée de <b>1 an</b></td>
+	  			<td colspan="2" class="no-border-top no-border-bottom "></td>
+	  			<td class="border-right border-left bg-blue title-white"><h4>5€ <sup>/mois</sup></h4></td>
+	  			<td><input type="radio" name="paiment-choix" onselect="" />choisir</td>
+	  		</tr>
+	  		<tr>
+	  			<td class="mea border-right bg-blue title-white align-left">S'abonner pour une durée de <b>3 mois</b></td>
+	  			<td colspan="2" class="no-border-top no-border-bottom ">	  				
+
+				</td>
+	  			<td class="border-right border-left bg-blue title-white"><h4>7€ <sup>/mois</sup></h4></td>
+	  			<td><input type="radio" name="paiment-choix" onselect="" />choisir</td>
+	  		</tr>
+	  		<tr>
+	  			<td class="mea border-right bg-blue title-white align-left">S'abonner pour une durée de <b>1 mois</b></td>
+	  			<td colspan="2" class="no-border-top no-border-bottom ">	 -->  				
+<!-- 				<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+						<input id="id_business" name="business" type="hidden" value="contact.uneviedefamille@gmail.com"/>
+						<input id="id_amount" name="amount" type="hidden" value="10.00"/>
+						<input id="id_item_name" name="item_name" type="hidden" value="Compte premium Une vie de famille"/>
+						<input id="id_item_number" name="item_number" type="hidden" value="9b1818-a28819"/>
+						<input id="id_src" name="src" type="hidden" value="1"/>
+						<input id="id_notify_url" name="notify_url" type="hidden" value="http://famille.herokuapp.com/paypal/"/>
+						<input id="id_cancel_return" name="cancel_return" type="hidden" value="http://famille.herokuapp.com/devenir-premium/annuler/"/>
+						<input id="id_return_url" name="return" type="hidden" value="http://famille.herokuapp.com/devenir-premium/valider/"/>
+						<input id="id_invoice" name="invoice" type="hidden" value="VDF_f9:1WgkZN:vjVUL78SYzBoBiaEhFYylCwp37I"/>
+						<input id="id_cmd" name="cmd" type="hidden" value="_xclick"/>
+						<input id="id_charset" name="charset" type="hidden" value="utf-8"/>
+						<input id="id_currency_code" name="currency_code" type="hidden" value="EUR"/>
+						<input id="id_no_shipping" name="no_shipping" type="hidden" value="1"/>
+						<input type="image" src="https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="Buy it Now"/>
+					</form> -->
+<!-- 	  			</td>
+	  			<td class="border-right border-left bg-blue title-white"><h4>10€ <sup>/mois</sup></h4></td>
+	  			<td><input type="radio" name="paiment-choix" onselect="" />choisir</td>
+	  		</tr> -->
+	  		<tr>
+	  			<td colspan="4" class="text-center">
+		  			<button type="submit" class="btn btn-color btn-brown margin-top-little">
+	                	<span class="glyphicon glyphicon-bookmark"></span> Devenir premium
+	                </button>
+	  			</td>
+	  		</tr>
+	  	</tbody>  	
+	  </table>
+	  </div>
+</div>
+{% endblock %}

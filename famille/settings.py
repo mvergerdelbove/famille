@@ -13,7 +13,6 @@ import os
 PROJECT_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -41,6 +40,8 @@ INSTALLED_APPS = (
     'localflavor',
     'password_reset',
     'paypal.standard.ipn',
+    'pagination',
+    'postman',
     'storages',
     'tastypie',
     'tinymce',
@@ -60,6 +61,7 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE_CLASSES = (
     'log_request_id.middleware.RequestIDMiddleware',
+    'famille.middlewares.ForceDefaultLanguageMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,6 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'pagination.middleware.PaginationMiddleware',
 )
 
 ROOT_URLCONF = 'famille.urls'
@@ -85,7 +88,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'fr'  # this is default and forced thanks to the ForceDefaultLanguageMiddleware
 
 TIME_ZONE = 'UTC'
 
@@ -164,6 +167,22 @@ PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 
 
+# postman
+def get_user_pseudo_safely(user):
+    """
+    Safe wrapper to get a user pseudo, in order
+    to avoid problems when importing settings.
+    """
+    from famille.models import get_user_pseudo  # importing here to not fail
+    return get_user_pseudo(user)
+
+
+POSTMAN_DISALLOW_ANONYMOUS = True
+POSTMAN_DISALLOW_MULTIRECIPIENTS = False
+POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
+POSTMAN_DISABLE_USER_EMAILING = False
+POSTMAN_NOTIFIER_APP = None
+
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging
 
@@ -201,6 +220,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False
+        },
+        'famille': {
+            'handlers': ['console'],
+            'level': 'INFO'
         }
     }
 }

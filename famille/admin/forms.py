@@ -3,7 +3,7 @@ from django.contrib.flatpages.admin import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
 
-from famille.models import Famille, Prestataire
+from famille.models import Famille, Prestataire, DownloadableFile
 
 
 class TinyMCEForm(FlatpageForm):
@@ -28,3 +28,11 @@ class FamilleForm(forms.ModelForm):
 class PrestataireForm(forms.ModelForm):
     class Meta(UserForm.Meta):
         model = Prestataire
+
+
+class DownloadableFileForm(forms.ModelForm):
+    class Meta:
+        model = DownloadableFile
+        widgets = {
+            "description": forms.Textarea()
+        }

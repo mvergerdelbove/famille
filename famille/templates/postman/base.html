@@ -1,0 +1,50 @@
+{% extends "account/base.html" %}
+{% load url from future %}
+{% load i18n %}
+{% load postman_tags %}
+{% load helpers %}
+
+{% block title %}{% trans "Messaging" %}{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<link type="text/css" media="all" rel="stylesheet" href="
+{# dj v1.4 #}{% load static %}{% static 'postman/css/postman.css' %}
+{# dj v1.3 #}{# {{ STATIC_URL }}postman/css/postman.css #}
+{# dj v1.2 #}{# {{ MEDIA_URL }}postman/css/postman.css #}
+" />
+{% endblock %}
+
+{% block mainContent %}
+    {% with related=request.user|get_related %}
+    <div class="col-md-offset-1 col-md-7">
+    {% if related.is_premium %}
+        {% postman_unread as unread_count %}
+        <ul class="nav nav-tabs" id="message-tabs">
+            <li id="inboxLink"><a href="{% url 'postman_inbox' %}">
+                <span class="badge">{{ unread_count }}</span> Boîte de réception
+            </a></li>
+            <li id="sentLink"><a href="{% url 'postman_sent' %}">Messages envoyés</a></li>
+            <li id="writeLink"><a href="{% url 'postman_write' %}">Écrire</a></li>
+            <li id="archivesLink"><a href="{% url 'postman_archives' %}">Archives</a></li>
+            <li id="trashLink"><a href="{% url 'postman_trash' %}">Corbeille</a></li>
+        </ul>
+        <div class="tab-content margin-top-1">
+            <div class="tab-pane fade in active">
+                {% block postman_content %}{% endblock %}
+            </div>
+        </div>
+    {% else %}
+    <h1>Vous n'avez pas accès à cette fonctionnalité</h1>
+    <p>
+        blah blah blah <a href="{% url 'premium' %}" class="btn btn-success">Créer un compte premium</a>
+    </p>
+    {% endif %}
+    </div>
+    {% endwith %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static "lib/select2/select2.js" %}"></script>
+<script src="{% static "js/build/messages.js" %}"></script>
+{% block extraScript %}{% endblock %}
+{% endblock %}

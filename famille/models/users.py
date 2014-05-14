@@ -1,6 +1,5 @@
 # -*- coding=utf-8 -*-
 from datetime import datetime
-import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,10 +18,10 @@ from famille.utils.python import pick
 
 
 __all__ = [
-    "Famille", "Prestataire", "Enfant",
+    "Famille", "Prestataire", "Enfant", "Criteria",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
-    "compute_user_visibility_filters"
+    "compute_user_visibility_filters", "get_user_pseudo"
 ]
 
 
@@ -126,6 +125,18 @@ def compute_user_visibility_filters(user):
     return filters
 
 
+def get_user_pseudo(user):
+    """
+    Retrieve the user pseudo, given an
+    instance of Django User. Useful for
+    django-postman.
+
+    :param user:       the Django user instance
+    """
+    related = get_user_related(user)
+    return related.get_pseudo()
+
+
 class UserInfo(BaseModel):
     """
     The common user info that a Famille and
@@ -155,7 +166,11 @@ class UserInfo(BaseModel):
         max_upload_size=2621440  # 2.5MB
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
-
+    newsletter = models.BooleanField(blank=True, default=True)
+    # visibility
+    visibility_family = models.BooleanField(default=True, blank=True)
+    visibility_prestataire = models.BooleanField(default=True, blank=True)
+    visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
         abstract = True
@@ -302,15 +317,6 @@ class UserInfo(BaseModel):
                 subject=message.get("subject", ""), recipient_list=emails
             )
 
-    def profile_access_is_authorized(self, request):
-        """
-        A method to tell if a given request/user can access to
-        the profile page of the user (self).
-
-        :param request:          the request to be verified
-        """
-        return True
-
     def get_pseudo(self):
         """
         Return the pseudo of a user.
@@ -326,22 +332,43 @@ class UserInfo(BaseModel):
 
         return pseudo
 
+    def profile_access_is_authorized(self, request):
+        """
+        Athorize profile access only if request has the right to.
+
+        :param request:            the request to be verified
+        """
+        if not has_user_related(request.user):
+            return False
+
+        if self.user == request.user:
+            return True
+
+        if not self.visibility_global:
+            return False
+
+        user = get_user_related(request.user)
+        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
+
 
 class Criteria(UserInfo):
-    TYPES_GARDE_FAMILLE = {
-        "dom": "Garde à domicile",
-        "part": "Garde partagée",
-    }
-    TYPES_GARDE = {
-        "dom": "Garde à domicile",
-        "part": "Garde partagée",
-        "mat": "Garde par une assistante maternelle",
-        "struct": "Structure d'accueil",
-    }
+    TYPES_GARDE = (
+        ("plein", u"Garde à temps plein"),
+        ("partiel", u"Garde à temps partiel"),
+        ("soir", u"Garde en soirée"),
+        ("part", u"Garde partagée"),
+        ("ecole", u"Sortie d'école"),
+        ("vacances", u"Vacances scolaires"),
+        ("decal", u"Garde à horaires"),
+        ("nuit", u"Garde de nuit"),
+        ("urgences", u"Garde d'urgence"),
+    )
     DIPLOMA = {
-        "cap": "CAP Petite enfance",
-        "deaf": u"Diplôme d'Etat Assistant(e) familial(e) (DEAF)",
-        "ast": "Assistant maternel / Garde d'enfants",
+        "agr": u"Agrément",
+        "bep": u"BEP carrières sanitaires et sociales",
+        "cap": u"CAP Petite enfance",
+        "comp": u"Un certificat de compétence professionnelle petite enfance",
+        "qual": u"Un certificat de qualification professionnelle petite enfance",
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
     }
     LANGUAGES = {
@@ -350,20 +377,45 @@ class Criteria(UserInfo):
         "es": "Espagnol",
         "it": "Italien",
     }
+    STUDIES = (
+        ("brevet", u"Brevet"),
+        ("bac", u"Bac"),
+        ("+1", u"Bac +1"),
+        ("+2", u"Bac +2"),
+        ("+3", u"Bac +3"),
+        ("+4", u"Bac +4"),
+        ("+5", u"Bac +5"),
+        ("other", u"Autre")
+    )
+    EXP_TYPES = (
+        ("zero", u"Pas d’expérience dans la garde d’enfants"),
+        ("un", u"Avec les bébés (0 à 1 an)"),
+        ("trois", u"Avec les petits enfants (1 à 3 an)"),
+        ("sept", u"Avec les jeunes enfants (3 à 7 ans)"),
+        ("sept+", u"Avec les enfants (plus de 7 ans)"),
+        ("handi", u"Avec les enfants handicapés"),
+    )
+    EXP_YEARS = (
+        ("un", u"Moins d’un an"),
+        ("trois", u"Entre 1 et 3 ans"),
+        ("six", u"Entre 3 et 6 ans"),
+        ("six+", u"Plus de 6 ans"),
+    )
 
-    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE.items())
+    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE)
+    studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
     diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
+    experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
+    experience_year = models.CharField(blank=True, null=True, max_length=10, choices=EXP_YEARS)
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)
-    cdt_periscolaire = models.BooleanField(blank=True, default=False)
-    sortie_ecole = models.BooleanField(blank=True, default=False)
-    nuit = models.BooleanField(blank=True, default=False)
-    non_fumeur = models.BooleanField(blank=True, default=False)
+    cuisine = models.BooleanField(blank=True, default=False)
     devoirs = models.BooleanField(blank=True, default=False)
-    urgence = models.BooleanField(blank=True, default=False)
+    animaux = models.BooleanField(blank=True, default=False)
+    non_fumeur = models.BooleanField(blank=True, default=False)
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
-    baby = models.BooleanField(blank=True, default=False)
+    enfant_malade = models.BooleanField(blank=True, default=False)
     tarif = models.FloatField(blank=True, null=True)
     description = models.CharField(blank=True, null=True, max_length=400)
 
@@ -375,14 +427,14 @@ class Prestataire(Criteria):
     """
     The Prestataire user.
     """
-    TYPES = {
-        "baby": "Baby-sitter",
-        "nounou": "Nounou",
-        "maternel": "Assistant(e) maternel(le)",
-        "parental": "Assistant(e) parental(e)",
-        "pair": "Au pair",
-        "other": "Autre",
-    }
+    TYPES = (
+        ("baby", "Baby-sitter"),
+        ("nounou", "Nounou"),
+        ("maternel", "Assistant(e) maternel(le)"),
+        ("parental", "Assistant(e) parental(e)"),
+        ("pair", "Au pair"),
+        ("other", "Autre"),
+    )
     LEVEL_LANGUAGES = {
         "deb": u"Débutant",
         "mid": u"Intermédiaire",
@@ -394,11 +446,18 @@ class Prestataire(Criteria):
         "jeune": u"Jeunes enfants (1 à 3 ans)",
         "marche": u"Enfants de 3 à 7 ans"
     }
-    PAYMENT_PREFIX = "f"
+    PAYMENT_PREFIX = "p"
+
+    AGES = {
+        "16-": u"Moins de 16 ans",
+        "18-": u"Moins de 18 ans",
+        "18+": u"Plus de 18 ans"
+    }
 
     birthday = models.DateField(null=True, blank=True)
-    type = models.CharField(max_length=40, choices=TYPES.items())
-    other_type = models.CharField(max_length=100, null=True, blank=True)
+    nationality = models.CharField(max_length=70, null=True, blank=True)
+    type = models.CharField(max_length=40, choices=TYPES)
+    other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
     language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())
     level_en = models.CharField(**language_kw)
     level_de = models.CharField(**language_kw)
@@ -425,37 +484,26 @@ class Famille(Criteria):
         "foyer": "Famille Mère/Père au foyer",
         "actif": "Famille couple actif",
     }
+    TYPE_ATTENTES_FAMILLE = (
+        ("part", u"Garde partagée"),
+        ("ecole", u"Sortie d'école"),
+        ("urgences", u"Garde d'urgence (dépannages)"),
+        ("nuit", u"Garde de nuit"),
+        ("vacances", u"Vacances scolaires"),
+        ("cond_sco", u"Conduite scolaire"),
+        ("cond_peri", u"Conduite péri-scolaire"),
+        ("dej", u"Echange de déjeuners"),
+        ("other", u"Autre")
+    )
     PAYMENT_PREFIX = "f"
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
-    type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
+    type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
+    type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
     langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
-
-    # visibility
-    visibility_family = models.BooleanField(default=True, blank=True)
-    visibility_prestataire = models.BooleanField(default=True, blank=True)
-    visibility_global = models.BooleanField(default=True, blank=True)
 
     class Meta:
         app_label = 'famille'
-
-    def profile_access_is_authorized(self, request):
-        """
-        Athorize profile access only if request has the right to.
-
-        :param request:            the request to be verified
-        """
-        if not has_user_related(request.user):
-            return False
-
-        if self.user == request.user:
-            return True
-
-        if not self.visibility_global:
-            return False
-
-        user = get_user_related(request.user)
-        return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
 
 class Enfant(BaseModel):
@@ -561,4 +609,4 @@ FAVORITE_CLASSES = {
 
 
 # signals
-payment_was_successful.connect(payment.signer.premium_signup)
+payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")

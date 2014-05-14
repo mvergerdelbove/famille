@@ -33,6 +33,8 @@ class ContentTypeRestrictedFileField(FileField):
     # FIXME: use validators instead !!!!!!!
     def clean(self, *args, **kwargs):
         data = super(ContentTypeRestrictedFileField, self).clean(*args, **kwargs)
+        if not hasattr(data.file, "content_type"):
+            return data
 
         file = data.file
         content_type = file.content_type

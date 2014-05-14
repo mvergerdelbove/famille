@@ -1,6 +1,8 @@
+# -*- coding=utf-8 -*-
 from functools import partial
 import smtplib
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -37,3 +39,21 @@ NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
 send_mail_from_template = Mailer.send_mail_from_template
 send_mail_from_template_with_contact = partial(send_mail_from_template, from_email=CONTACT_EMAIL)
 send_mail_from_template_with_noreply = partial(send_mail_from_template, from_email=NOREPLY_EMAIL)
+
+
+def email_moderation(message):
+    """
+    Only allow email for premium users.
+
+    :param message:       the message to be sent
+    """
+    from famille.models import get_user_related
+    try:
+        sender = get_user_related(message.sender)
+    except (ObjectDoesNotExist, AttributeError):
+        return (False, u"Votre compte ne vous permet pas d'envoyer d'email.")
+
+    if not sender.is_premium:
+        return (False, u"Vous devez avoir un compte premium pour accéder à cette fonctionnalité.")
+
+    return True
