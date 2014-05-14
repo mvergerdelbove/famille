@@ -129,11 +129,17 @@ module.exports = Backbone.View.extend({
     },
 
     displayResults: function(data){
-        var $container = this.$(".search-results");
+        var $container = this.$(".search-results"), $noResults = this.$(".no-results");
         $container.html("");
-        $container.append(_.map(data, this.formatResult));
-        this.displayPagination();
-        this.markFavoritedItems();
+        if (!data.length) {
+            $noResults.show();
+        }
+        else {
+            $noResults.hide();
+            $container.append(_.map(data, this.formatResult));
+            this.displayPagination();
+            this.markFavoritedItems();
+        }
     },
 
     displayPagination: function(){
