@@ -2,7 +2,7 @@
 import os
 
 from django.db.models import FileField
-from django.forms import forms, MultiValueField, CharField, MultipleChoiceField
+from django.forms import forms, MultiValueField, CharField, MultipleChoiceField, SelectMultiple
 from django.template.defaultfilters import filesizeformat
 
 from famille.utils.python import generate_timestamp
@@ -113,3 +113,16 @@ class LazyMultipleChoiceField(MultipleChoiceField):
         self._choices = self.widget.choices = value
 
     choices = property(_get_choices, _set_choices)
+
+
+class CommaSeparatedMultipleChoiceField(MultipleChoiceField):
+
+    def clean(self, data):
+        """
+        Clean the data taken from the select. Transform
+        the list of values in a coma separated string.
+
+        :param data:      the input data
+        """
+        data = super(CommaSeparatedMultipleChoiceField, self).clean(data)
+        return ",".join(data)

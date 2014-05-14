@@ -491,12 +491,7 @@ class Prestataire(Criteria):
     nationality = models.CharField(max_length=70, null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES)
     other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
-    language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())
-    level_en = models.CharField(**language_kw)
-    level_de = models.CharField(**language_kw)
-    level_es = models.CharField(**language_kw)
-    level_it = models.CharField(**language_kw)
-    other_language = models.CharField(blank=True, null=True, max_length=50)
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
     resume = extra_fields.ContentTypeRestrictedFileField(
         upload_to=extra_fields.upload_to_timestamp("resume"), blank=True, null=True,
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
@@ -533,7 +528,7 @@ class Famille(Criteria):
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
     type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
-    langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         app_label = 'famille'

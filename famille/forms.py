@@ -12,7 +12,7 @@ from famille.models import (
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.models.utils import email_is_unique
-from famille.utils.fields import RangeField, LazyMultipleChoiceField
+from famille.utils.fields import RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
@@ -192,7 +192,19 @@ class FamilleForm(ForeignKeyForm, UserForm):
         labels = dict(UserForm.Meta.labels, type="Type de famille")
 
 
+LANGUAGES = {
+    "1": "Anglais",
+    "2": "Allemand",
+    "3": "Espagnol",
+    "4": "Italien",
+    "5": "Russe",
+    "6": "Arabe",
+    "5": "Chinois",
+    "8": "Portugais",
+}
 class CriteriaForm(forms.ModelForm):
+    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items())
+
     class Meta:
         labels = {
             "type_garde": "Type de garde",
@@ -204,7 +216,8 @@ class CriteriaForm(forms.ModelForm):
             "devoirs": "Aide devoirs",
             "psc1": "Premiers secours",
             "permis": "Permis voiture",
-            "description": u"Plus de détails"
+            "description": u"Plus de détails",
+            "language": u"Langues étrangères"
         }
         fields = labels.keys()
         widgets = {
@@ -228,8 +241,7 @@ class FamilleCriteriaForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Famille
         labels = dict(
-            CriteriaForm.Meta.labels, type_presta="Type de prestataire",
-            langue=u"Langue étrangère"
+            CriteriaForm.Meta.labels, type_presta="Type de prestataire"
         )
         fields = labels.keys()
 
@@ -255,15 +267,11 @@ class PrestataireForm(UserForm):
 class PrestataireCompetenceForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Prestataire
-        fields = CriteriaForm.Meta.fields + [
-            "level_en", "level_de", "level_es", "level_it", "other_language", "resume",
-            "restrictions"
-        ]
         labels = dict(
-            CriteriaForm.Meta.labels, diploma=u"Diplôme", level_en="Anglais",
-            level_de="Allemand", level_es="Espagnol", level_it="Italien",
-            other_language="Autre langue", resume="Joindre un CV", restrictions="Mes restrictions"
+            CriteriaForm.Meta.labels, diploma=u"Diplôme",
+            resume="Joindre un CV", restrictions="Mes restrictions"
         )
+        fields = labels.keys()
 
 
 class ReferenceForm(forms.ModelForm):
