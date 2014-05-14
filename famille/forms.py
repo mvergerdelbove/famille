@@ -444,7 +444,8 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
     )
     language = forms.MultipleChoiceField(
-        label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
+        label=u"Langue(s) parlée(s)", choices=LANGUAGES.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     # BOX 3
     studies = forms.MultipleChoiceField(

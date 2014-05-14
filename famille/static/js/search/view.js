@@ -9,12 +9,6 @@ var constructFilter = function(name, query, value){
     if (_.isArray(value)) return _.map(value, _.partial(constructFilterForString, name, query)).join("&");
 };
 
-var constructLanguageFilter = function(name, value){
-    return _.map(value, function(val){
-        return constructFilterForString("level_" + val, "isnull", "False")
-    }).join("&");
-};
-
 var constructTarifFilter = function (name, value) {
     var min = value[0];
     var max = value[1];
@@ -78,7 +72,6 @@ module.exports = Backbone.View.extend({
                 query = $this.data("api");
             if (value && name == "age") return constructAgeFilter(name, value);
             if (value && query) return constructFilter(name, query, value);
-            if (value && name == "language") return constructLanguageFilter(name, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });
         filters.push(this.getSortQuery());

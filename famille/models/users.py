@@ -449,7 +449,7 @@ class Criteria(UserInfo):
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
     enfant_malade = models.BooleanField(blank=True, default=False)
-    tarif = models.FloatField(blank=True, null=True)
+    tarif = models.FloatField(blank=True, null=True, default=3.0)
     description = models.CharField(blank=True, null=True, max_length=400)
 
     class Meta:

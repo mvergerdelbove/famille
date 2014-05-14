@@ -1,3 +1,5 @@
+import operator
+
 from django.conf import settings
 from django.core.exceptions import FieldError
 from django.db.models import Q, Count
@@ -122,6 +124,7 @@ class SearchResource(object):
         distance = request.GET.get("distance__iexact")
         postal_code = request.GET.get("pc__iexact")
         nb_enfants = request.GET.get("n_enfants__length")
+        language = applicable_filters.pop("language__in", None)
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
         qs = qs.distinct()  # for enfants__school filtering, can return duplicates
 
@@ -130,6 +133,9 @@ class SearchResource(object):
 
         if nb_enfants:
             qs = self.filter_nb_enfants(nb_enfants, qs)
+
+        if language:
+            qs = self.filter_language(language, qs)
 
         if postal_code:
             return self.filter_postal_code(postal_code, qs)
@@ -180,6 +186,16 @@ class SearchResource(object):
         """
         raise NotImplementedError()
 
+    def filter_language(self, language, queryset):
+        """
+        Filter the queryset by the languages.
+        Only implemented for prestataires.
+
+        :param language:       the desired languages
+        :param queryset:       the initial queryset
+        """
+        raise NotImplementedError()
+
 
 class PrestataireResource(SearchResource, ModelResource):
 
@@ -197,6 +213,17 @@ class PrestataireResource(SearchResource, ModelResource):
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
             plannings=ALL_WITH_RELATIONS, birthday=('lte', 'gte')
         )
+
+    def filter_language(self, language, queryset):
+        """
+        Filter the queryset by the languages.
+
+        :param language:       the desired languages
+        :param queryset:       the initial queryset
+        """
+        filters = map(lambda l: Q(language__icontains=l), language)
+        filters = reduce(operator.or_, filters, Q())
+        return queryset.filter(filters)
 
 
 class FamilleResource(SearchResource, ModelResource):
