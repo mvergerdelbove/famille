@@ -440,7 +440,7 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.TextInput(attrs={"data-api": "iexact"})
     )
     age = forms.TypedChoiceField(
-        label=u"Age", choices=Prestataire.AGES.items() + [('', 'Age')], required=False,
+        label=u"Age", choices=Prestataire.AGES.items() + [('', '---------')], required=False,
         widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
     )
     language = forms.MultipleChoiceField(
