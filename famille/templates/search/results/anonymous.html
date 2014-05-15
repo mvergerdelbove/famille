@@ -51,7 +51,7 @@
                                 <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je vais chercher vos enfants aux sorties d'école">
                                     <img class="none" src="../../static/img/badges/nosortieecole.png" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'accepte les horaires décalés (tôt le matin ou tard le soir)">
+                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte les horaires décalés (tôt le matin ou tard le soir)">
                                     <img class="none" src="../../static/img/badges/noheuredecalee.png" width="90%;">
                                 </div>
                             </div>
@@ -59,44 +59,61 @@
                         <div class="row rgt l1">
                             <div class="col-md-3 categorie title-green nav-title">Expertise</div>
                             <div class="col-md-9">
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="j'ai un diplôme ou une attestation dans la garde d'enfants">
-                                    <img src="../../static/img/badges/diplome.png" width="90%;">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'ai un diplôme ou une attestation dans la garde d'enfants">
+                                    <img src="{% static result|badge_icon:'diploma' %}" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
                                     <img src="../../static/img/badges/bebe.png" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai mon permis">
-                                    <img src="../../static/img/badges/permis.png" width="90%;">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'ai mon permis">
+                                    <img src="{% static result|badge_icon:'permis' %}" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je peux m'occuper d'enfants handicapés">
-                                    <img class="none" src="../../static/img/badges/nohandi.png" width="90%;">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je peux m'occuper d'enfants malades">
+                                    <img class="none"
+                                         src="{% static result|badge_icon:'enfant_malade' %}" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'ai suivi une formation aux premiers secours">
-                                    <img class="none" src="../../static/img/badges/nopremiersecours.png" width="90%;">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'ai suivi une formation aux premiers secours">
+                                    <img class="none" src="{% static result|badge_icon:'psc1' %}" width="90%;">
                                 </div>
                             </div>
                         </div>
                         <div class="row rgt l1">
                             <div class="col-md-3 categorie title-green nav-title">Les p'tits plus</div>
                             <div class="col-md-9">
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accepte de faire du repassage">
-                                    <img src="../../static/img/badges/repassage.png" width="90%;">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'accepte de faire du repassage">
+                                    <img src="{% static result|badge_icon:'repassage' %}" width="90%;">
                                 </div>
-                                <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'accpete de faire du ménage'">
-                                    <img src="../../static/img/badges/menage.png" width="90%;"></div>
-                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je ne fume pas">
-                                        <img src="../../static/img/badges/nonfumeur.png" width="90%;">
-                                    </div>
-                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="Je sais cuisiner">
-                                        <img src="../../static/img/badges/cuisine.png" width="90%;">
-                                    </div>
-                                    <div class="badges-lfo link tooltip-link" data-toggle="tooltip" data-original-title="J'aide vos enfants dans leur devoirs'">
-                                        <img class="none" src="../../static/img/badges/nosoutien.png" width="90%;">
-                                    </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'accpete de faire du ménage'">
+                                    <img src="{% static result|badge_icon:'menage' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="Je ne fume pas">
+                                    <img src="{% static result|badge_icon:'non_fumeur' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="Je sais cuisiner">
+                                    <img src="{% static result|badge_icon:'cuisine' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'aide vos enfants dans leur devoirs'">
+                                    <img class=none"" src="{% static result|badge_icon:'devoirs' %}" width="90%;">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                     <div class="col-md-2">
                         <div class="row">
                             {% if user.is_authenticated %}
