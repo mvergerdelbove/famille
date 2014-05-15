@@ -1,3 +1,9 @@
+{% load static %}
+{% load staticfiles %}
+{% load helpers %}
+{% load users %}
+
+
 <div class="row margin-top-little">
 
     <div class="row one-search-result">
@@ -6,7 +12,11 @@
                 <div class="col-md-2">
                     <div class="row">
                         <img src="../../static/img/pola.png" width="100%;">
-                        <img  class="profil-pict" src="../../static/img/photo.jpg" width="50%;">
+                        {% if result.profile_pic %}
+                        <img  class="profil-pict" src="{% get_media_prefix %}{{ result.profile_pic }}" width="50%;" alt="Photo de profil">
+                        {% else %}
+                        <img class="profil-pict" src="{% static "img/nopic.png" %}" width="50%;" alt="Photo de profil">
+                        {% endif %}
                     </div>
                     <div class="row">
                         <div class="col-md-3 col-md-offset-1 little-padding">
@@ -23,14 +33,16 @@
                         <div class="col-md-3 title-blue nav-title">{{ result.total_rating }}</div>
                         <div class="col-md-9">
                             <div class="progress link tooltip-link" data-toggle="tooltip" data-original-title="15 évaluations">
-                                <div class="progress-bar btn-blue-min" style="width:50%;"></div>
+                                <div class="progress-bar btn-blue-min" style="width:{{ result.total_rating_percent }}%;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-7">
                     <div class="row">
-                        <div class="col-md-7 nav-title text-blue">{{ result.name }} {{ result.first_name }}</div>
+                        <div class="col-md-7 nav-title text-blue">
+                            <a href="{% url 'profile' result|class_name|lower result.pk %}">{{ result.get_pseudo }}</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-7 nav-title title-blue subtlt">BABY-SITTER - {{ result.city }}</div>

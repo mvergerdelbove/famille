@@ -231,6 +231,13 @@ class UserInfo(BaseModel):
             return 0
         return sum(rating.average for rating in self.ratings.all()) / float(nb_ratings)
 
+    @property
+    def total_rating_percent(self):
+        """
+        Return the total rating percent.
+        """
+        return int(self.total_rating / 5.0 * 100)
+
     # FIXME: can be async
     def geolocate(self):
         """
