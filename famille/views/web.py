@@ -46,6 +46,14 @@ def search(request):
     """
     data = request.POST if request.method == "POST" else request.GET
     search_type = data.get("type")
+    if request.user.is_authenticated():
+        related = get_user_related(request.user)
+        favorites = related.favorites.all()
+        if not search_type and isinstance(related, Prestataire):
+            search_type = "famille"
+    else:
+        favorites = []
+
     search_type = "prestataire" if search_type not in ["famille", "prestataire"] else search_type
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
@@ -66,10 +74,6 @@ def search(request):
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
     result_template = get_result_template_from_user(request, search_type)
-    if request.user.is_authenticated():
-        favorites = get_user_related(request.user).favorites.all()
-    else:
-        favorites = []
     return render(
         request, template,
         get_context(
