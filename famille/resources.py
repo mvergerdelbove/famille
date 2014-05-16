@@ -3,12 +3,14 @@ import operator
 from django.conf import settings
 from django.core.exceptions import FieldError
 from django.db.models import Q, Count
+from django.template.loader import render_to_string
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
 from famille.models import planning, compute_user_visibility_filters
+from famille.utils import get_result_template_from_user
 from famille.utils.python import pick, without
 from famille.utils.geolocation import is_close_enough, geolocate
 
@@ -201,6 +203,7 @@ class PrestataireResource(SearchResource, ModelResource):
 
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
+    template = fields.CharField()
 
     class Meta(SearchResource.Meta):
         queryset = models.Prestataire.objects.all()
@@ -224,6 +227,14 @@ class PrestataireResource(SearchResource, ModelResource):
         filters = map(lambda l: Q(language__icontains=l), language)
         filters = reduce(operator.or_, filters, Q())
         return queryset.filter(filters)
+
+    def dehydrate_template(self, bundle):
+        """
+        Dehydrate the template using the bundle.
+        """
+        template = get_result_template_from_user(bundle.request)
+        context = {"result": bundle.obj, "user": bundle.request.user, "search_type": "prestataire"}
+        return render_to_string(template, context)
 
 
 class FamilleResource(SearchResource, ModelResource):

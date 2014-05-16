@@ -150,13 +150,7 @@ module.exports = Backbone.View.extend({
     },
 
     formatResult: function(object){
-        var $el = $(this.resultTemplate);
-        $("[data-field]", $el).each(function(){
-            var $this = $(this),
-            field = $this.data("field");
-            $this.html(object[field]);
-        });
-        return $el;
+        return object.template;
     },
 
     error: function(jqXHR){
