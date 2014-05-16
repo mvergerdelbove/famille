@@ -20,7 +20,8 @@ class ResourcesTestCase(TestCase):
             "description": "A desc",
             "email": "a@gmail.com",
             "tel": "0612131415",
-            "auth": True
+            "auth": True,
+            "template": "toto"
         }
 
     def tearDown(self):
