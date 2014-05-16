@@ -137,14 +137,15 @@ module.exports = Backbone.View.extend({
         else {
             $noResults.hide();
             $container.append(_.map(data, this.formatResult));
-            this.displayPagination(data);
+            this.displayPagination();
             this.markFavoritedItems();
         }
     },
 
-    displayPagination: function(data){
-        this.$(".total-search-results").html(data.length);
-        this.$(".plural-search-result").html(data.length > 1 ? "s": "");
+    displayPagination: function(){
+        var nbResults = famille.router.total;
+        this.$(".total-search-results").html(nbResults);
+        this.$(".plural-search-result").html(nbResults > 1 ? "s": "");
         if (!famille.router.next) this.$(".next").addClass("disabled");
         else this.$(".next").removeClass("disabled");
         if (!famille.router.previous) this.$(".previous").addClass("disabled");
