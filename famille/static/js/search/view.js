@@ -137,6 +137,8 @@ module.exports = Backbone.View.extend({
         else {
             $noResults.hide();
             $container.append(_.map(data, this.formatResult));
+            $("[data-toggle=popover]", $container).popover();
+            $("[data-toggle=tooltip]", $container).tooltip();
             this.displayPagination();
             this.markFavoritedItems();
         }
