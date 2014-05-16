@@ -198,6 +198,15 @@ class SearchResource(object):
         """
         raise NotImplementedError()
 
+    def dehydrate_template(self, bundle):
+        """
+        Dehydrate the template using the bundle.
+        """
+        search_type = "prestataire" if self._meta.resource_name == "prestataires" else "famille"
+        template = get_result_template_from_user(bundle.request, search_type)
+        context = {"result": bundle.obj, "user": bundle.request.user}
+        return render_to_string(template, context)
+
 
 class PrestataireResource(SearchResource, ModelResource):
 
@@ -228,19 +237,11 @@ class PrestataireResource(SearchResource, ModelResource):
         filters = reduce(operator.or_, filters, Q())
         return queryset.filter(filters)
 
-    def dehydrate_template(self, bundle):
-        """
-        Dehydrate the template using the bundle.
-        """
-        template = get_result_template_from_user(bundle.request)
-        context = {"result": bundle.obj, "user": bundle.request.user, "search_type": "prestataire"}
-        return render_to_string(template, context)
-
 
 class FamilleResource(SearchResource, ModelResource):
     # TODO: refine this
     FIELD_ACCESS_NOT_LOGGED = [
-        "first_name", "name", "city", "country", "description"
+        "first_name", "name", "city", "country", "description", "template"
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
 
@@ -248,6 +249,7 @@ class FamilleResource(SearchResource, ModelResource):
     enfants = fields.ToManyField(EnfantResource, "enfants", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
     nb_enfants = fields.IntegerField()
+    template = fields.CharField()
 
     class Meta(SearchResource.Meta):
         queryset = models.Famille.objects.all()
@@ -256,7 +258,7 @@ class FamilleResource(SearchResource, ModelResource):
         fields = [
             "first_name", "name", "tel", "email", "city",
             "country", "description", "id", "plannings", "rating",
-            "updated_at", "enfants"
+            "updated_at", "enfants", "template"
         ]
         ordering = [key[1:] if key.startswith("-") else key for key in forms.FamilleSearchForm.ordering_dict.keys()]
         filtering = dict(
