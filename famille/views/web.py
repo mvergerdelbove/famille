@@ -65,7 +65,7 @@ def search(request):
     total_search_results = objects.count()
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
-    result_template = get_result_template_from_user(request)
+    result_template = get_result_template_from_user(request, search_type)
     if request.user.is_authenticated():
         favorites = get_user_related(request.user).favorites.all()
     else:
