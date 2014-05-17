@@ -71,14 +71,31 @@
 h4{font-size: 25px;text-align: center;color:#555555;}
 .nav.navbar,.navbar-default{margin-bottom: 0; width: 100%;}
 
+/* formating font */
+
 .text-center{
     text-align:center;
 }
+
 .text-justify{
     text-align:justify;
 }
 
+.lead{
+    text-align: center;
+    /*font-weight: bold;*/
+    color: #000000;
+}
 
+.text-white{
+  color: #FFFFFF
+}
+
+h2{
+    font-size: 20px;
+    font-weight: bold;
+    color: #656565;
+}
 /* affichage des badges dans les resultats */
 
 .badges-lfo{float:left; width: 16%; }
@@ -95,17 +112,6 @@ h4{font-size: 25px;text-align: center;color:#555555;}
     margin-right: 2%;
 }
 
-.lead{
-    text-align: center;
-    /*font-weight: bold;*/
-    color: #000000;
-}
-.text-white{color: #FFFFFF}
-h2{
-    font-size: 20px;
-    font-weight: bold;
-    color: #656565;
-}
 .modal-thin {
     max-width: 400px;
 }
@@ -202,7 +208,6 @@ span.glyphicon-big {
     font-size: 1.5em;
     color: #656565;
 }
-
 
 
 .timeline {
