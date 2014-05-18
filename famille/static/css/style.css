@@ -1,3 +1,6 @@
+@media screen and (max-width: 768px) {
+  
+}
 @media screen and (min-width: 1200px) {
 
     body{margin:0; padding: 0;width: 100%;}
@@ -42,6 +45,9 @@
     #avantages{background-image: url(../img/bckg_avtg.jpg);background-size: 100%;}
     .blur{background-color: rgba(255,255,255,0.7);}
     #description{background-image: url(../img/bckg_descr.jpg);background-size: 100%;}
+    .tool-page{background-image: url(../img/manon.jpg);background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
+background-attachment:fixed;}
+
     .profil-pict {
         position: absolute;
         z-index: 99;
@@ -49,8 +55,36 @@
         top:15%;
     }
 }
-
+.tool-category h3{
+  font-size: 35px;
+}
+.heading-tool {
+  background-color: rgba(239, 239, 239, 0.3);
+  padding-top: 15%;
+  padding-bottom:2%;
+}
+.heading-tool h4{
+  color:#565656;
+}
+.describe-tool{
+  padding-top: 5%;
+  padding-bottom: 5%;
+  padding-left:7%;
+  padding-right: 3%;
+  background-color: rgba(239, 239, 239, 0.3);
+}
+.link-tool{
+  text-align: center;
+  padding-top: 5%;
+  padding-left:3%;
+  padding-right: 3%;
+  background-color: #408394;
+}
 /* boutons personnalisés */
+
+.btn-download-min {background-color: #EFEFEF; border: 1px solid #408394;color:#408394;}
+.btn-download-min:hover{box-shadow: -1px 1px 10px 3px rgba(255, 255, 255, 0.3) inset;}
+.btn-download-min:active{box-shadow: -1px 1px 10px 3px rgba(0, 0, 0, 0.3) inset;}
 
 .btn-green {background-color: #6CB292; border: 1px solid #7CC1A0; font-size: 23px;}
 .btn-green-min {background-color: #6CB292; border: 1px solid #7CC1A0;}

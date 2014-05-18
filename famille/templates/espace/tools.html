@@ -4,26 +4,38 @@
 {% block title %}Une vie de famille - Tout sur la garde d'enfants{% endblock %}
 
 {% block content %}
-<div class="row little-margin">
+<div class="row little-margin tool-page">
     <div class="col-md-3 side-bar">
-        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="0">
+        <ul class="nav nav-stacked" data-spy="affix" data-offset-top="0">
             {% for kind, kind_name in kinds.items %}
             <li class="link"><a href="#{{ kind }}">{{ kind_name }}</a></li>
             {% endfor %}
         </ul>
     </div>
-    <section class="col-md-8">
+    <section class="col-md-8 margin-top-little">
         {% for kind, tool_file_list in tool_files.items %}
         <article id="{{ kind }}">
-            <header><h3>{{ kinds|key:kind }}</h3></header>
+            <header class="tool-category"><h3>{{ kinds|key:kind }}</h3></header>
             <div class="list-group">
                 {% for tool in tool_file_list %}
-                <div class="list-group-item">
-                    <h4 class="list-group-item-heading">{{ tool.name }}</h4>
-                    <p class="list-group-item-text">
-                        {{ tool.description }}
-                    </p>
-                    <p><a href="{{ tool.file_content.url }}" target="_blank">Accéder au fichier</a></p>
+                <div class="col-md-3 margin-left-little margin-top-little">
+                     <div class="col-md-12">
+                        <div class="row heading-tool">
+                            <h4 class="list-group-item-heading">{{ tool.name }}</h4>
+                        </div>
+                        <div class="row describe-tool">
+                            <p class="list-group-item-text">
+                                {{ tool.description }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-2">
+                        <div class="row link-tool">
+                            <p><a href="{{ tool.file_content.url }}" target="_blank">
+                                <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                            </a></p>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -31,6 +43,8 @@
         {% endfor %}
     </section>
 </div>
+
+
 {% endblock %}
 
 {% block script %}
@@ -49,4 +63,5 @@
     });
 })(jQuery);
 </script>
+
 {% endblock %}
