@@ -249,12 +249,14 @@ class FamilleCriteriaForm(CriteriaForm):
 class PrestataireForm(UserForm):
     class Meta(UserForm.Meta):
         model = Prestataire
-        fields = UserForm.Meta.fields + ("type", "birthday", "other_type")
+        fields = UserForm.Meta.fields + ("type", "birthday", "other_type", "nationality", "type_garde")
         labels = dict(
             UserForm.Meta.labels,
-            type="Type de prestataire",
+            type=u"Vous êtes...",
             other_type="Autre",
-            birthday=u"Date de naissance"
+            nationality=u"Nationalité",
+            birthday=u"Date de naissance",
+            type_garde=u"Type de garde"
         )
         widgets = {
             "birthday": forms.DateInput(

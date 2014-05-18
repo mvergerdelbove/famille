@@ -510,6 +510,13 @@ class Prestataire(Criteria):
     class Meta:
         app_label = 'famille'
 
+    def get_type(self):
+        """
+        Return the prestataire type, depending on if he
+        selected "Other".
+        """
+        return self.get_type_display() if self.type != "other" else self.other_type
+
 
 class Famille(Criteria):
     """

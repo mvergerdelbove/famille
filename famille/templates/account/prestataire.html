@@ -152,10 +152,12 @@
                         </span>
                     </div>
                 </div>
+                {% bootstrap_field profil.nationality field_class="col-md-6" label_class="col-md-4" %}
                 {% bootstrap_field profil.type field_class="col-md-6" label_class="col-md-4" %}
-                <div class="hide other-type">
+                <div class="other-type {% if profil.instance.type != 'other' %}hide{% endif %}">
                     {% bootstrap_field profil.other_type field_class="col-md-6" label_class="col-md-4" %}
                 </div>
+                {% bootstrap_field profil.type_garde field_class="col-md-6" label_class="col-md-4" %}
             </div>
             <div class="col-md-6">
                 {% bootstrap_field profil.street field_class="col-md-6" label_class="col-md-4" %}
