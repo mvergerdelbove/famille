@@ -49,11 +49,15 @@ module.exports = Backbone.View.extend({
         "slideStop #id_tarif": "doSearch",
         "click .form-search [data-distance]": "doDistanceSearch",
         "change #search-sort": "doSearch",
-        "change #id_age": "doSearch"
+        "change #id_age": "doSearch",
+        "click .contact-result": "checkRights",
+        "click .signal-result": "checkRights",
+        "click .rate-result": "rateUser",
     },
 
     initialize: function(options){
         this.resultTemplate = options.resultTemplate;
+        this.userPlan = options.userPlan;
         _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious", "toggleFavorite");
         this.$distanceButton = this.$(".control-distance");
         this.$distanceInput = this.$("#id_distance");
@@ -183,7 +187,7 @@ module.exports = Backbone.View.extend({
      * Attach the popover to the elements that are disabled.
      * in order to notify the user that he can create an account.
      */
-    attachDisabledPopover: function ($el, select) {
+    attachDisabledPopover: function ($el) {
         $el.attr("data-toggle", "popover");
         if ($el.attr("type") === "checkbox") {
             $el = $el.parent();
@@ -253,5 +257,27 @@ module.exports = Backbone.View.extend({
 
     switchSearch: function(e){
         famille.router.switchSearch($(e.target).data("search"));
+    },
+
+    /****************************************/
+    /*************   Actions   **************/
+    /****************************************/
+
+    /**
+     * Verify that the user as the right to perform actions
+     */
+    checkRights: function (e) {
+        if (this.userPlan !== "premium") {
+            var $target = $(e.target);
+            e.preventDefault();
+            e.stopPropagation();
+            $target.popover("show");
+            return false;
+        }
+        return true;
+    },
+
+    rateUser: function (e) {
+        this.checkRights(e);
     }
 });

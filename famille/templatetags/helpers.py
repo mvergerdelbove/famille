@@ -66,9 +66,21 @@ def key(d, key_name):
     """
     return d[key_name]
 
+
 @register.filter(name='get_form_field')
 def get_form_field(form, field_name):
     """
     Return a field of a form
     """
     return form[field_name]
+
+
+@register.filter(name='plan')
+def get_plan(user):
+    """
+    Return the plan of user.
+    """
+    if not has_user_related(user):
+        return ""
+
+    return get_user_related(user).plan

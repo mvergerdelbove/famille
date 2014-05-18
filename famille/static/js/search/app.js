@@ -10,6 +10,7 @@ function App(){
     this.emptyResultTemplate = $(".empty-result-template").html();
     this.searchType = $(".search-type").val();
     this.searchApi = "/api/v1/{type}s/?".replace("{type}", this.searchType);
+    this.userPlan = $(".p-type").val();
     this.cache = {};
     this.userData = {};
 }
@@ -24,7 +25,8 @@ App.prototype.initialize = function(){
     });
     this.view = new View({
         el: $(".search-view"),
-        resultTemplate: this.emptyResultTemplate
+        resultTemplate: this.emptyResultTemplate,
+        userPlan: this.userPlan
     });
     this.view.initFavorites(); // FIXME : it's bugging here ??
 };

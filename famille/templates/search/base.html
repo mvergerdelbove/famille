@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load bootstrap3 %}
+{% load helpers %}
 
 {% block title %} - Recherche{% endblock %}
 {% block extrahead %}
@@ -96,6 +97,7 @@
             <input type="hidden" class="max-nb-search-results" value="{{ max_nb_search_results }}"/>
             <input type="hidden" class="total-nb-search-results" value="{{ total_search_results }}"/>
             <input type="hidden" class="search-type" value="{{ search_type }}"/>
+            <input type="hidden" class="p-type" value="{{ user|plan }}"/>
         </div>
     </div>
 </div>
