@@ -173,50 +173,54 @@
 {% endblock %}
 
 {% block tab_extra %}
-	<div class="tab-pane fade" id="competences">
-				<form method="post" action="{% url "account" %}" enctype="multipart/form-data">
-					{% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <h4>Mes compétences</h4>
-                            {% bootstrap_field competences.studies %}
-							{% bootstrap_field competences.diploma %}
-                            {% bootstrap_field competences.resume %}
-                            <div class="form form-horizontal">
-                                {% bootstrap_field competences.tarif field_class="col-md-6" label_class="col-md-4"%}
-                            </div>
-                            {% bootstrap_field competences.language %}
-                            {% bootstrap_field competences.experience_type %}
-                            {% bootstrap_field competences.experience_year %}
-                            <h4>Mes petits plus</h4>
-                            <img src="{% static "img/badges/enfant_malade.png" %}" width="30px"/>
-                            {% bootstrap_field competences.enfant_malade %}
-                            <img src="{% static "img/badges/menage.png" %}" width="30px"/>
-                            {% bootstrap_field competences.menage %}
-                            <img src="{% static "img/badges/repassage.png" %}" width="30px"/>
-                            {% bootstrap_field competences.repassage %}
-                            <img src="{% static "img/badges/cuisine.png" %}" width="30px"/>
-                            {% bootstrap_field competences.cuisine %}
-                            <img src="{% static "img/badges/devoirs.png" %}" width="30px"/>
-                            {% bootstrap_field competences.devoirs %}
-                            <img src="{% static "img/badges/animaux.png" %}" width="30px"/>
-                            {% bootstrap_field competences.animaux %}
-                            <img src="{% static "img/badges/permis.png" %}" width="30px"/>
-                            {% bootstrap_field competences.permis %}
-                            <img src="{% static "img/badges/psc1.png" %}" width="30px"/>
-                            {% bootstrap_field competences.psc1 %}
-                            <img src="{% static "img/badges/non_fumeur.png" %}" width="30px"/>
-                            {% bootstrap_field competences.non_fumeur %}
+<div class="tab-pane fade" id="competences">
+    <form method="post" action="{% url "account" %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h4>Mes compétences</h4>
+                {% bootstrap_field competences.studies %}
+                {% bootstrap_field competences.diploma %}
+                {% bootstrap_field competences.resume %}
+                <div class="form form-horizontal">
+                    {% bootstrap_field competences.tarif field_class="col-md-6" label_class="col-md-4"%}
+                </div>
+                {% bootstrap_field competences.language %}
+                {% bootstrap_field competences.experience_type %}
+                {% bootstrap_field competences.experience_year %}
+                <h4>Mes petits plus</h4>
+                <img src="{% static "img/badges/enfant_malade.png" %}" width="30px"/>
+                {% bootstrap_field competences.enfant_malade %}
+                <img src="{% static "img/badges/menage.png" %}" width="30px"/>
+                {% bootstrap_field competences.menage %}
+                <img src="{% static "img/badges/repassage.png" %}" width="30px"/>
+                {% bootstrap_field competences.repassage %}
+                <img src="{% static "img/badges/cuisine.png" %}" width="30px"/>
+                {% bootstrap_field competences.cuisine %}
+                <img src="{% static "img/badges/devoirs.png" %}" width="30px"/>
+                {% bootstrap_field competences.devoirs %}
+                <img src="{% static "img/badges/animaux.png" %}" width="30px"/>
+                {% bootstrap_field competences.animaux %}
+                <img src="{% static "img/badges/permis.png" %}" width="30px"/>
+                {% bootstrap_field competences.permis %}
+                <img src="{% static "img/badges/psc1.png" %}" width="30px"/>
+                {% bootstrap_field competences.psc1 %}
+                <img src="{% static "img/badges/non_fumeur.png" %}" width="30px"/>
+                {% bootstrap_field competences.non_fumeur %}
 
-                            {% bootstrap_field competences.restrictions %}
-                            {% bootstrap_field competences.description %}
-						</div>
-						<div class="row"><div class="col-md-4 col-md-offset-5">
-							<button type="submit" name="submit" value="competences" class="btn btn-success">Sauvegarder</button>
-						</div></div>
-					</div>
-				</form>
-			</div>
+                {% bootstrap_field competences.restrictions %}
+                {% bootstrap_field competences.description %}
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-5">
+                    <button type="submit" name="submit" value="competences" class="btn btn-success">
+                        Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 {% block extraScript %}

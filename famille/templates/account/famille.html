@@ -13,7 +13,7 @@
 {% block profile_form %}
 <div class="row">
     <div class="form form-horizontal col-md-7">
-        <h4 class="margin-bottom-0">Coordonnées</h4>
+        <h4 class="margin-bottom-0">Profil</h4>
         {% for field in profil %}
         {% bootstrap_field field field_class="col-md-5" label_class="col-md-2" %}
         {% endfor %}
@@ -52,55 +52,52 @@
 {% endblock %}
 
 {% block tab_extra %}
-    <div class="tab-pane fade" id="attentes">
-                <form method="post" action="{% url "account" %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-4">
-                            {% bootstrap_field attentes.type_garde %}
-                            {% bootstrap_field attentes.type_presta %}
-                            <!-- TODO proximité -->
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form form-horizontal">
-                                        {% bootstrap_field attentes.tarif field_class="col-md-6" label_class="col-md-4"%}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {% bootstrap_field attentes.diploma %}
-                                </div>
-                                <div class="col-md-6">
-                                    {% bootstrap_field attentes.language %}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {% bootstrap_field attentes.devoirs %}
-                                    {% bootstrap_field attentes.menage %}
-                                    {% bootstrap_field attentes.repassage %}
-                                </div>
-                                <div class="col-md-6">
-                                    {% bootstrap_field attentes.permis %}
-                                    {% bootstrap_field attentes.non_fumeur %}
-                                    {% bootstrap_field attentes.psc1 %}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    {% bootstrap_field attentes.description %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row"><div class="col-md-4 col-md-offset-5">
-                            <button type="submit" name="submit" value="attentes" class="btn btn-success">Sauvegarder</button>
-                        </div></div>
-                    </div>
-                </form>
+<div class="tab-pane fade" id="attentes">
+    <form method="post" action="{% url "account" %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h4>Mes attentes</h4>
+                {% bootstrap_field attentes.type_garde %}
+                {% bootstrap_field attentes.type_presta %}
+                {% bootstrap_field attentes.studies %}
+                {% bootstrap_field attentes.diploma %}
+                <div class="form form-horizontal">
+                    {% bootstrap_field attentes.tarif field_class="col-md-6" label_class="col-md-4"%}
+                </div>
+                {% bootstrap_field attentes.language %}
+                {% bootstrap_field attentes.experience_type %}
+                {% bootstrap_field attentes.experience_year %}
+                <h4>Les petits plus attendus</h4>
+                <img src="{% static "img/badges/enfant_malade.png" %}" width="30px"/>
+                {% bootstrap_field attentes.enfant_malade %}
+                <img src="{% static "img/badges/menage.png" %}" width="30px"/>
+                {% bootstrap_field attentes.menage %}
+                <img src="{% static "img/badges/repassage.png" %}" width="30px"/>
+                {% bootstrap_field attentes.repassage %}
+                <img src="{% static "img/badges/cuisine.png" %}" width="30px"/>
+                {% bootstrap_field attentes.cuisine %}
+                <img src="{% static "img/badges/devoirs.png" %}" width="30px"/>
+                {% bootstrap_field attentes.devoirs %}
+                <img src="{% static "img/badges/animaux.png" %}" width="30px"/>
+                {% bootstrap_field attentes.animaux %}
+                <img src="{% static "img/badges/permis.png" %}" width="30px"/>
+                {% bootstrap_field attentes.permis %}
+                <img src="{% static "img/badges/psc1.png" %}" width="30px"/>
+                {% bootstrap_field attentes.psc1 %}
+                <img src="{% static "img/badges/non_fumeur.png" %}" width="30px"/>
+                {% bootstrap_field attentes.non_fumeur %}
             </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-5">
+                    <button type="submit" name="submit" value="attentes" class="btn btn-success">
+                        Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 {% block extraScript %}

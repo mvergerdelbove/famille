@@ -188,8 +188,15 @@ class FamilleForm(ForeignKeyForm, UserForm):
 
     class Meta(UserForm.Meta):
         model = Famille
-        fields = UserForm.Meta.fields + ('type', )
-        labels = dict(UserForm.Meta.labels, type="Type de famille")
+        fields = UserForm.Meta.fields + ('type', 'description')
+        labels = dict(UserForm.Meta.labels, type="Type de famille", description=u"Un peu plus de détails")
+        widgets = {
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": u"Profitez de cet espace pour en dire plus sur votre famille"
+                }
+            )
+        }
 
 
 LANGUAGES = {
