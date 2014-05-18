@@ -207,17 +207,22 @@ class CriteriaForm(forms.ModelForm):
 
     class Meta:
         labels = {
-            "type_garde": "Type de garde",
             "tarif": u"Tarif horaire (€/h)",
-            "diploma": u"Diplôme souhaité",
+            "diploma": u"Diplômes/Formations garde d’enfants",
             "menage": u"Ménage",
             "repassage": "Repassage",
             "non_fumeur": "Non-fumeur",
-            "devoirs": "Aide devoirs",
+            "devoirs": "Aide aux devoirs",
             "psc1": "Premiers secours",
             "permis": "Permis voiture",
             "description": u"Plus de détails",
-            "language": u"Langues étrangères"
+            "language": u"Langues étrangères",
+            "experience_type": u"Type d’expérience",
+            "experience_year": u"Nombre d’années d’experiences",
+            "studies": u"Niveau d'étude",
+            "enfant_malade": u"Garde d'enfant malade",
+            "cuisine": "Cuisine",
+            "animaux": "Prends soin des animaux"
         }
         fields = labels.keys()
         widgets = {
@@ -241,7 +246,8 @@ class FamilleCriteriaForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Famille
         labels = dict(
-            CriteriaForm.Meta.labels, type_presta="Type de prestataire"
+            CriteriaForm.Meta.labels, type_presta="Type de prestataire",
+            type_garde="Type de garde"
         )
         fields = labels.keys()
 
@@ -271,9 +277,18 @@ class PrestataireCompetenceForm(CriteriaForm):
         model = Prestataire
         labels = dict(
             CriteriaForm.Meta.labels, diploma=u"Diplôme",
-            resume="Joindre un CV", restrictions="Mes restrictions"
+            resume="Joindre un CV", restrictions="Mes restrictions (assistant(e) maternel(le))",
+            description="Annonce"
         )
         fields = labels.keys()
+        widgets = {
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": (u"Profitez de cet espace pour donner des "
+                                    u"informations complémentaires sur vous !")
+                }
+            )
+        }
 
 
 class ReferenceForm(forms.ModelForm):
