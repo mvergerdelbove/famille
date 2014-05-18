@@ -51,7 +51,7 @@ module.exports = Backbone.View.extend({
         "change #search-sort": "doSearch",
         "change #id_age": "doSearch",
         "click .contact-result": "checkRights",
-        "click .signal-result": "checkRights",
+        "click .signal-result": "signalUser",
         "click .rate-result": "rateUser",
     },
 
@@ -279,5 +279,15 @@ module.exports = Backbone.View.extend({
 
     rateUser: function (e) {
         this.checkRights(e);
+    },
+
+    signalUser: function (e) {
+        if (this.checkRights(e)) {
+            var $target = $(e.target);
+            $target.popover("destroy");
+            $target.attr("data-title", "Signaler un utilisateur");
+            $target.attr("data-content", "Pourquoi voulez-vous signaler cette utilisateur ?");
+            $target.popover("show");
+        }
     }
 });
