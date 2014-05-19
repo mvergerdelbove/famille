@@ -14,7 +14,7 @@
    .home{
     margin-top: 0;
     padding-top: 0;
-    background-image: url("../img/backg(light).jpg");
+    background-image: url("{% static "img/backg(light).jpg" %}");
     background-size: 110%;
     background-repeat: no-repeat;
     padding-bottom: 16%;
@@ -22,7 +22,7 @@
     .connex{
     margin-top: 0;
     padding-top: 0;
-    background-image: url("../img/bg_rslt.jpg");
+    background-image: url("{% static "/img/bg_rslt.jpg" %}");
     background-size: 50%;
     background-repeat: no-repeat;
     padding-bottom: 16%;
@@ -49,10 +49,10 @@
     .padding-top-1{padding-top: 4%;}
     .padding-min{ padding: 1%; }
 
-    #avantages{background-image: url(../img/bckg_avtg.jpg);background-size: 100%;}
+    #avantages{background-image: url("{% static "/img/bckg_avtg.jpg" %}");background-size: 100%;}
     .blur{background-color: rgba(255,255,255,0.7);}
-    #description{background-image: url(../img/bckg_descr.jpg);background-size: 100%;}
-    .tool-page{background-image: url(../img/manon.jpg);background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
+    #description{background-image: url("{% static "/img/bckg_descr.jpg" %}");background-size: 100%;}
+    .tool-page{background-image: url("{% static "/img/manon.jpg" %}");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
 background-attachment:fixed;}
 
     .profil-pict {
