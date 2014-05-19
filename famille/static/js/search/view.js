@@ -1,4 +1,5 @@
 var notifier = require("../notifier.js");
+var SignalUser = require("../signal.js");
 
 var constructFilterForString = function(name, query, value){
     return name + "__" + query + "=" + value;
@@ -137,10 +138,14 @@ module.exports = Backbone.View.extend({
         $container.html("");
         if (!data.length) {
             $noResults.show();
+             this.views = [];
         }
         else {
             $noResults.hide();
-            $container.append(_.map(data, this.formatResult));
+            this.views = _.map(data, this.formatResult);
+            $container.append(_.map(this.views, function(view) {
+                return view.el;
+            }));
             $("[data-toggle=popover]", $container).popover();
             $("[data-toggle=tooltip]", $container).tooltip();
             this.displayPagination();
@@ -159,7 +164,10 @@ module.exports = Backbone.View.extend({
     },
 
     formatResult: function(object){
-        return object.template;
+        return new ResultView({
+            el: object.template,
+            data: object
+        });
     },
 
     error: function(jqXHR){
@@ -263,6 +271,20 @@ module.exports = Backbone.View.extend({
     /*************   Actions   **************/
     /****************************************/
 
+    initResultViews: function(objects) {
+        this.views = _.map($(".one-search-result-outer"), function (el) {
+            var resource_uri = $(el).find('[data-field=resource_uri]').text();
+            var data = {
+                resource_uri: resource_uri,
+                id: resource_uri.split("/")[4]
+            };
+            return new ResultView({
+                el: el,
+                data: data
+            });
+        });
+    },
+
     /**
      * Verify that the user as the right to perform actions
      */
@@ -279,15 +301,25 @@ module.exports = Backbone.View.extend({
 
     rateUser: function (e) {
         this.checkRights(e);
+    }
+});
+
+var ResultView = Backbone.View.extend({
+    events: {
+        "click .confirm-signal": "signalUser"
     },
 
-    signalUser: function (e) {
-        if (this.checkRights(e)) {
-            var $target = $(e.target);
-            $target.popover("destroy");
-            $target.attr("data-title", "Signaler un utilisateur");
-            $target.attr("data-content", "Pourquoi voulez-vous signaler cette utilisateur ?");
-            $target.popover("show");
-        }
+    initialize: function (options) {
+        this.data = options.data;
+    },
+
+    signalUser: function () {
+        var reason = this.$("input[name=reason]:checked").val();
+        var userType = (this.data.resource_uri.indexOf("prestataires") === -1) ? "famille" : "prestataire";
+        SignalUser({
+            reason: reason,
+            userType: userType,
+            pk: this.data.id
+        });
     }
 });

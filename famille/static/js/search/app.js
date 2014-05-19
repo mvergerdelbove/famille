@@ -28,7 +28,8 @@ App.prototype.initialize = function(){
         resultTemplate: this.emptyResultTemplate,
         userPlan: this.userPlan
     });
-    this.view.initFavorites(); // FIXME : it's bugging here ??
+    this.view.initFavorites();
+    this.view.initResultViews();
 };
 
 App.prototype.initEvents = function(){
