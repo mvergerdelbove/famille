@@ -2,7 +2,7 @@ var notifier = require("./notifier.js");
 
 module.exports = function (data) {
     var url = "/signal-user/";
-    url += data.userType + "/" + data.pk;
+    url += data.userType + "/" + data.pk + "/";
     var promise = $.ajax(url, {
         data: {
             reason: data.reason
