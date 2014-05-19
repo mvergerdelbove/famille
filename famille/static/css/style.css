@@ -1,6 +1,12 @@
 @media screen and (max-width: 768px) {
   
 }
+@media (min-width: 768px) and (max-width: 1200px) {
+  .home{
+    background-color: #FFFFFF;
+  }
+   .margin-top-little{margin-top: 4%;}
+}
 @media screen and (min-width: 1200px) {
 
     body{margin:0; padding: 0;width: 100%;}
@@ -24,6 +30,7 @@
 
     .margin-top-2{margin-top: 27%;}
     .margin-top-1{margin-top: 20%;}
+    .margin-top-med{margin-top: 17%;}
     .margin-top-r{margin-top: 11%;}
     .margin-top-0{margin-top: 7%;}
     .margin-top-little{margin-top: 4%;}
