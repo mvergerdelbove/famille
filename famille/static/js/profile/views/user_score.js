@@ -1,11 +1,10 @@
 
 module.exports = Backbone.View.extend({
-    initialize: function (options) {
-        _.extend(this, options);
-        this.listenTo(this.router, "rating:success", this.updateScore);
+    initialize: function () {
+        $("body").on("rating:success", _.bind(this.updateScore, this));
     },
 
-    updateScore: function (data) {
+    updateScore: function (e, data) {
         var score = parseFloat(data.total_rating);
         this.$(".rating-score").html(score.toFixed(2));
         _.each(this.$(".score-star"), function (el, idx) {

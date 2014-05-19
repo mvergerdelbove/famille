@@ -1,5 +1,6 @@
-var notifier = require("../../notifier.js");
+var Utils = require("../../utils");
 var ScoreView = require("./score");
+var Rating = require("../../rating");
 
 
 module.exports = Backbone.View.extend({
@@ -14,13 +15,18 @@ module.exports = Backbone.View.extend({
                 el: el
             });
         });
-        this.listenTo(this.router, "rating:success", this.onSuccess);
-        this.listenTo(this.router, "rating:error", this.onError);
+        var uriParts = Utils.djangoUriParts();
+        this.userType = uriParts[2];
+        this.userId = uriParts[3];
     },
 
     submit: function (e) {
         e.preventDefault();
-        this.router.submitRating(this.getData());
+        Rating({
+            userType: this.userType,
+            pk: this.userId,
+            rate: this.getData()
+        });
     },
 
     getData: function () {
@@ -28,13 +34,5 @@ module.exports = Backbone.View.extend({
             var $el = $(el);
             return [$el.attr("name"), $el.val()];
         }));
-    },
-
-    onError: function () {
-        notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
-    },
-
-    onSuccess: function () {
-        notifier.success("Votre note a bien été prise en compte !");
     }
 });
