@@ -185,6 +185,7 @@ def profile(request, type, uid):
 
     if has_user_related(request.user):
         related_user = get_user_related(request.user)
+        context["related_user"] = related_user
         # users cant vote for themselves or twice for a user
         if user != related_user and not RatingClass.user_has_voted_for(related_user, user):
             rating = RatingClass(user=user, by=related_user.simple_id)
