@@ -656,13 +656,13 @@ class Reference(BaseModel):
         """
         Retrieve the dates of the reference for display.
         """
-        if not self.date_from or not self.current or not self.date_to:
+        if not self.date_from or not (self.current or self.date_to):
             return ""
 
         date_from = self.date_from.strftime("%d/%m/%Y")
-        date_to = u"aujourd'hui" if self.current else self.date_to.strftime("%d/%m/%Y")
+        date_to = u"à aujourd'hui" if self.current else "au %s" % self.date_to.strftime("%d/%m/%Y")
 
-        return u"Du %s à %s" % (date_from, date_to)
+        return u"Du %s %s" % (date_from, date_to)
 
 
 # consts
