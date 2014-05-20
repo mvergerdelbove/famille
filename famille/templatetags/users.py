@@ -60,4 +60,19 @@ def get_language_display(value):
     """
     Retrieve the language display test from integer.
     """
-    return LANGUAGES.get(value, "")
+    return LANGUAGES.get(value, u"")
+
+
+@register.filter(name='languages_display')
+def get_languages_display(value):
+    """
+    Retrieve the language display test from integer.
+    """
+    value = value or ""
+    disp = []
+    for language in value.split(","):
+        language_display = get_language_display(language)
+        if language_display:
+            disp.append(language_display)
+
+    return u", ".join(disp) or "--"

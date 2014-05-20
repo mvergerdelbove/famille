@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load static %}
 {% load helpers %}
+{% load users %}
 
 {% block title %} - Profil{% endblock %}
 
@@ -60,7 +61,14 @@
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            {% block contentBlock3 %}{% endblock %}  <!-- mes besoins -->
+            {% block contentBlock3 %}  <!-- mes besoins -->
+            <h5>{% block block3Title %}{% endblock %}</h5>
+            <p>Langues parlées: {{ profile.language|languages_display }}</p>
+            <p>Niveau d'étude: {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
+            <p>Diplôme: {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
+            <p>Type d'expérience: {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}</p>
+            <p>Nombre d’années d’experiences: {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
+            {% endblock %}
         </div>
     </div>
     <div class="row">
@@ -70,7 +78,10 @@
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            {% block contentBlock5 %}{% endblock %}  <!-- annonce -->
+            {% if profile.description %}
+            <h5>{% block block5Title %}{% endblock %}</h5>
+            <p>{{ profile.description }}</p>
+            {% endif %}
         </div>
     </div>
     <div class="row">

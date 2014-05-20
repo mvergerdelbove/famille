@@ -412,12 +412,6 @@ class Criteria(UserInfo):
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
         "bafa": u"Bafa",
     }
-    LANGUAGES = {
-        "en": "Anglais",
-        "de": "Allemand",
-        "es": "Espagnol",
-        "it": "Italien",
-    }
     STUDIES = (
         ("brevet", u"Brevet"),
         ("bac", u"Bac"),
@@ -476,12 +470,6 @@ class Prestataire(Criteria):
         ("pair", "Au pair"),
         ("other", "Autre"),
     )
-    LEVEL_LANGUAGES = {
-        "deb": u"Débutant",
-        "mid": u"Intermédiaire",
-        "pro": u"Maîtrisé",
-        "bil": "Bilingue"
-    }
     RESTRICTIONS = {
         "bebe": u"Bébé (0 à 1 an)",
         "jeune": u"Jeunes enfants (1 à 3 ans)",
