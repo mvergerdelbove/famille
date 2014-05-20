@@ -8,8 +8,8 @@
 
 {% block content %}
 <div class="col-md-12">
-    <div class="row">
-        <div class="page-header col-md-10 col-md-offset-1">
+    <div class="row">  <!-- row header -->
+        <div class="page-header col-md-6 col-md-offset-1">  <!-- page header -->
             <div class="col-xs-4 col-md-2">
                 <a href="#" class="thumbnail">
                     {% if profile.profile_pic %}
@@ -38,8 +38,33 @@
             <div>
                 {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
             </div>
-        </div>
-    </div>
+        </div>  <!-- end page header -->
+        <div class="page-header col-md-2">  <!-- page header -->
+            <div class="row">  <!-- favorite button -->
+                <div class="col-md-12">
+                    <button class="btn btn-color btn-brown-min btn-block favorite">
+                        <i class="glyphicon glyphicon-star"></i> Favori
+                    </button>
+                </div>
+            </div>  <!-- end favorite button -->
+            <div class="row margin-top-2">  <!-- contact button -->
+                <div class="col-md-12">
+                    <a href="{% url 'postman_write' %}" target="_blank"
+                       class="btn btn-color btn-brown-min btn-block">
+                        <span class="glyphicon glyphicon-user"></span> Contacter
+                    </a>
+                </div>
+            </div>  <!-- end contact button -->
+            <div class="row margin-top-little">
+                <!-- TODO: rating here -->
+            </div>
+            <div class="row margin-top-little">
+                <div class="col-md-12">  <!-- signal button -->
+                    {% include 'helpers/signal_modal.html' with profile=profile only %}
+                </div>  <!-- end signal button -->
+            </div>
+        </div>  <!-- end page header -->
+    </div>  <!-- end row header -->
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             {% block contentBlock1 %}
