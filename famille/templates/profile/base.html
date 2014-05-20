@@ -149,6 +149,8 @@
         </div>
     </div>
 </div>
+<span data-field="pk" class="hide">{{ profile.pk }}</span>
+<span data-field="type" class="hide">{{ profile|class_name|lower }}</span>
 {% endblock %}
 
 {% block script %}

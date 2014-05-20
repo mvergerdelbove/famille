@@ -1,9 +1,13 @@
 var RatingView = require("./views/rating");
 var UserScoreView = require("./views/user_score");
+var SignalUser = require("../signal.js");
 
 
 (function($){
     function App () {
+        var userPk = $("[data-field=pk]").html();
+        var userType = $("[data-field=type]").html();
+
         var $formEl = $(".rating-form"), self = this;
         $(".popover-rating").popover({
             content: function () {
@@ -17,6 +21,16 @@ var UserScoreView = require("./views/user_score");
         });
         this.userScoreView = new UserScoreView({
             el: $(".user-score")
+        });
+
+        // signal user
+        $(".confirm-signal").click(function () {
+            var reason = $("input[name=reason]:checked").val();
+            SignalUser({
+                reason: reason,
+                userType: userType,
+                pk: userPk
+            });
         });
     }
 
