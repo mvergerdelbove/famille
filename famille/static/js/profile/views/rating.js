@@ -16,16 +16,26 @@ module.exports = Backbone.View.extend({
             });
         });
         var uriParts = Utils.djangoUriParts();
-        this.userType = uriParts[2];
-        this.userId = uriParts[3];
+        this.userType = options.userType || uriParts[2];
+        this.userId = options.pk || uriParts[3];
+        this.popover = options.popover;
     },
 
     submit: function (e) {
         e.preventDefault();
+        var self = this;
         Rating({
             userType: this.userType,
             pk: this.userId,
             rate: this.getData()
+        }).done(function () {
+            self.popover.popover("hide");
+            if (!self.popover.hasClass("popover-rating-search")) {
+                self.popover.remove();
+            }
+            else {
+                self.popover.addClass("disabled");
+            }
         });
     },
 

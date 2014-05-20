@@ -156,3 +156,7 @@ h4{font-weight: bold;font-size: 25px;text-align: center;color:#555555;}
 .signal-result + .popover {
     width: 250px;
 }
+
+.popover-rating-search-container .popover {
+    width: 350px;
+}

@@ -33,7 +33,7 @@
                         <div class="col-md-3 title-blue nav-title">{{ result.total_rating }}</div>
                         <div class="col-md-9">
                             <div class="progress link tooltip-link" data-toggle="tooltip"
-                                 data-original-title="15 évaluations">
+                                 data-original-title="{{ result.nb_ratings }} évaluation{% if result.nb_ratings != 1%}s{% endif%}">
                                 <div class="progress-bar btn-blue-min"
                                      style="width:{{ result.total_rating_percent }}%;">
                                 </div>
@@ -169,12 +169,16 @@
                         </a>
                     </div>
                     <div class="row margin-top-little">
+                        {% if user|plan == "premium" %}
+                            {% include 'helpers/rating_in_search.html' with rating_form=result|rating_form:user profile=result only %}
+                        {% else %}
                         <button class="btn btn-color btn-brown-min btn-block rate-result"
                                 data-toggle="popover" data-trigger="manual" data-title="Fonctionalité indisponible"
                                 data-content="Créez un compte premium pour pouvoir l'utiliser :-)"
                                 data-placement="bottom">
                             <span class="glyphicon glyphicon-stats"></span> Noter
                         </button>
+                        {% endif %}
                     </div>
                     <div class="row margin-top-little">
                         {% if user|plan == "premium" %}

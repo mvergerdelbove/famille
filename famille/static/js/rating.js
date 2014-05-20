@@ -9,7 +9,6 @@ module.exports = function (data){
         headers: {'X-CSRFToken': $.cookie('csrftoken')}
     }).done(function(data){
         notifier.success("Votre note a bien été prise en compte !");
-        $(".popover-rating").popover("hide").remove();
         $("body").trigger("rating:success", data);
     }).fail(function(){
         notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");

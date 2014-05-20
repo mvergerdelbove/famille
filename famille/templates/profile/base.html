@@ -33,9 +33,7 @@
                 {% endwith %}
             </div>
             <div>
-                {% if rating_form %}
-                    {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
-                {% endif %}
+                {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
             </div>
         </div>
     </div>

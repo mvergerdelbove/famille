@@ -12,7 +12,7 @@ var UserScoreView = require("./views/user_score");
         }).on("shown.bs.popover", function () {
             self.ratingView = new RatingView({
                 $el: $(".popover-rating-container .form-rating"),
-                router: self.router
+                popover: $(".popover-rating")
             });
         });
         this.userScoreView = new UserScoreView({

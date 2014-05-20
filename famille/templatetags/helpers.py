@@ -1,7 +1,10 @@
 from django import template
 
-from famille.models import get_user_related, has_user_related
-
+from famille.forms import RatingFamilleForm, RatingPrestataireForm
+from famille.models import (
+    get_user_related, has_user_related, FamilleRatings,
+    PrestataireRatings, Famille
+)
 
 register = template.Library()
 
@@ -84,3 +87,28 @@ def get_plan(user):
         return ""
 
     return get_user_related(user).plan
+
+
+@register.filter(name='rating_form')
+def get_rating_form(profile, request_user):
+    """
+    Return the rating form instance for a profile and
+    a given user. Return None in case of a problem
+    or the request user already voted.
+
+    :param profile:        the profile to be rated
+    :param request_user:   the request user
+    """
+    if isinstance(profile, Famille):
+        RatingClass = FamilleRatings
+        RatingFormClass = RatingFamilleForm
+    else:
+        RatingClass = PrestataireRatings
+        RatingFormClass = RatingPrestataireForm
+
+    if has_user_related(request_user):
+        related_user = get_user_related(request_user)
+        if not RatingClass.user_has_voted_for(related_user, profile):
+            rating = RatingClass(user=profile, by=related_user.simple_id)
+            return RatingFormClass(instance=rating)
+    return None

@@ -1,5 +1,6 @@
 var notifier = require("../notifier.js");
 var SignalUser = require("../signal.js");
+var RatingView = require("../profile/views/rating.js");
 
 var constructFilterForString = function(name, query, value){
     return name + "__" + query + "=" + value;
@@ -146,6 +147,7 @@ module.exports = Backbone.View.extend({
             $container.append(_.map(this.views, function(view) {
                 return view.el;
             }));
+            _.invoke(this.views, "initRating");
             $("[data-toggle=popover]", $container).popover();
             $("[data-toggle=tooltip]", $container).tooltip();
             this.displayPagination();
@@ -283,6 +285,7 @@ module.exports = Backbone.View.extend({
                 data: data
             });
         });
+        _.invoke(this.views, "initRating");
     },
 
     /**
@@ -311,14 +314,27 @@ var ResultView = Backbone.View.extend({
 
     initialize: function (options) {
         this.data = options.data;
+        this.userType = (this.data.resource_uri.indexOf("prestataires") === -1) ? "famille" : "prestataire";
+    },
+
+    initRating: function () {
+        var $formEl = $(".rating-form"), self = this;
+        this.$(".popover-rating").attr("data-content", $formEl.html());
+        this.$(".popover-rating").popover().on("shown.bs.popover", function () {
+            self.ratingView = new RatingView({
+                $el: self.$(".popover-rating-container-"+ self.data.id +" .form-rating"),
+                userType: self.userType,
+                pk: self.data.id,
+                popover: self.$(".popover-rating")
+            });
+        });
     },
 
     signalUser: function () {
         var reason = this.$("input[name=reason]:checked").val();
-        var userType = (this.data.resource_uri.indexOf("prestataires") === -1) ? "famille" : "prestataire";
         SignalUser({
             reason: reason,
-            userType: userType,
+            userType: this.userType,
             pk: this.data.id
         });
     }

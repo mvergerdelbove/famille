@@ -1,0 +1,20 @@
+{% extends "helpers/rating.html" %}
+{% load bootstrap3 %}
+
+{% block ratingButton %}
+<button class="btn btn-color btn-brown-min btn-block popover-rating popover-rating-search"
+        data-title="Noter {{ profile.first_name }}" data-container=".popover-rating-container-{{ profile.pk }}"
+        data-toggle="popover" data-placement="bottom" data-html="true">
+    <span class="glyphicon glyphicon-stats"></span> Noter
+</button>
+{% endblock %}
+
+{% block popoverContainer %}
+<div class="popover-rating-container-{{ profile.pk }} popover-rating-search-container"></div>
+{% endblock %}
+
+{% block noRating %}
+<button class="btn btn-color btn-brown-min btn-block disabled">
+    <span class="glyphicon glyphicon-stats"></span> Noter
+</button>
+{% endblock %}
