@@ -7,22 +7,33 @@
 {% get_flatpages "/faq/" as faq_pages %}
 {% with faq_page=faq_pages|first %}
 <div class="row little-margin">
-    <div class="col-md-3 side-bar">
-        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="0">
-            <li><a href="#description">Description du service</a></li>
+    <div class="col-md-3 side-bar" style="z-index:100;">
+        <ul class="nav  nav-stacked" data-spy="affix" data-offset-top="0">
+            <li><a href="#">Description du service</a></li>
             <li><a href="#fonctionnement">Fonctionnement</a></li>
             <li><a href="#avantages">Avantages offerts</a></li>
             <li><a href="#premium">Avantages premium</a></li>
             <li><a href="#faq">Foire aux questions</a></li>
         </ul>
     </div>
-    <section class="col-md-8">
-        <article id="description">
-            <header><h3>Description du service</h3></header>
-            <div>
-                du contenu ici...<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <section class="col-md-12">
+        <article id="description" class="row padding-min ">
+            <div class="col-md-8 col-md-offset-2 margin-top-little">
+                <header><h1>Description du service</h1></header>
+                <div class="row margin-top-little margin-bottom-big" >
+                    <p class="col-md-7 text-justify">
+                        « Une vie de famille », est un réseau de confiance et de proximité pour faciliter la recherche de garde d’enfants, un service de mise en relation des familles avec des prestataires de garde d’enfants (nounou, baby-sitter, assistante maternelle, etc) !
+                    </p>
+                    <p class="col-md-12 text-justify">
+                        Grâce à une recherche personnalisée et de nombreux critères de choix, les familles pourront maximiser leur chance de trouver « la perle rare » près de chez elles.
+                        Les prestataires de garde d’enfants, pourront quant à eux, trouver de l’emploi plus facilement, en se mettant en contact avec les familles près de chez eux ; 
+                    </p>
+                    <p class="col-md-12 text-justify">    
+                        Gardes à temps plein, gardes d’urgence, gardes partagées, gardes après l’école, tous les types de gardes à domicile sont possibles avec « Une vie de famille ». 
+                    </p>
+                </div>
             </div>
-        </article><br/><br/><br/><br/>
+        </article>
         <article id="fonctionnement">
             <header><h3>Fonctionnement</h3></header>
             <div>
