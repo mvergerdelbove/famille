@@ -35,9 +35,6 @@
                 <strong class="rating-score">{{ ratings|floatformat:2 }}</strong>
                 {% endwith %}
             </div>
-            <div>
-                {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
-            </div>
         </div>  <!-- end page header -->
         <div class="page-header col-md-2">  <!-- page header -->
             <div class="row">  <!-- favorite button -->
@@ -47,7 +44,7 @@
                     </button>
                 </div>
             </div>  <!-- end favorite button -->
-            <div class="row margin-top-2">  <!-- contact button -->
+            <div class="row margin-top-little">  <!-- contact button -->
                 <div class="col-md-12">
                     <a href="{% url 'postman_write' %}" target="_blank"
                        class="btn btn-color btn-brown-min btn-block">
@@ -56,7 +53,9 @@
                 </div>
             </div>  <!-- end contact button -->
             <div class="row margin-top-little">
-                <!-- TODO: rating here -->
+                <div class="col-md-12">  <!-- rating button -->
+                    {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
+                </div>  <!-- end rating button -->
             </div>
             <div class="row margin-top-little">
                 <div class="col-md-12">  <!-- signal button -->
