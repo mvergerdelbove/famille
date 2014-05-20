@@ -66,14 +66,49 @@
             <p>Langues parlées: {{ profile.language|languages_display }}</p>
             <p>Niveau d'étude: {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
             <p>Diplôme: {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
-            <p>Type d'expérience: {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}</p>
+            <p>
+                Type d'expérience:
+                {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}
+            </p>
             <p>Nombre d’années d’experiences: {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
             {% endblock %}
         </div>
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            {% block contentBlock4 %}{% endblock %}  <!-- petits plus -->
+            {% block contentBlock4 %}  <!-- petits plus -->
+            <h5>{% block block4Title %}{% endblock %}</h5>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'repassage' %}" width="50px">
+                    J'accepte de faire du repassage
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'menage' %}" width="50px">
+                    J'accepte de faire du ménage
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'non_fumeur' %}" width="50px">
+                    Je ne fume pas
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'cuisine' %}" width="50px">
+                    Je sais cuisiner
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="50px">
+                    J'aide vos enfants dans leur devoirs
+                </div>
+            </div>
+            {% endblock %}
         </div>
     </div>
     <div class="row">

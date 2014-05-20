@@ -24,6 +24,7 @@
         <p>Tarif souhaité: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
     </div>
 {% endblock %}
+
 {% block contentBlock2 %}  <!-- enfants -->
 {% with nb_enfants=profile.enfants.all.count %}
 {% if nb_enfants %}
@@ -36,6 +37,9 @@
 {% endif %}
 {% endwith %}
 {% endblock %}
+
 {% block block3Title %}Mes besoins{% endblock %}
-{% block contentBlock4 %}{% endblock %}  <!-- petits plus -->
+
+{% block block4Title %}Les p'tits plus recherchés{% endblock %}
+
 {% block block5Title %}Plus de détails sur notre famille{% endblock %}
