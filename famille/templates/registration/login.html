@@ -24,6 +24,7 @@
                     </div>
                 </div>
             {% endblock %}
+            {% block cgu %}{% endblock %}
             <div class="form-group">
                 <div class="col-md-2 col-md-offset-6">
                     <input type="submit" class="btn btn-success" value="Connexion"/>
@@ -53,6 +54,7 @@
                     </label>
                 </div>
             </div>
+            {% block cgu2 %}{% endblock %}
             {% block social_auth %}
                 {% buttons %}
                     {% with action="register" type="famille" class="col-md-offset-2"%}
