@@ -1,6 +1,7 @@
 var RatingView = require("./views/rating");
 var UserScoreView = require("./views/user_score");
 var SignalUser = require("../signal.js");
+var Favorite = require("../favorite.js");
 
 
 (function($){
@@ -32,6 +33,14 @@ var SignalUser = require("../signal.js");
                 pk: userPk
             });
         });
+
+        // favorite
+        $(".favorite").click(function (e) {
+            Favorite({
+                event: e,
+                container: ".profile-container"
+            });
+        })
     }
 
     window.famille = new App();

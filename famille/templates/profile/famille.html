@@ -43,3 +43,7 @@
 {% block block4Title %}Les p'tits plus recherchés{% endblock %}
 
 {% block block5Title %}Plus de détails sur notre famille{% endblock %}
+
+{% block extra %}
+<span data-field="resource_uri" class="hidden">/api/v1/familles/{{ profile.pk }}/</span>
+{% endblock %}
