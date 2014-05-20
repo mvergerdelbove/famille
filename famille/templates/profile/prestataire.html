@@ -1,0 +1,46 @@
+{% extends "profile/base.html" %}
+
+{% block subtitle %}
+    <h2>
+    {% if profile.get_age %}
+      {{ profile.get_age }} ans
+    {% endif %}
+    <small>
+      {{ profile.get_type.upper }}
+    </small>
+    </h2>
+{% endblock %}
+
+{% block contentBlock1 %}  <!-- infos générales -->
+    <h5>Informations générales</h5>
+    <div class="form-group">
+        <p>Type de garde: {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+    </div>
+    <div class="form-group">
+        <p>Tarif: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+    </div>
+{% endblock %}
+
+{% block block3Title %}Mes compétences{% endblock %}
+
+{% block block4Title %}Mes p'tits plus{% endblock %}
+
+{% block block5Title %}Plus de détails sur moi{% endblock %}
+
+{% block contentBlock6 %}  <!-- references -->
+<h5>Mes références</h5>
+{% for reference in profile.references.all %}
+<div class="row">
+    <div class="col-md-8">
+        <h5>Avec la famille {{ reference.get_famille_display }} <small>{{ reference.get_dates_display }}</small></h5>
+        {% if reference.garde != "Autre" %}
+        <p>Garde de type {{ reference.get_garde_display }}</p>
+        {% endif %}
+        <p>Mission(s) éffectuée(s):</p>
+        <p>{{ reference.missions }}</p>
+    </div>
+</div>
+{% empty %}
+<p>Cette utilisateur n'a pas encore rempli ses références.</p>
+{% endfor %}
+{% endblock %}

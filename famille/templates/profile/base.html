@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load static %}
 {% load helpers %}
+{% load users %}
 
 {% block title %} - Profil{% endblock %}
 
@@ -18,7 +19,9 @@
                     {% endif %}
                 </a>
             </div>
-            <h1>{{ profile.instance.get_pseudo }} <small>{{ profile.city }}</small></h1>
+            <h1>{{ profile.get_pseudo }} <small>{{ profile.city }}</small></h1>
+            {% block subtitle %}
+            {% endblock subtitle %}
             <div class="user-score">
                 {% with ratings=profile.total_rating %}
                     {% for i in ratings|get_range %}
@@ -35,6 +38,90 @@
             <div>
                 {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock1 %}
+            {% endblock %}  <!-- infos générales -->
+            <h5>Planning</h5>
+            <ul>
+                {% for planning in profile.planning.all %}
+                <li>{{ planning.display }}</li>
+                {% empty %}
+                <li>Cet utilisateur n'a pas de préférence de planning.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock2 %}{% endblock %}  <!-- enfants -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock3 %}  <!-- mes besoins -->
+            <h5>{% block block3Title %}{% endblock %}</h5>
+            <p>Langues parlées: {{ profile.language|languages_display }}</p>
+            <p>Niveau d'étude: {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
+            <p>Diplôme: {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
+            <p>
+                Type d'expérience:
+                {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}
+            </p>
+            <p>Nombre d’années d’experiences: {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock4 %}  <!-- petits plus -->
+            <h5>{% block block4Title %}{% endblock %}</h5>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'repassage' %}" width="50px">
+                    J'accepte de faire du repassage
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'menage' %}" width="50px">
+                    J'accepte de faire du ménage
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'non_fumeur' %}" width="50px">
+                    Je ne fume pas
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img src="{% static profile|badge_icon:'cuisine' %}" width="50px">
+                    Je sais cuisiner
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="50px">
+                    J'aide vos enfants dans leur devoirs
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% if profile.description %}
+            <h5>{% block block5Title %}{% endblock %}</h5>
+            <p>{{ profile.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock6 %}{% endblock %}  <!-- references -->
         </div>
     </div>
 </div>
