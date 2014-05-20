@@ -1,6 +1,5 @@
 var RatingView = require("./views/rating");
 var UserScoreView = require("./views/user_score");
-var Router = require("./router");
 
 
 (function($){
@@ -13,17 +12,12 @@ var Router = require("./router");
         }).on("shown.bs.popover", function () {
             self.ratingView = new RatingView({
                 $el: $(".popover-rating-container .form-rating"),
-                router: self.router
+                popover: $(".popover-rating")
             });
         });
-        this.router = new Router();
         this.userScoreView = new UserScoreView({
-            router: this.router,
             el: $(".user-score")
         });
-        this.router.on("rating:success", function () {
-            $(".popover-rating").popover("hide").remove();
-        })
     }
 
     window.famille = new App();

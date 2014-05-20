@@ -5,10 +5,13 @@ from django.contrib import admin
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import TemplateView
 from password_reset.views import Recover
+from postman.views import WriteView, ReplyView
 from tastypie.api import Api
 
 from famille import resources
 from famille.forms import CustomAuthenticationForm
+from famille.utils.mail import email_moderation
+from famille.views.web import ClaimSuccessView
 
 
 admin.autodiscover()
@@ -43,7 +46,9 @@ urlpatterns = patterns(
     ),
     url(r'^mon-compte/suppression/$', 'famille.views.delete_account', name="delete_account"),
     url(r'^profile/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.profile", name="profile"),
-    url(r'^devenir-premium(?:/(?P<action>(annuler|valider)))?/$', "famille.views.premium", name="premium"),
+    url(r'^devenir-premium/$', "famille.views.premium", name="premium"),
+    url(r'^devenir-premium/succes/$', "famille.views.premium_success", name="premium_success"),
+    url(r'^devenir-premium/annuler/$', "famille.views.premium_cancel", name="premium_cancel"),
     url(r'^recherche/$', 'famille.views.search', name="search"),
     url(r'^register(?:/(?P<social>[a-zA-Z]+)/((?P<type>[a-zA-Z]+)))?/$', 'famille.views.register', name="register"),
     url(r'^favorite/$', 'famille.views.favorite', name="favorite"),
@@ -58,6 +63,8 @@ urlpatterns = patterns(
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
     url(r'^profile-pic/$', 'famille.views.profile_pic', name="profile_pic"),
     url(r'^submit-rating/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.submit_rating", name="submit_rating"),
+    url(r'^autocomplete/', "famille.views.message_autocomplete", name="message_autocomplete"),
+    url(r'^signal-user/(?P<userType>[a-z]+)/(?P<uid>\d+)/$', "famille.views.signal_user", name="signal_user"),
     url(r'^api/', include(api.urls)),
 
     # static pages
@@ -80,6 +87,12 @@ urlpatterns = patterns(
     url('', include('social.apps.django_app.urls', namespace='social')),  # social auth
     url(r'^paypal/', include('paypal.standard.ipn.urls')),  # paypal
     url(r'', include('password_reset.urls')),  # password reset
+    url(r'^messages/write/(?:(?P<recipients>[^/#]+)/)?$', WriteView.as_view(auto_moderators=email_moderation), name='postman_write'),
+    url(r'^messages/reply/(?P<message_id>[\d]+)/$', ReplyView.as_view(auto_moderators=email_moderation), name='postman_reply'),
     url(r'^messages/', include('postman.urls')),  # postman
-    url('', include('ajax_select.urls')),  # ajax_select
+    url(
+        r'^verification/(?P<group>[-\w]+)/(?P<key>[-\w]+)/success/$',
+        ClaimSuccessView.as_view(), name='verification-success'
+    ),  # verification
+    url(r'^verification/', include('verification.urls')),  # verification
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

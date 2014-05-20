@@ -10,6 +10,7 @@ function App(){
     this.emptyResultTemplate = $(".empty-result-template").html();
     this.searchType = $(".search-type").val();
     this.searchApi = "/api/v1/{type}s/?".replace("{type}", this.searchType);
+    this.userPlan = $(".p-type").val();
     this.cache = {};
     this.userData = {};
 }
@@ -24,19 +25,28 @@ App.prototype.initialize = function(){
     });
     this.view = new View({
         el: $(".search-view"),
-        resultTemplate: this.emptyResultTemplate
+        resultTemplate: this.emptyResultTemplate,
+        userPlan: this.userPlan
     });
-    this.view.initFavorites(); // FIXME : it's bugging here ??
+    this.view.initFavorites();
+    this.view.initResultViews();
 };
 
 App.prototype.initEvents = function(){
     $("select").select2();
     $('[data-toggle="tooltip"]').tooltip();
-    if ($("#id_tarif").length){
+    $('[data-toggle="popover"]').popover();
+    if ($("#id_tarif").length) {
         this.initSlider($("#id_tarif"));
         $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
+    $('body').on('click', function (e) {
+        if ($(e.target).data('toggle') !== 'popover'
+            && $(e.target).parents('.popover.in').length === 0) {
+            $('[data-toggle="popover"]').popover('hide');
+        }
+    });
 };
 
 App.prototype.initSlider = function($el){

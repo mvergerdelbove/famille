@@ -3,11 +3,11 @@ from collections import defaultdict
 from django.conf import settings
 from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
-from paypal.standard.forms import PayPalPaymentsForm
+from verification.views import ClaimSuccessView as VerificationClaimSuccessView
 
 from famille import forms
 from famille.models import (
@@ -23,7 +23,8 @@ from famille.utils.http import require_related, login_required, assert_POST
 __all__ = [
     "home", "search", "register", "account",
     "favorite", "profile", "premium",
-    "tools", "advanced", "delete_account"
+    "tools", "advanced", "delete_account",
+    "premium_success", "premium_cancel"
 ]
 
 
@@ -45,6 +46,14 @@ def search(request):
     """
     data = request.POST if request.method == "POST" else request.GET
     search_type = data.get("type")
+    if request.user.is_authenticated():
+        related = get_user_related(request.user)
+        favorites = related.favorites.all()
+        if not search_type and isinstance(related, Prestataire):
+            search_type = "famille"
+    else:
+        favorites = []
+
     search_type = "prestataire" if search_type not in ["famille", "prestataire"] else search_type
     if search_type == "famille":
         FormClass = forms.FamilleSearchForm
@@ -64,11 +73,7 @@ def search(request):
     total_search_results = objects.count()
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
-    result_template = get_result_template_from_user(request)
-    if request.user.is_authenticated():
-        favorites = get_user_related(request.user).favorites.all()
-    else:
-        favorites = []
+    result_template = get_result_template_from_user(request, search_type)
     return render(
         request, template,
         get_context(
@@ -89,10 +94,10 @@ def register(request, social=None, type=None):
         if request.method == "POST":
             form = forms.RegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                form.save(request)
         else:
             form = forms.RegistrationForm()
-        return render(request, "registration/register.html", get_context(social=social, form=form))
+            return render(request, "registration/register.html", get_context(social=social, form=form))
     else:
         if not has_user_related(request.user):
             UserInfo.create_user(dj_user=request.user, type=type)
@@ -139,10 +144,18 @@ def favorite(request):
     return HttpResponse()
 
 
+@login_required
+@require_related
 @require_GET
 def profile(request, type, uid):
     """
     Display the profile of a user.
+    A nice 404 view is shown to the user
+    if the profile does not exist OR the profile
+    is not premium.
+    A nice 401 view is shown to the user if the
+    profile didn't want to show itself to the user
+    or globally.
     """
     if type not in ("famille", "prestataire"):
         raise Http404
@@ -163,6 +176,10 @@ def profile(request, type, uid):
     except ModelClass.DoesNotExist:
         return render(request, "profile/404.html", status=404)
 
+    # the user can view its own profile but others cannot if he is not premium
+    if request.related_user != user and not user.is_premium:
+        return render(request, "profile/404.html", status=404)
+
     if not user.profile_access_is_authorized(request):
         return render(request, "profile/401.html", status=401)
 
@@ -172,40 +189,35 @@ def profile(request, type, uid):
             rating = RatingClass(user=user, by=related_user.simple_id)
             context["rating_form"] = RatingFormClass(instance=rating)
 
-    return render(request, "profile/"+type+".html", get_context(profile=user, **context))
+    return render(request, "profile/%s.html" % type, get_context(profile=user, **context))
 
-
-premium_dict = {
-    "business": settings.PAYPAL_RECEIVER_EMAIL,
-    "amount": settings.PREMIUM_PRICE,
-    "item_name": "Compte premium Une vie de famille",
-    "item_number": settings.PREMIUM_ID,
-    "src": "1",
-    "currency_code": "EUR"
-}
 
 @login_required
 @require_related
 @require_GET
-def premium(request, action=None):
+def premium(request):
     """
     Page to become premium.
     """
     if request.related_user.is_premium:
-        return render_to_response("account/already_premium.html")
+        return render(request, "account/already_premium.html", get_context())
 
-    if action == "valider":
-        return render(request, "account/premium.html", get_context(action=action))
+    forms = payment.get_payment_forms(request.related_user, request)
+    return render(request, "account/premium.html", get_context(payment_forms=forms))
 
-    data = premium_dict.copy()
-    data.update(
-        invoice=payment.signer.sign_user(request.related_user),
-        notify_url=request.build_absolute_uri(reverse('paypal-ipn')),
-        return_url=request.build_absolute_uri('/devenir-premium/valider/'),
-        cancel_return=request.build_absolute_uri('/devenir-premium/annuler/')
-    )
-    form = PayPalPaymentsForm(button_type=PayPalPaymentsForm.SUBSCRIBE, initial=data)
-    return render(request, "account/premium.html", get_context(form=form, action=action))
+
+@csrf_exempt  # Make sure this is the last decorator
+@login_required
+@require_related
+def premium_success(request):
+    return render(request, "account/premium.html", get_context(action="success"))
+
+
+@csrf_exempt
+@login_required
+@require_related
+def premium_cancel(request):
+    return HttpResponseRedirect("/devenir-premium/")
 
 
 @login_required
@@ -254,3 +266,11 @@ def delete_account(request):
     request.user.save()
     logout(request)
     return HttpResponseRedirect('/')
+
+
+class ClaimSuccessView(VerificationClaimSuccessView):
+    slug_field = "key"
+    slug_url_kwarg = "key"
+
+    def get_queryset(self):
+        return self.model.objects.all()

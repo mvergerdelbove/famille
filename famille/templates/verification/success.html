@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Votre email a été vérifié avec succès !
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+       <h1>Votre email a été vérifié avec succès !</h1>
+       <p>Veuillez vous connecter pour accéder à votre compte.</p>
+       <a class="btn btn-success" href="{% url 'auth_login' %}">Se connecter</a>
+    </div>
+</div>
+{% endblock content %}

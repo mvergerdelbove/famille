@@ -4,9 +4,11 @@ from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
+from django.http.request import HttpRequest
 from django.test import TestCase
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
+from verification.models import KeyGroup, Key
 
 from famille import models, errors
 from famille.models import utils
@@ -35,10 +37,8 @@ class ModelsTestCase(TestCase):
             object_type="Famille", object_id=self.famille.pk, prestataire=self.presta
         )
         self.prestataire_fav.save()
-
-    def test_simple_id(self):
-        self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
-        self.assertEqual(self.presta.simple_id, "prestataire__%s" % self.presta.pk)
+        self.keygroup = KeyGroup(name='activate_account', generator="sha1-hex")
+        self.keygroup.save()
 
     def tearDown(self):
         User.objects.all().delete()
@@ -47,6 +47,11 @@ class ModelsTestCase(TestCase):
         models.Geolocation.objects.all().delete()
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
+        self.keygroup.delete()
+
+    def test_simple_id(self):
+        self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
+        self.assertEqual(self.presta.simple_id, "prestataire__%s" % self.presta.pk)
 
     def test_get_user_related(self):
         self.assertIsInstance(models.get_user_related(self.user1), models.Famille)
@@ -237,6 +242,19 @@ class ModelsTestCase(TestCase):
 
         f = models.compute_user_visibility_filters(self.user2)
         self.assertEqual(f.children, [('visibility_global', True), ('visibility_prestataire', True)])
+
+    @patch("django.core.mail.send_mail")
+    def test_send_verification_email(self, send_mail):
+        req = HttpRequest()
+        req.META = {"HTTP_HOST": "toto.com"}
+        self.presta.send_verification_email(req)
+        self.assertTrue(send_mail.called)
+        self.assertEqual(Key.objects.filter(claimed_by=self.presta.user, claimed=None).count(), 1)
+
+    def test_verify_user(self):
+        self.presta.verify_user(claimant=self.presta.user)
+        presta = User.objects.get(pk=self.presta.user.pk)
+        self.assertTrue(self.presta.user.is_active)
 
 
 class GeolocationTestCase(TestCase):

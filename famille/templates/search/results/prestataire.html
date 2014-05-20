@@ -1,0 +1,247 @@
+{% load static %}
+{% load staticfiles %}
+{% load helpers %}
+{% load users %}
+
+
+<div class="row margin-top-little one-search-result-outer">
+    <div class="row one-search-result">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row">
+                        <img src="../../static/img/pola.png" width="100%;">
+                        {% if result.profile_pic %}
+                        <img class="profil-pict" src="{% get_media_prefix %}{{ result.profile_pic }}"
+                             width="50%;" alt="Photo de profil">
+                        {% else %}
+                        <img class="profil-pict" src="{% static "img/nopic.png" %}"
+                             width="50%;" alt="Photo de profil">
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        {% for l in "12345678" %}
+                            {% if result|language_icon:l %}
+                            <div class="col-md-3 col-md-offset-1 little-padding">
+                                <img src="{% static result|language_icon:l %}" width="100%;"
+                                     data-toggle="tooltip" data-original-title="{{ l|language_display }}"/>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="row margin-top-0">
+                        <div class="col-md-3 title-blue nav-title">{{ result.total_rating }}</div>
+                        <div class="col-md-9">
+                            <div class="progress link tooltip-link" data-toggle="tooltip"
+                                 data-original-title="{{ result.nb_ratings }} évaluation{% if result.nb_ratings != 1%}s{% endif%}">
+                                <div class="progress-bar btn-blue-min"
+                                     style="width:{{ result.total_rating_percent }}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-7 nav-title text-blue">
+                            <a href="{% url 'profile' result|class_name|lower result.pk %}" target="_blank">
+                                {{ result.get_pseudo }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7 nav-title title-blue subtlt">
+                            {{ result.get_type.upper }} - {{ result.city }}
+                        </div>
+                    </div>
+                    <div class="col-md-12 badges_rank"> <!--badges-->
+                        <div class="row rgt l1">
+                            <div class="col-md-3 categorie title-green nav-title">Type de garde</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je suis disponible pour des dépannages">
+                                    <img src="{% static result|badge_icon_garde:'urgences'%}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="Je peux faire des gardes de nuit">
+                                    <img src="{% static result|badge_icon_garde:'nuit'%}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'accepte les gardes partagées">
+                                    <img src="{% static result|badge_icon_garde:'part'%}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je vais chercher vos enfants aux sorties d'école">
+                                    <img class="none" src="{% static result|badge_icon_garde:'ecole' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'accepte les horaires décalés (tôt le matin ou tard le soir)">
+                                    <img class="none" src="{% static result|badge_icon_garde:'decal' %}" width="90%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row rgt l1">
+                            <div class="col-md-3 categorie title-green nav-title">Expertise</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'ai un diplôme ou une attestation dans la garde d'enfants">
+                                    <img src="{% static result|badge_icon:'diploma' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
+                                    {% if result.experience_type != 'zero' %}
+                                    <img src="{% static 'img/badges/bebe.png' %}" width="90%;">
+                                    {% else %}
+                                    <img src="{% static 'img/badges/no-bebe.png' %}" width="90%;">
+                                    {% endif %}
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'ai mon permis">
+                                    <img src="{% static result|badge_icon:'permis' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="Je peux m'occuper d'enfants malades">
+                                    <img class="none"
+                                         src="{% static result|badge_icon:'enfant_malade' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'ai suivi une formation aux premiers secours">
+                                    <img class="none" src="{% static result|badge_icon:'psc1' %}" width="90%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row rgt l1">
+                            <div class="col-md-3 categorie title-green nav-title">Les p'tits plus</div>
+                            <div class="col-md-9">
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'accepte de faire du repassage">
+                                    <img src="{% static result|badge_icon:'repassage' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="J'accepte de faire du ménage">
+                                    <img src="{% static result|badge_icon:'menage' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="Je ne fume pas">
+                                    <img src="{% static result|badge_icon:'non_fumeur' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip" data-original-title="Je sais cuisiner">
+                                    <img src="{% static result|badge_icon:'cuisine' %}" width="90%;">
+                                </div>
+                                <div class="badges-lfo link tooltip-link"
+                                     data-toggle="tooltip"
+                                     data-original-title="J'aide vos enfants dans leur devoirs'">
+                                    <img class=none"" src="{% static result|badge_icon:'devoirs' %}" width="90%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-md-2">
+                        <div class="row">
+                            {% if user.is_authenticated %}
+                            <button class="btn btn-color btn-brown-min btn-block favorite">
+                                <i class="glyphicon glyphicon-star"></i> Favori
+                            </button>
+                            {% else %}
+                            <button class="btn btn-color btn-brown-min btn-block favorite"
+                            data-toggle="popover" data-placement="top" data-trigger="hover"
+                            title="Créez un compte pour pouvoire utiliser les favoris"
+                            data-content=":-)">
+                            <i class="glyphicon glyphicon-star"></i> Favori
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div class="row margin-top-2">
+                        <a href="{% url 'postman_write' %}" target="_blank"
+                           class="btn btn-color btn-brown-min btn-block contact-result"
+                           data-toggle="popover" data-trigger="manual" data-title="Fonctionalité indisponible"
+                           data-content="Créez un compte premium pour pouvoir l'utiliser :-)" data-placement="bottom">
+                            <span class="glyphicon glyphicon-user"></span> Contacter
+                        </a>
+                    </div>
+                    <div class="row margin-top-little">
+                        {% if user|plan == "premium" %}
+                            {% include 'helpers/rating_in_search.html' with rating_form=result|rating_form:user profile=result only %}
+                        {% else %}
+                        <button class="btn btn-color btn-brown-min btn-block rate-result"
+                                data-toggle="popover" data-trigger="manual" data-title="Fonctionalité indisponible"
+                                data-content="Créez un compte premium pour pouvoir l'utiliser :-)"
+                                data-placement="bottom">
+                            <span class="glyphicon glyphicon-stats"></span> Noter
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div class="row margin-top-little">
+                        {% if user|plan == "premium" %}
+                        <button class="btn btn-color btn-brown-min btn-block signal-result"
+                                data-toggle="modal"
+                                data-target="#signal-{{ result.pk }}">
+                            <span class="glyphicon glyphicon-bell"></span> Signaler
+                        </button>
+                        <div class="modal fade" id="signal-{{ result.pk }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                        <h4 class="modal-title">Signaler un utilisateur</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="reason" value="r1" checked>
+                                                    Raison 1
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="reason" value="r2">
+                                                    Raison 2
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="reason" value="r3">
+                                                    Raison 3
+                                                </label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            Annuler
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-primary confirm-signal" data-dismiss="modal">
+                                            Confirmer
+                                        </button>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                        {% else %}
+                        <button class="btn btn-color btn-brown-min btn-block signal-result"
+                                data-toggle="popover" data-trigger="manual" data-title="Fonctionalité indisponible"
+                                data-content="Créez un compte premium pour pouvoir l'utiliser :-)"
+                                data-placement="bottom" data-html="true" data-selector="body">
+                            <span class="glyphicon glyphicon-bell"></span> Signaler
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span data-field="resource_uri" class="hidden">/api/v1/prestataires/{{ result.pk }}/</span>
+    </div>
+</div>

@@ -1,12 +1,16 @@
+import operator
+
 from django.conf import settings
 from django.core.exceptions import FieldError
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.template.loader import render_to_string
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
 from famille.models import planning, compute_user_visibility_filters
+from famille.utils import get_result_template_from_user
 from famille.utils.python import pick, without
 from famille.utils.geolocation import is_close_enough, geolocate
 
@@ -110,9 +114,30 @@ class SearchResource(object):
             return super(SearchResource, self).apply_sorting(obj_list, options)
 
     def apply_filters(self, request, applicable_filters):
+        """
+        Apply filtering on the objects. It first filters user that
+        are premium (depending on the setting ALLOW_BASIC_PLAN_IN_SEARCH),
+        and then apply (if needed) the filtering on number of children,
+        on distance and on postal code.
+
+        :param request:                a django HttpRequest object
+        :param applicable_filters:     a dict of resource filters
+        """
         distance = request.GET.get("distance__iexact")
         postal_code = request.GET.get("pc__iexact")
+        nb_enfants = request.GET.get("n_enfants__length")
+        language = applicable_filters.pop("language__in", None)
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
+        qs = qs.distinct()  # for enfants__school filtering, can return duplicates
+
+        if not settings.ALLOW_BASIC_PLAN_IN_SEARCH:
+            qs = qs.filter(plan=self._meta.object_class.PLANS["premium"])
+
+        if nb_enfants:
+            qs = self.filter_nb_enfants(nb_enfants, qs)
+
+        if language:
+            qs = self.filter_language(language, qs)
 
         if postal_code:
             return self.filter_postal_code(postal_code, qs)
@@ -153,11 +178,41 @@ class SearchResource(object):
 
         return self.filter_distance(settings.POSTAL_CODE_DISTANCE, geoloc, queryset)
 
+    def filter_nb_enfants(self, nb_enfants, queryset):
+        """
+        Filter the queryset by the number of children.
+        Only implemented for familles.
+
+        :param nb_enfants:     the desired number of children
+        :param queryset:       the initial queryset
+        """
+        raise NotImplementedError()
+
+    def filter_language(self, language, queryset):
+        """
+        Filter the queryset by the languages.
+        Only implemented for prestataires.
+
+        :param language:       the desired languages
+        :param queryset:       the initial queryset
+        """
+        raise NotImplementedError()
+
+    def dehydrate_template(self, bundle):
+        """
+        Dehydrate the template using the bundle.
+        """
+        search_type = "prestataire" if self._meta.resource_name == "prestataires" else "famille"
+        template = get_result_template_from_user(bundle.request, search_type)
+        context = {"result": bundle.obj, "user": bundle.request.user}
+        return render_to_string(template, context)
+
 
 class PrestataireResource(SearchResource, ModelResource):
 
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
+    template = fields.CharField()
 
     class Meta(SearchResource.Meta):
         queryset = models.Prestataire.objects.all()
@@ -168,20 +223,33 @@ class PrestataireResource(SearchResource, ModelResource):
         filtering = dict(
             [(key, ALL) for key in forms.PrestataireSearchForm.base_fields.iterkeys()],
             level_en=ALL, level_it=ALL, level_es=ALL, level_de=ALL, distance=ALL, id=ALL,
-            plannings=ALL_WITH_RELATIONS
+            plannings=ALL_WITH_RELATIONS, birthday=('lte', 'gte')
         )
+
+    def filter_language(self, language, queryset):
+        """
+        Filter the queryset by the languages.
+
+        :param language:       the desired languages
+        :param queryset:       the initial queryset
+        """
+        filters = map(lambda l: Q(language__icontains=l), language)
+        filters = reduce(operator.or_, filters, Q())
+        return queryset.filter(filters)
 
 
 class FamilleResource(SearchResource, ModelResource):
     # TODO: refine this
     FIELD_ACCESS_NOT_LOGGED = [
-        "first_name", "name", "city", "country", "description"
+        "first_name", "name", "city", "country", "description", "template"
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
 
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
     enfants = fields.ToManyField(EnfantResource, "enfants", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
+    nb_enfants = fields.IntegerField()
+    template = fields.CharField()
 
     class Meta(SearchResource.Meta):
         queryset = models.Famille.objects.all()
@@ -190,7 +258,7 @@ class FamilleResource(SearchResource, ModelResource):
         fields = [
             "first_name", "name", "tel", "email", "city",
             "country", "description", "id", "plannings", "rating",
-            "updated_at", "enfants"
+            "updated_at", "enfants", "template"
         ]
         ordering = [key[1:] if key.startswith("-") else key for key in forms.FamilleSearchForm.ordering_dict.keys()]
         filtering = dict(
@@ -207,6 +275,12 @@ class FamilleResource(SearchResource, ModelResource):
         filters = compute_user_visibility_filters(request.user)
         return super(FamilleResource, self).get_object_list(request).filter(filters)
 
+    def dehydrate_nb_enfants(self, bundle):
+        """
+        Dehydrate the number of childrens.
+        """
+        return bundle.obj.enfants.count()
+
     def dehydrate(self, bundle):
         """
         Make sur the user does not see the fields he has no
@@ -222,3 +296,13 @@ class FamilleResource(SearchResource, ModelResource):
                 bundle.data = without(bundle.data, *self.FIELD_DENIED_BASIC)
 
         return bundle
+
+    def filter_nb_enfants(self, nb_enfants, queryset):
+        """
+        Filter the queryset by the number of children.
+
+        :param nb_enfants:     the desired number of children
+        :param queryset:       the initial queryset
+        """
+        queryset = queryset.annotate(nb_enfants=Count("enfants"))
+        return queryset.filter(nb_enfants=nb_enfants)

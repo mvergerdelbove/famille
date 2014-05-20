@@ -1,11 +1,15 @@
 # -*- coding=utf-8 -*-
-from datetime import datetime, date
+from datetime import date
+import logging
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.db import models
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.ipn.signals import payment_was_successful
+from verification.models import Key, KeyGroup
+from verification.signals import key_claimed
 
 from famille import errors
 from famille.models.base import BaseModel
@@ -18,7 +22,7 @@ from famille.utils.python import pick
 
 
 __all__ = [
-    "Famille", "Prestataire", "Enfant",
+    "Famille", "Prestataire", "Enfant", "Criteria",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
     "compute_user_visibility_filters", "get_user_pseudo"
@@ -166,6 +170,7 @@ class UserInfo(BaseModel):
         max_upload_size=2621440  # 2.5MB
     )
     plan = models.CharField(blank=True, max_length=20, default="basic", choices=PLANS.items())
+    plan_expires_at = models.DateTimeField(blank=True, null=True)
     newsletter = models.BooleanField(blank=True, default=True)
     # visibility
     visibility_family = models.BooleanField(default=True, blank=True)
@@ -225,6 +230,13 @@ class UserInfo(BaseModel):
         if not nb_ratings:
             return 0
         return sum(rating.average for rating in self.ratings.all()) / float(nb_ratings)
+
+    @property
+    def total_rating_percent(self):
+        """
+        Return the total rating percent.
+        """
+        return int(self.total_rating / 5.0 * 100)
 
     # FIXME: can be async
     def geolocate(self):
@@ -350,23 +362,55 @@ class UserInfo(BaseModel):
         user = get_user_related(request.user)
         return self.visibility_prestataire if isinstance(user, Prestataire) else self.visibility_family
 
+    def send_verification_email(self, request):
+        """
+        Send a verification email to a user after signup.
+        """
+        keygroup = KeyGroup.objects.get(name="activate_account")
+        key = Key.generate(group=keygroup)
+        key.claimed_by = self.user
+        key.claimed = None
+        key.save()
+        activate_url = reverse('verification-claim-get', kwargs={'key': key, 'group': key.group})
+        activate_url = request.build_absolute_uri(activate_url)
+        send_mail_from_template_with_noreply(
+            "email/verification.html", {"activate_url": activate_url},
+            subject=u"Email de vérification", recipient_list=[self.email, ]
+        )
+
+    @classmethod
+    def verify_user(*args, **kwargs):
+        """
+        Verify a user.
+        """
+        claimant = kwargs['claimant']
+        if has_user_related(claimant):
+            claimant.is_active = True
+            claimant.save()
+        else:
+            logging.warning("Cannot verify user since claimant is unrelated.")
+
 
 class Criteria(UserInfo):
-    TYPES_GARDE_FAMILLE = {
-        "dom": "Garde à domicile",
-        "part": "Garde partagée",
-    }
-    TYPES_GARDE = {
-        "dom": "Garde à domicile",
-        "part": "Garde partagée",
-        "mat": "Garde par une assistante maternelle",
-        "struct": "Structure d'accueil",
-    }
+    TYPES_GARDE = (
+        ("plein", u"Garde à temps plein"),
+        ("partiel", u"Garde à temps partiel"),
+        ("soir", u"Garde en soirée"),
+        ("part", u"Garde partagée"),
+        ("ecole", u"Sortie d'école"),
+        ("vacances", u"Vacances scolaires"),
+        ("decal", u"Garde à horaires"),
+        ("nuit", u"Garde de nuit"),
+        ("urgences", u"Garde d'urgence"),
+    )
     DIPLOMA = {
-        "cap": "CAP Petite enfance",
-        "deaf": u"Diplôme d'Etat Assistant(e) familial(e) (DEAF)",
-        "ast": "Assistant maternel / Garde d'enfants",
+        "etat": u"Diplôme d’Etat D’assistante maternelle",
+        "bep": u"BEP carrières sanitaires et sociales",
+        "cap": u"CAP Petite enfance",
+        "comp": u"Un certificat de compétence professionnelle petite enfance",
+        "qual": u"Un certificat de qualification professionnelle petite enfance",
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
+        "bafa": u"Bafa",
     }
     LANGUAGES = {
         "en": "Anglais",
@@ -374,21 +418,46 @@ class Criteria(UserInfo):
         "es": "Espagnol",
         "it": "Italien",
     }
+    STUDIES = (
+        ("brevet", u"Brevet"),
+        ("bac", u"Bac"),
+        ("+1", u"Bac +1"),
+        ("+2", u"Bac +2"),
+        ("+3", u"Bac +3"),
+        ("+4", u"Bac +4"),
+        ("+5", u"Bac +5"),
+        ("other", u"Autre")
+    )
+    EXP_TYPES = (
+        ("zero", u"Pas d’expérience dans la garde d’enfants"),
+        ("un", u"Avec les bébés (0 à 1 an)"),
+        ("trois", u"Avec les petits enfants (1 à 3 an)"),
+        ("sept", u"Avec les jeunes enfants (3 à 7 ans)"),
+        ("sept+", u"Avec les enfants (plus de 7 ans)"),
+        ("handi", u"Avec les enfants handicapés"),
+    )
+    EXP_YEARS = (
+        ("un", u"Moins d’un an"),
+        ("trois", u"Entre 1 et 3 ans"),
+        ("six", u"Entre 3 et 6 ans"),
+        ("six+", u"Plus de 6 ans"),
+    )
 
-    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE.items())
+    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE)
+    studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
     diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
+    experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
+    experience_year = models.CharField(blank=True, null=True, max_length=10, choices=EXP_YEARS)
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)
-    cdt_periscolaire = models.BooleanField(blank=True, default=False)
-    sortie_ecole = models.BooleanField(blank=True, default=False)
-    nuit = models.BooleanField(blank=True, default=False)
-    non_fumeur = models.BooleanField(blank=True, default=False)
+    cuisine = models.BooleanField(blank=True, default=False)
     devoirs = models.BooleanField(blank=True, default=False)
-    urgence = models.BooleanField(blank=True, default=False)
+    animaux = models.BooleanField(blank=True, default=False)
+    non_fumeur = models.BooleanField(blank=True, default=False)
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
-    baby = models.BooleanField(blank=True, default=False)
-    tarif = models.FloatField(blank=True, null=True)
+    enfant_malade = models.BooleanField(blank=True, default=False)
+    tarif = models.FloatField(blank=True, null=True, default=3.0)
     description = models.CharField(blank=True, null=True, max_length=400)
 
     class Meta:
@@ -399,14 +468,14 @@ class Prestataire(Criteria):
     """
     The Prestataire user.
     """
-    TYPES = {
-        "baby": "Baby-sitter",
-        "nounou": "Nounou",
-        "maternel": "Assistant(e) maternel(le)",
-        "parental": "Assistant(e) parental(e)",
-        "pair": "Au pair",
-        "other": "Autre",
-    }
+    TYPES = (
+        ("baby", "Baby-sitter"),
+        ("nounou", "Nounou"),
+        ("maternel", "Assistant(e) maternel(le)"),
+        ("parental", "Assistant(e) parental(e)"),
+        ("pair", "Au pair"),
+        ("other", "Autre"),
+    )
     LEVEL_LANGUAGES = {
         "deb": u"Débutant",
         "mid": u"Intermédiaire",
@@ -418,17 +487,19 @@ class Prestataire(Criteria):
         "jeune": u"Jeunes enfants (1 à 3 ans)",
         "marche": u"Enfants de 3 à 7 ans"
     }
-    PAYMENT_PREFIX = "f"
+    PAYMENT_PREFIX = "p"
+
+    AGES = {
+        "16-": u"Moins de 16 ans",
+        "18-": u"Moins de 18 ans",
+        "18+": u"Plus de 18 ans"
+    }
 
     birthday = models.DateField(null=True, blank=True)
-    type = models.CharField(max_length=40, choices=TYPES.items())
-    other_type = models.CharField(max_length=100, null=True, blank=True)
-    language_kw = dict(blank=True, null=True, max_length=10, choices=LEVEL_LANGUAGES.items())
-    level_en = models.CharField(**language_kw)
-    level_de = models.CharField(**language_kw)
-    level_es = models.CharField(**language_kw)
-    level_it = models.CharField(**language_kw)
-    other_language = models.CharField(blank=True, null=True, max_length=50)
+    nationality = models.CharField(max_length=70, null=True, blank=True)
+    type = models.CharField(max_length=40, choices=TYPES)
+    other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
     resume = extra_fields.ContentTypeRestrictedFileField(
         upload_to=extra_fields.upload_to_timestamp("resume"), blank=True, null=True,
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
@@ -447,7 +518,12 @@ class Prestataire(Criteria):
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
     def get_type(self):
-        return self.TYPES[self.type]
+        """
+        Return the prestataire type, depending on if he
+        selected "Other".
+        """
+        return self.get_type_display() if self.type != "other" else self.other_type
+
 
 class Famille(Criteria):
     """
@@ -458,11 +534,23 @@ class Famille(Criteria):
         "foyer": "Famille Mère/Père au foyer",
         "actif": "Famille couple actif",
     }
+    TYPE_ATTENTES_FAMILLE = (
+        ("part", u"Garde partagée"),
+        ("ecole", u"Sortie d'école"),
+        ("urgences", u"Garde d'urgence (dépannages)"),
+        ("nuit", u"Garde de nuit"),
+        ("vacances", u"Vacances scolaires"),
+        ("cond_sco", u"Conduite scolaire"),
+        ("cond_peri", u"Conduite péri-scolaire"),
+        ("dej", u"Echange de déjeuners"),
+        ("other", u"Autre")
+    )
     PAYMENT_PREFIX = "f"
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
-    type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES.items())
-    langue = models.CharField(blank=True, max_length=10, choices=Prestataire.LANGUAGES.items())
+    type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
+    type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         app_label = 'famille'
@@ -572,3 +660,4 @@ FAVORITE_CLASSES = {
 
 # signals
 payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")
+key_claimed.connect(UserInfo.verify_user, dispatch_uid="famille.verify")

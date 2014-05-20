@@ -1,29 +1,16 @@
-{% extends "search/base.html" %}
+{% extends "search/prestataire.html" %}
 {% load bootstrap3 %}
+{% load helpers %}
 
-{% block form %}
-<div class="panel-group" id="accordion">
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#c-classic">
-                    Critères
-                </a>
-            </h4>
-        </div>
-        <div id="c-classic" class="panel-collapse collapse in">
-            <div class="panel-body">
-                <form class="form form-search">
-                    {% bootstrap_field search_form.enfants__school %}
-                    {% bootstrap_field search_form.plannings__weekday__id %}
-                    {% bootstrap_field search_form.plannings__schedule__id %}
-                    {% bootstrap_field search_form.plannings__frequency %}
-                    {% bootstrap_field search_form.type_garde %}
-                    {% bootstrap_field search_form.cdt_periscolaire %}
-                    {% bootstrap_field search_form.sortie_ecole %}
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+{% block formbox1 %}
+{% if request.user|user_type == "Famille" %}
+    {% bootstrap_field search_form.enfants__school %}
+    {% bootstrap_field search_form.n_enfants %}
+    {% bootstrap_field search_form.type_attente_famille %}
+    {% bootstrap_field search_form.plannings__weekday__id %}
+    {% bootstrap_field search_form.plannings__schedule__id %}
+    {% bootstrap_field search_form.plannings__frequency %}
+{% else %}
+    {{ block.super }}
+{% endif %}
 {% endblock %}

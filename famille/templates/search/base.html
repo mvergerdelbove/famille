@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load bootstrap3 %}
+{% load helpers %}
 
 {% block title %} - Recherche{% endblock %}
 {% block extrahead %}
@@ -16,18 +17,21 @@
             <div class="btn-group search-header">
                 {% if search_type == "famille" %}
                 <button type="button" class="btn btn-default choose-search" data-search="prestataire">Un prestataire</button>
-                <button type="button" class="btn btn-success active">Une famille</button>
+                <button type="button" class="btn btn-color btn-blue-min active">Une famille</button>
                 {% else %}
-                <button type="button" class="btn btn-success active">Un prestataire</button>
+                <button type="button" class="btn btn-color btn-green-min active">Un prestataire</button>
                 <button type="button" class="btn btn-default choose-search" data-search="famille">Une famille</button>
                 {% endif %}
             </div>
             {% block form %}{% endblock %}
     </div>
-    <div class="col-md-6 col-md-offset-1">
+    <div class="col-md-6 col-md-offset-1 margin-top-r">
         <div class="row">
             <div class="col-md-4">
-                <h3>{{ total_search_results }} Résultats</h3>
+                <h3>
+                    <span class="total-search-results">{{ total_search_results }}</span>
+                    Résultat<span class="plural-search-result">s</span>
+                </h3>
             </div>
             <div class="col-md-3">
                 <form class="form form-horizontal">
@@ -56,6 +60,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                <div class="no-results" {% if total_search_results %}style="display:none;"{% endif %}>
+                    Aucun résultats ne correspond 100% à vos critères de recherche.
+                    Peut-être que votre recherche est trop stricte ?
+                </div>
                 <div class="search-results">
                     {% for result in results %}
                     {% include result_template with result=result user=user search_type=search_type only %}
@@ -85,19 +93,22 @@
                 <div class="empty-result-template">
                 {% include result_template only %}
                 </div>
-                {% if user.is_authenticated %}
-                <span data-authenticated></span>
-                {% endif %}
             </div>
             <input type="hidden" class="max-nb-search-results" value="{{ max_nb_search_results }}"/>
-            <input type="hidden" class="total-nb-search-results" value="{{ total_nb_search_results }}"/>
+            <input type="hidden" class="total-nb-search-results" value="{{ total_search_results }}"/>
             <input type="hidden" class="search-type" value="{{ search_type }}"/>
+            <input type="hidden" class="p-type" value="{{ user|plan }}"/>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
+{% if user.is_authenticated %}
+<script>
+    window._auth = true;
+</script>
+{% endif %}
 <script src="{% static "lib/underscore/underscore-min.js" %}"></script>
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "lib/select2/select2.min.js" %}"></script>

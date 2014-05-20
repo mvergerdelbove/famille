@@ -33,26 +33,29 @@ class RegistrationFormTestCase(TestCase):
         self.form.data = {"email": "valid@email.com", "password": "p"}
         self.assertTrue(self.form.is_valid())
 
-    def test_save(self):
+    @patch("famille.models.users.UserInfo.send_verification_email")
+    def test_save(self, mock):
         self.form.cleaned_data = {
             "email": "valid@email.com",
             "password": "password"
         }
         self.form.data = {"type": "famille"}
 
-        self.form.save()
+        self.form.save(None)
         user = User.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(user)
         model = models.Famille.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(model)
         self.assertIsInstance(model.user, User)
+        self.assertFalse(model.user.is_active)
 
         self.form.data = {"type": "prestataire"}
         user.delete()
-        self.form.save()
+        self.form.save(None)
         model = models.Prestataire.objects.filter(email="valid@email.com").first()
         self.assertIsNotNone(model)
         self.assertIsInstance(model.user, User)
+        self.assertFalse(model.user.is_active)
 
 
 class FamilleFormTestCase(TestCase):

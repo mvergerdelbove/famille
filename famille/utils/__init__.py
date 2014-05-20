@@ -9,7 +9,7 @@ def get_context(**kwargs):
     return kwargs
 
 
-def get_result_template_from_user(request):
+def get_result_template_from_user(request, search_type="prestataire"):
     """
     Retrieve the template name to display the
     search results from the request. It will
@@ -17,8 +17,9 @@ def get_result_template_from_user(request):
     parts of the results.
 
     :param request:          an HTTP request
+    :param search_type:      famille or prestataire
     """
-    return "search/results/anonymous.html"
+    return "search/results/%s.html" % search_type
 
 
 resource_pattern = re.compile("/api/v1/([a-z_-]+)s/([\d]+)/?")

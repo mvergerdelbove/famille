@@ -1,4 +1,6 @@
 var notifier = require("../notifier.js");
+var SignalUser = require("../signal.js");
+var RatingView = require("../profile/views/rating.js");
 
 var constructFilterForString = function(name, query, value){
     return name + "__" + query + "=" + value;
@@ -9,17 +11,31 @@ var constructFilter = function(name, query, value){
     if (_.isArray(value)) return _.map(value, _.partial(constructFilterForString, name, query)).join("&");
 };
 
-var constructLanguageFilter = function(name, value){
-    return _.map(value, function(val){
-        return constructFilterForString("level_" + val, "isnull", "False")
-    }).join("&");
-};
-
 var constructTarifFilter = function (name, value) {
     var min = value[0];
     var max = value[1];
     if(min !== max) {
         return "tarif__gte="+ min +"&tarif__lte=" + max;
+    }
+};
+
+
+var constructAgeFilter = function(name, value) {
+    var birhdayField = "birthday";
+    var today = new Date();
+    var birthDate;
+    switch(value) {
+        case "16-":
+            birthDate = new Date(today.setYear(today.getYear() - 16));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18-":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__gte="+ birthDate.toISOString().split('T')[0];
+        case "18+":
+            birthDate = new Date(today.setYear(today.getYear() - 18));
+            return birhdayField + "__lte="+ birthDate.toISOString().split('T')[0];
+        default:
+            return "";
     }
 };
 
@@ -34,16 +50,24 @@ module.exports = Backbone.View.extend({
         "onkeyup .form-search [type=text]": "doSearch",
         "slideStop #id_tarif": "doSearch",
         "click .form-search [data-distance]": "doDistanceSearch",
-        "change #search-sort": "doSearch"
+        "change #search-sort": "doSearch",
+        "change #id_age": "doSearch",
+        "click .contact-result": "checkRights",
+        "click .signal-result": "signalUser",
+        "click .rate-result": "rateUser",
     },
 
     initialize: function(options){
         this.resultTemplate = options.resultTemplate;
+        this.userPlan = options.userPlan;
         _.bindAll(this, "displayResults", "formatResult", "displayNext", "displayPrevious", "toggleFavorite");
         this.$distanceButton = this.$(".control-distance");
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
         this.$sortSelect = this.$("#search-sort");
+        if (!this.isAuthenticated()) {
+            this.disableForm();
+        }
     },
 
     buildQuery: function($els){
@@ -52,8 +76,8 @@ module.exports = Backbone.View.extend({
                 name = $this.attr("name"),
                 value = $this.val(),
                 query = $this.data("api");
+            if (value && name == "age") return constructAgeFilter(name, value);
             if (value && query) return constructFilter(name, query, value);
-            if (value && name == "language") return constructLanguageFilter(name, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });
         filters.push(this.getSortQuery());
@@ -111,14 +135,30 @@ module.exports = Backbone.View.extend({
     },
 
     displayResults: function(data){
-        var $container = this.$(".search-results");
+        var $container = this.$(".search-results"), $noResults = this.$(".no-results");
         $container.html("");
-        $container.append(_.map(data, this.formatResult));
-        this.displayPagination();
-        this.markFavoritedItems();
+        if (!data.length) {
+            $noResults.show();
+             this.views = [];
+        }
+        else {
+            $noResults.hide();
+            this.views = _.map(data, this.formatResult);
+            $container.append(_.map(this.views, function(view) {
+                return view.el;
+            }));
+            _.invoke(this.views, "initRating");
+            $("[data-toggle=popover]", $container).popover();
+            $("[data-toggle=tooltip]", $container).tooltip();
+            this.displayPagination();
+            this.markFavoritedItems();
+        }
     },
 
     displayPagination: function(){
+        var nbResults = famille.router.total;
+        this.$(".total-search-results").html(nbResults);
+        this.$(".plural-search-result").html(nbResults > 1 ? "s": "");
         if (!famille.router.next) this.$(".next").addClass("disabled");
         else this.$(".next").removeClass("disabled");
         if (!famille.router.previous) this.$(".previous").addClass("disabled");
@@ -126,17 +166,48 @@ module.exports = Backbone.View.extend({
     },
 
     formatResult: function(object){
-        var $el = $(this.resultTemplate);
-        $("[data-field]", $el).each(function(){
-            var $this = $(this),
-            field = $this.data("field");
-            $this.html(object[field]);
+        return new ResultView({
+            el: object.template,
+            data: object
         });
-        return $el;
     },
 
     error: function(jqXHR){
         notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
+    },
+
+    disableForm: function () {
+        var postalCode = this.$(".form-control[name=pc]")[0];
+        this.$("#id_tarif").slider('disable');
+        this.attachDisabledPopover(this.$(".slider-disabled"));
+        _.each(this.$(".form-control,[type=checkbox]", ".form-search"), function (el) {
+            if (el === postalCode) return;
+
+            var $el = $(el);
+            if (el.tagName == "SELECT") {
+                $el.select2("readonly", true);
+            }
+            else {
+                $el.prop("disabled", "disabled");
+            }
+            this.attachDisabledPopover($el);
+        }, this);
+    },
+    /**
+     * Attach the popover to the elements that are disabled.
+     * in order to notify the user that he can create an account.
+     */
+    attachDisabledPopover: function ($el) {
+        $el.attr("data-toggle", "popover");
+        if ($el.attr("type") === "checkbox") {
+            $el = $el.parent();
+        }
+        $el.popover({
+            placement: "bottom",
+            trigger: "click",
+            title: "Fonctionalité indisponible",
+            content: "Créez un compte pour pouvoir l'utiliser :-)"
+        });
     },
 
     /****************************************/
@@ -165,19 +236,19 @@ module.exports = Backbone.View.extend({
         if (!this.isAuthenticated()) return;
         var self = this;
         _.each(famille.userData.favorites, function(uri){
-            self.$(".one-search-result:contains("+ uri +") .favorite")
-            .addClass("glyphicon-star")
-            .removeClass("glyphicon-star-empty");
+            self.$(".one-search-result:contains("+ uri +") .favorite .glyphicon")
+            .addClass("favorited");
         });
     },
 
     toggleFavorite: function(e){
         if (!this.isAuthenticated()) return;
         var $target = $(e.target),
-        resource_uri = $("[data-field=resource_uri]", $target.parents(".panel-heading")).html(),
-        action = ($target.hasClass("glyphicon-star-empty")) ? "add": "remove";
+        $star = $(".glyphicon", $target),
+        resource_uri = $("[data-field=resource_uri]", $target.parents(".one-search-result")).html(),
+        action = ($star.hasClass("favorited")) ? "remove": "add";
 
-        $target.toggleClass("glyphicon-star").toggleClass("glyphicon-star-empty");
+        $star.toggleClass("favorited");
         if (action == "add") famille.userData.favorites.push(resource_uri);
         else famille.userData.favorites = _.without(famille.userData.favorites, resource_uri);
 
@@ -191,10 +262,80 @@ module.exports = Backbone.View.extend({
     },
 
     isAuthenticated: function(){
-        return (this.$("[data-authenticated]").length == 1);
+        return window._auth;
     },
 
     switchSearch: function(e){
         famille.router.switchSearch($(e.target).data("search"));
+    },
+
+    /****************************************/
+    /*************   Actions   **************/
+    /****************************************/
+
+    initResultViews: function(objects) {
+        this.views = _.map($(".one-search-result-outer"), function (el) {
+            var resource_uri = $(el).find('[data-field=resource_uri]').text();
+            var data = {
+                resource_uri: resource_uri,
+                id: resource_uri.split("/")[4]
+            };
+            return new ResultView({
+                el: el,
+                data: data
+            });
+        });
+        _.invoke(this.views, "initRating");
+    },
+
+    /**
+     * Verify that the user as the right to perform actions
+     */
+    checkRights: function (e) {
+        if (this.userPlan !== "premium") {
+            var $target = $(e.target);
+            e.preventDefault();
+            e.stopPropagation();
+            $target.popover("show");
+            return false;
+        }
+        return true;
+    },
+
+    rateUser: function (e) {
+        this.checkRights(e);
+    }
+});
+
+var ResultView = Backbone.View.extend({
+    events: {
+        "click .confirm-signal": "signalUser"
+    },
+
+    initialize: function (options) {
+        this.data = options.data;
+        this.userType = (this.data.resource_uri.indexOf("prestataires") === -1) ? "famille" : "prestataire";
+    },
+
+    initRating: function () {
+        var $formEl = $(".rating-form"), self = this;
+        this.$(".popover-rating").attr("data-content", $formEl.html());
+        this.$(".popover-rating").popover().on("shown.bs.popover", function () {
+            self.ratingView = new RatingView({
+                $el: self.$(".popover-rating-container-"+ self.data.id +" .form-rating"),
+                userType: self.userType,
+                pk: self.data.id,
+                popover: self.$(".popover-rating")
+            });
+        });
+    },
+
+    signalUser: function () {
+        var reason = this.$("input[name=reason]:checked").val();
+        SignalUser({
+            reason: reason,
+            userType: this.userType,
+            pk: this.data.id
+        });
     }
 });

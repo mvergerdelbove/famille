@@ -12,11 +12,13 @@
     <meta charset="utf-8"></meta>
     <meta><!-- TODO keywords --></meta>
     {% block extrahead %}{% endblock %}
-    <title>{{ site_title }}{% block title %}{% endblock %}</title>
+    <title>Une vie de famille - {% block title %}{% endblock %}</title>
 </head>
 
 <body class="{% block body-class %}{% endblock %}" {% block bodyattrs %}{% endblock %}>
   {% block navigation %}
+  <img id="logo-home" class="visible-lg" src="{% static "img/confiance_proximite.png" %}" width="11%">
+
   <nav class="navbar navbar-default" role="navigation">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -25,7 +27,7 @@
 	<span class="icon-bar"></span>
 	<span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">{{ site_title }}</a>
+      <a class="navbar-brand" href="/">Une vie de famille</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -34,7 +36,7 @@
           <li><a href="{% url 'search' %}">Rechercher</a></li>
           {% if request.user|user_type != "Prestataire" %}
           <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <a href="#" class="dropdown-toggle text-green" data-toggle="dropdown">
                   Espace Famille <b class="caret"></b>
               </a>
               {% url 'espace_famille' as famille %}
@@ -49,7 +51,7 @@
           {% endif %}
           {% if request.user|user_type != "Famille" %}
 	      <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <a href="#" class="dropdown-toggle text-blue" data-toggle="dropdown">
                   Espace Prestataire<b class="caret"></b>
               </a>
               {% url 'espace_prestataire' as prestataire %}

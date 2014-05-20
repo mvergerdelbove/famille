@@ -1,0 +1,17 @@
+{% extends "email/base.html" %}
+
+{% load helpers %}
+
+{% block title %}
+Un utilisateur a été signalé
+{% endblock %}
+
+{% block content %}
+<div>
+    <ul>
+        <li>Signaleur : {{ user.first_name }} {{ user.name }} ({{ user.email }}, id={{ user.pk }}), {{ user|class_name }}</li>
+        <li>Personne signalée : {{ user_to_signal.first_name }} {{ user_to_signal.name }} ({{ user_to_signal.email }}, id={{ user_to_signal.pk }}), {{ user_to_signal|class_name }}</li>
+        <li>Raison : {{ reason }}</li>
+    </ul>
+</div>
+{% endblock %}

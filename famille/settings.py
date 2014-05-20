@@ -35,7 +35,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'djrill',
-    'ajax_select',
     'bootstrap3',
     'south',
     'localflavor',
@@ -46,6 +45,7 @@ INSTALLED_APPS = (
     'storages',
     'tastypie',
     'tinymce',
+    'verification',
     'social.apps.django_app.default',
     'famille',
 )
@@ -142,6 +142,9 @@ for key in os.environ:
 
 NB_SEARCH_RESULTS = 5
 POSTAL_CODE_DISTANCE = 20.0
+CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
+NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
+ALLOW_BASIC_PLAN_IN_SEARCH = False
 
 ################################################################################
 #                         Plugins settings                                     #
@@ -161,11 +164,11 @@ TINYMCE_COMPRESSOR = True
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/mon-compte/"
 
 # paypal
-PAYPAL_RECEIVER_EMAIL = "contact.uneviedefamille@gmail.com"
-PREMIUM_ID = "9b1818-a28819"
-PREMIUM_PRICE = "10.00"
+PAYPAL_RECEIVER_EMAIL = CONTACT_EMAIL
 PAYPAL_SUBSCRIPTION_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
 PAYPAL_SUBSCRIPTION_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_subscribeCC_LG.gif"
+PAYPAL_IMAGE = "https://www.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"
+PAYPAL_SANDBOX_IMAGE = "https://www.sandbox.paypal.com/fr_FR/i/btn/btn_buynowCC_LG.gif"
 
 # postman
 def get_user_pseudo_safely(user):
@@ -176,17 +179,12 @@ def get_user_pseudo_safely(user):
     from famille.models import get_user_pseudo  # importing here to not fail
     return get_user_pseudo(user)
 
-POSTMAN_DISALLOW_ANONYMOUS = True
-POSTMAN_DISALLOW_MULTIRECIPIENTS = True  # for now...
-POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
-POSTMAN_AUTOCOMPLETER_APP = {
-    'arg_default': 'postman_users',
-}
 
-# ajax_select
-AJAX_LOOKUP_CHANNELS = {
-    'postman_users': ("famille.utils.lookup", "PostmanUserLookup"),
-}
+POSTMAN_DISALLOW_ANONYMOUS = True
+POSTMAN_DISALLOW_MULTIRECIPIENTS = False
+POSTMAN_SHOW_USER_AS = get_user_pseudo_safely
+POSTMAN_DISABLE_USER_EMAILING = False
+POSTMAN_NOTIFIER_APP = None
 
 # Support for X-Request-ID
 # https://devcenter.heroku.com/articles/http-request-id-staging

@@ -8,11 +8,11 @@ from localflavor.fr.forms import FRPhoneNumberField
 from famille.models import (
     Famille, Prestataire, Enfant, FamillePlanning,
     Reference, PrestatairePlanning, UserInfo, FamilleRatings,
-    PrestataireRatings
+    PrestataireRatings, Criteria
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.models.utils import email_is_unique
-from famille.utils.fields import RangeField, LazyMultipleChoiceField
+from famille.utils.fields import RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
@@ -37,18 +37,18 @@ class RegistrationForm(forms.Form):
 
         return not user_exists
 
-    def save(self):
+    def save(self, request):
         # Create user
         dj_user = User.objects.create_user(
             self.cleaned_data["email"],
             self.cleaned_data["email"],
             self.cleaned_data["password"]
         )
+        dj_user.is_active = False
+        dj_user.save()
         # Create famille / prestataire and link to user
-        UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
-
-        # TODO: Send mail to verify user
-        pass
+        user = UserInfo.create_user(dj_user=dj_user, type=self.data["type"])
+        user.send_verification_email(request)
 
 
 class UserForm(forms.ModelForm):
@@ -188,28 +188,48 @@ class FamilleForm(ForeignKeyForm, UserForm):
 
     class Meta(UserForm.Meta):
         model = Famille
-        fields = UserForm.Meta.fields + ('type', )
-        labels = dict(UserForm.Meta.labels, type="Type de famille")
+        fields = UserForm.Meta.fields + ('type', 'description')
+        labels = dict(UserForm.Meta.labels, type="Type de famille", description=u"Un peu plus de détails")
+        widgets = {
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": u"Profitez de cet espace pour en dire plus sur votre famille"
+                }
+            )
+        }
 
 
+LANGUAGES = {
+    "1": "Anglais",
+    "2": "Allemand",
+    "3": "Espagnol",
+    "4": "Italien",
+    "5": "Russe",
+    "6": "Arabe",
+    "5": "Chinois",
+    "8": "Portugais",
+}
 class CriteriaForm(forms.ModelForm):
+    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items())
+
     class Meta:
         labels = {
-            "type_garde": "Type de garde",
             "tarif": u"Tarif horaire (€/h)",
-            "diploma": u"Diplôme souhaité",
+            "diploma": u"Diplômes/Formations garde d’enfants",
             "menage": u"Ménage",
             "repassage": "Repassage",
-            "cdt_periscolaire": u"Conduite périscolaire",
-            "sortie_ecole": u"Sortie d'école",
-            "nuit": "Garde de nuit",
             "non_fumeur": "Non-fumeur",
-            "devoirs": "Aide devoirs",
-            "urgence": "Garde d'urgence",
+            "devoirs": "Aide aux devoirs",
             "psc1": "Premiers secours",
             "permis": "Permis voiture",
-            "baby": u"Expérience avec bébés",
-            "description": u"Plus de détails"
+            "description": u"Plus de détails",
+            "language": u"Langues étrangères",
+            "experience_type": u"Type d’expérience",
+            "experience_year": u"Nombre d’années d’experiences",
+            "studies": u"Niveau d'étude",
+            "enfant_malade": u"Garde d'enfant malade",
+            "cuisine": "Cuisine",
+            "animaux": "Prends soin des animaux"
         }
         fields = labels.keys()
         widgets = {
@@ -234,7 +254,7 @@ class FamilleCriteriaForm(CriteriaForm):
         model = Famille
         labels = dict(
             CriteriaForm.Meta.labels, type_presta="Type de prestataire",
-            langue=u"Langue étrangère"
+            type_garde="Type de garde"
         )
         fields = labels.keys()
 
@@ -242,12 +262,14 @@ class FamilleCriteriaForm(CriteriaForm):
 class PrestataireForm(UserForm):
     class Meta(UserForm.Meta):
         model = Prestataire
-        fields = UserForm.Meta.fields + ("type", "other_type", "birthday")
+        fields = UserForm.Meta.fields + ("type", "birthday", "other_type", "nationality", "type_garde")
         labels = dict(
             UserForm.Meta.labels,
-            type="Type de prestataire",
-            other_type=u"Précisez...",
-            birthday=u"Date de naissance"
+            type=u"Vous êtes...",
+            other_type="Autre",
+            nationality=u"Nationalité",
+            birthday=u"Date de naissance",
+            type_garde=u"Type de garde"
         )
         widgets = {
             "birthday": forms.DateInput(
@@ -260,15 +282,20 @@ class PrestataireForm(UserForm):
 class PrestataireCompetenceForm(CriteriaForm):
     class Meta(CriteriaForm.Meta):
         model = Prestataire
-        fields = CriteriaForm.Meta.fields + [
-            "level_en", "level_de", "level_es", "level_it", "other_language", "resume",
-            "restrictions"
-        ]
         labels = dict(
-            CriteriaForm.Meta.labels, diploma=u"Diplôme", level_en="Anglais",
-            level_de="Allemand", level_es="Espagnol", level_it="Italien",
-            other_language="Autre langue", resume="Joindre un CV", restrictions="Mes restrictions"
+            CriteriaForm.Meta.labels, diploma=u"Diplôme",
+            resume="Joindre un CV", restrictions="Mes restrictions (assistant(e) maternel(le))",
+            description="Annonce"
         )
+        fields = labels.keys()
+        widgets = {
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": (u"Profitez de cet espace pour donner des "
+                                    u"informations complémentaires sur vous !")
+                }
+            )
+        }
 
 
 class ReferenceForm(forms.ModelForm):
@@ -368,7 +395,7 @@ class SimpleSearchForm(forms.Form):
 
 
 class BaseSearchForm(forms.Form):
-    # classic
+    # BOX 1
     pc = forms.CharField(
         label="Ville ou code postal", required=False,
         widget=forms.TextInput(attrs={"data-api": "iexact"})
@@ -378,7 +405,7 @@ class BaseSearchForm(forms.Form):
     )
     tarif = RangeField(
         label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=5, max_value=100, attrs={"class": "form-control"})
+        widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
     )
     # planning
     plannings__schedule__id = LazyMultipleChoiceField(
@@ -393,42 +420,77 @@ class BaseSearchForm(forms.Form):
         label=u"A quelle fréquence ?", choices=BasePlanning.FREQUENCY.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    # FIXME: "a partir de ?" needed ?
+    type = forms.MultipleChoiceField(
+        label="Type de prestataire", choices=Prestataire.TYPES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    type_garde = forms.MultipleChoiceField(
+        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
 
 
 class PrestataireSearchForm(BaseSearchForm):
+    search_blocks = [
+        {
+            "key": "details",
+            "label": u"Préciser mes besoins",
+            "fields": ["nationality", "age", "language"],
+        },
+        {
+            "key": "expertise",
+            "label": u"Expertises recherchées",
+            "fields": ["studies", "diploma", "experience_type", "experience_year"],
+        },
+        {
+            "key": "plus",
+            "label": u"Les petits + recherchés",
+            "fields": [
+                "enfant_malade", "menage", "repassage", "cuisine", "devoirs",
+                "animaux", "permis", "voiture", "psc1", "non_fumeur"
+            ]
+        }
+    ]
+
     ordering_dict = {
         "-updated_at": u"Le plus récent",
          "tarif": u"Le mieux noté",
          "geolocation": "Le moins cher",
          "-rating": "Le plus proche"
     }
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE.items(), required=False,
+    # BOX 2
+    nationality = forms.CharField(
+        label=u"Nationalité", required=False,
+        widget=forms.TextInput(attrs={"data-api": "iexact"})
+    )
+    age = forms.TypedChoiceField(
+        label=u"Age", choices=Prestataire.AGES.items() + [('', '---------')], required=False,
+        widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
+    )
+    language = forms.MultipleChoiceField(
+        label=u"Langue(s) parlée(s)", choices=LANGUAGES.items(), required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    )
+    # BOX 3
+    studies = forms.MultipleChoiceField(
+        label=u"Niveau d'études", choices=Criteria.STUDIES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     diploma = forms.MultipleChoiceField(
-        label=u"Diplôme", choices=Prestataire.DIPLOMA.items(), required=False,
+        label=u"Diplômes liés à la garde d'enfant", choices=Prestataire.DIPLOMA.items(), required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    language = forms.MultipleChoiceField(
-        label=u"Langue(s) parlée(s)", choices=Prestataire.LANGUAGES.items(), required=False
+    experience_type = forms.MultipleChoiceField(
+        label=u"Type d'expérience", choices=Criteria.EXP_TYPES, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    # extra 1
-    cdt_periscolaire = forms.BooleanField(
-        label=u"Conduite périscolaire", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    experience_year = forms.MultipleChoiceField(
+        label=u"Années d'expérience", choices=Criteria.EXP_YEARS, required=False,
+        widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    sortie_ecole = forms.BooleanField(
-        label=u"Sortie d'école", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    baby = forms.BooleanField(
-        label=u"Expérience avec bébés", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    devoirs = forms.BooleanField(
-        label=u"Aide devoirs", required=False,
+    # BOX 4
+    enfant_malade = forms.BooleanField(
+        label=u"Garde d'enfants malades", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
     menage = forms.BooleanField(
@@ -439,7 +501,18 @@ class PrestataireSearchForm(BaseSearchForm):
         label=u"Repassage", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
-    # extra 2
+    cuisine = forms.BooleanField(
+        label=u"Cuisine", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    devoirs = forms.BooleanField(
+        label=u"Aide devoirs", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
+    animaux = forms.BooleanField(
+        label=u"Prends soin des animaux", required=False,
+        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    )
     psc1 = forms.BooleanField(
         label=u"Premiers secours", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
@@ -448,12 +521,8 @@ class PrestataireSearchForm(BaseSearchForm):
         label=u"Permis voiture", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
-    urgence = forms.BooleanField(
-        label=u"Garde d'urgence", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
-    )
-    nuit = forms.BooleanField(
-        label=u"Garde de nuit", required=False,
+    voiture = forms.BooleanField(
+        label=u"Possède une voiture", required=False,
         widget=forms.CheckboxInput(attrs={"data-api": "exact"})
     )
     non_fumeur = forms.BooleanField(
@@ -463,26 +532,23 @@ class PrestataireSearchForm(BaseSearchForm):
 
 
 class FamilleSearchForm(BaseSearchForm):
+    search_blocks = []
     ordering_dict = {
         "-updated_at": u"Le plus récent",
          "geolocation": "Le plus proche",
          "-rating": u"Le mieux noté"
     }
-    enfants__school = forms.CharField(
-        label=u"Ecole des enfants", required=False,
-        widget=forms.TextInput(attrs={"data-api": "iexact"})
-    )
-    type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Famille.TYPES_GARDE_FAMILLE.items(), required=False,
+    type_attente_famille = forms.MultipleChoiceField(
+        label=u"Type d'attentes", required=False, choices=Famille.TYPE_ATTENTES_FAMILLE,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
-    cdt_periscolaire = forms.BooleanField(
-        label=u"Conduite périscolaire", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    enfants__school = forms.CharField(
+        label=u"Ecole des enfants", required=False,
+        widget=forms.TextInput(attrs={"data-api": "icontains"})
     )
-    sortie_ecole = forms.BooleanField(
-        label=u"Sortie d'école", required=False,
-        widget=forms.CheckboxInput(attrs={"data-api": "exact"})
+    n_enfants = forms.IntegerField(
+        label=u"Nombre d'enfants", required=False,
+        widget=forms.NumberInput(attrs={"data-api": "length"})
     )
 
 
@@ -538,9 +604,18 @@ class AdvancedForm(forms.ModelForm):
 
     class Meta:
         labels = {
-            "visibility_family": u"Visible auprès des familles",
-            "visibility_prestataire": u"Visible auprès des prestataires",
-            "visibility_global": u"Visible globalement sur le site",
+            "visibility_family": (
+                u"Je ne souhaite pas être visible (divulguer mes "
+                u"informations) auprès des familles inscrites sur le site."
+            ),
+            "visibility_prestataire": (
+                u"Je ne souhaite pas être visible (divulguer mes "
+                u"informations) auprès  des prestataires de garde d’enfants inscrits sur le site."
+            ),
+            "visibility_global": (
+                u"Je ne souhaite plus être visible sur le site pour le moment, "
+                u"car j’ai trouvé ce que je recherchais."
+            ),
             "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
@@ -560,4 +635,7 @@ class PrestataireAdvancedForm(AdvancedForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     error_messages = AuthenticationForm.error_messages
-    error_messages["inactive"] = u"Ce compte est inactif. Veuillez nous contacter pour le réactiver"
+    error_messages["inactive"] = (
+        u"Ce compte est inactif. Vous devez avoir reçu un "
+        u"email d'activation. Dans le cas contraire, veuillez nous contacter"
+    )
