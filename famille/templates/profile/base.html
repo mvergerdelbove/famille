@@ -39,6 +39,45 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock1 %}
+            {% endblock %}  <!-- infos générales -->
+            <h5>Planning</h5>
+            <ul>
+                {% for planning in profile.planning.all %}
+                <li>{{ planning.display }}</li>
+                {% empty %}
+                <li>Cet utilisateur n'a pas de préférence de planning.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock2 %}{% endblock %}  <!-- enfants -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock3 %}{% endblock %}  <!-- mes besoins -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock4 %}{% endblock %}  <!-- petits plus -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock5 %}{% endblock %}  <!-- annonce -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            {% block contentBlock6 %}{% endblock %}  <!-- references -->
+        </div>
+    </div>
 </div>
 {% endblock %}
 

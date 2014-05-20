@@ -1,14 +1,26 @@
 {% extends "profile/base.html" %}
 
-
 {% block subtitle %}
     <h2>
     {% if profile.get_age %}
-      {{profile.get_age }} ans
+      {{ profile.get_age }} ans
     {% endif %}
     <small>
-      {{profile.get_type }}
+      {{ profile.get_type.upper }}
     </small>
     </h2>
+{% endblock %}
 
-{% endblock subtitle %}
+{% block contentBlock1 %}  <!-- infos générales -->
+    <h5>Informations générales</h5>
+    <div class="form-group">
+        <p>Type de garde: {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+    </div>
+    <div class="form-group">
+        <p>Tarif: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+    </div>
+{% endblock %}
+{% block contentBlock3 %}{% endblock %}  <!-- mes compétences -->
+{% block contentBlock4 %}{% endblock %}  <!-- petits plus -->
+{% block contentBlock5 %}{% endblock %}  <!-- annonce -->
+{% block contentBlock6 %}{% endblock %}  <!-- references -->

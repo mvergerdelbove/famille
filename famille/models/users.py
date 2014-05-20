@@ -18,7 +18,7 @@ from famille.utils import (
     fields as extra_fields, payment
 )
 from famille.utils.mail import send_mail_from_template_with_noreply
-from famille.utils.python import pick
+from famille.utils.python import pick, get_age_from_date
 
 
 __all__ = [
@@ -511,11 +511,7 @@ class Prestataire(Criteria):
         app_label = 'famille'
 
     def get_age(self):
-        today = date.today()
-        born = self.birthday
-        if not born:
-            return None
-        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+        return get_age_from_date(self.birthday)
 
     def get_type(self):
         """
@@ -560,6 +556,7 @@ class Enfant(BaseModel):
     """
     An child of a Famille.
     """
+
     famille = models.ForeignKey(Famille, related_name="enfants")
     # compelled to do this naming because we cannot change the form field names...
     e_name = models.CharField(max_length=20, db_column="name")
@@ -568,6 +565,19 @@ class Enfant(BaseModel):
 
     class Meta:
         app_label = 'famille'
+
+    @property
+    def display(self):
+        """
+        Display of the enfant.
+        """
+        disp = self.e_name
+        if self.e_birthday:
+            disp += u", %s ans" % get_age_from_date(self.e_birthday)
+        if self.e_school:
+            disp += u", scolarisé à %s" % self.e_school
+
+        return disp
 
 
 class BaseFavorite(BaseModel):

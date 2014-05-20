@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 from datetime import datetime
 
 from django.db import models
@@ -51,6 +52,7 @@ class BasePlanning(BaseModel):
     """
     A planning entry.
     """
+    DISPLAY_TPL = u"Les %s, %s à partir du %s"
     FREQUENCY = {
         "ponct": "Ponctuel",
         "hebdo": "Toutes les semaines",
@@ -63,6 +65,16 @@ class BasePlanning(BaseModel):
 
     class Meta:
         abstract = True
+
+    @property
+    def display(self):
+        """
+        Display the planning as a whole sentence.
+        """
+        days = u", ".join(day.name for day in self.weekday.all())
+        freq = self.get_frequency_display().lower() if self.frequency == "hebdo" else u"ponctuellement"
+        date = self.start_date.strftime("%d/%m/%Y")
+        return self.DISPLAY_TPL % (days, freq, date)
 
 
 class FamillePlanning(BasePlanning):
