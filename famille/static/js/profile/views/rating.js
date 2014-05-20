@@ -30,12 +30,7 @@ module.exports = Backbone.View.extend({
             rate: this.getData()
         }).done(function () {
             self.popover.popover("hide");
-            if (!self.popover.hasClass("popover-rating-search")) {
-                self.popover.remove();
-            }
-            else {
-                self.popover.addClass("disabled");
-            }
+            self.popover.addClass("disabled");
         });
     },
 

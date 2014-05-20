@@ -1,0 +1,46 @@
+<button class="btn btn-color btn-brown-min btn-block signal-result" data-toggle="modal"
+        data-target="#signal-{{ profile.pk }}">
+    <span class="glyphicon glyphicon-bell"></span> Signaler
+</button>
+<div class="modal fade" id="signal-{{ profile.pk }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">Signaler un utilisateur</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="reason" value="Profil non à jour" checked>
+                            Profil non à jour
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="reason" value="Informations erronées, fausses">
+                            Informations erronées, fausses
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="reason" value="Non respect des CGV">
+                            Non respect de la Charte de bonne conduite <em>Une vie de famille</em>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-primary confirm-signal" data-dismiss="modal">
+                    Confirmer
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

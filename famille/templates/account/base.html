@@ -27,6 +27,14 @@
         <div class="tab-content margin-top-1">
             <div class="tab-pane fade in active" id="compte">
                 <div class="panel-group" id="accordion">
+                    <p>
+                        Pour voir à quoi ressemble votre profil,
+                        <a class="btn btn-success"
+                           href="{% url 'profile' profil.instance|class_name|lower profil.instance.pk %}"
+                           target="_blank">
+                            Cliquez ici
+                        </a>
+                    </p>
                     {% block compte_extra %}{% endblock %}
                     <div class="panel panel-default favorite-panel">
                         <div class="panel-heading">
@@ -107,7 +115,7 @@
                 <div id="profile-pic-container" class="row">
                     <div class="col-md-2">
                         <a href="#" class="thumbnail profile-pic">
-                            {% if profil.instance.profile_pic %}
+                            {% if .profile_pic %}
                                 <img src="{% get_media_prefix %}{{ profil.instance.profile_pic.name }}"
                                      alt="Photo de profil">
                             {% else %}

@@ -138,7 +138,7 @@
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
-                                     data-original-title="J'aide vos enfants dans leur devoirs'">
+                                     data-original-title="J'aide vos enfants dans leur devoirs">
                                     <img class=none"" src="{% static result|badge_icon:'devoirs' %}" width="90%;">
                                 </div>
                             </div>
@@ -182,54 +182,7 @@
                     </div>
                     <div class="row margin-top-little">
                         {% if user|plan == "premium" %}
-                        <button class="btn btn-color btn-brown-min btn-block signal-result"
-                                data-toggle="modal"
-                                data-target="#signal-{{ result.pk }}">
-                            <span class="glyphicon glyphicon-bell"></span> Signaler
-                        </button>
-                        <div class="modal fade" id="signal-{{ result.pk }}">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                            &times;
-                                        </button>
-                                        <h4 class="modal-title">Signaler un utilisateur</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form class="form">
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="reason" value="r1" checked>
-                                                    Raison 1
-                                                </label>
-                                            </div>
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="reason" value="r2">
-                                                    Raison 2
-                                                </label>
-                                            </div>
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="reason" value="r3">
-                                                    Raison 3
-                                                </label>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                            Annuler
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-primary confirm-signal" data-dismiss="modal">
-                                            Confirmer
-                                        </button>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                            {% include 'helpers/signal_modal.html' with profile=result only %}
                         {% else %}
                         <button class="btn btn-color btn-brown-min btn-block signal-result"
                                 data-toggle="popover" data-trigger="manual" data-title="Fonctionalité indisponible"
