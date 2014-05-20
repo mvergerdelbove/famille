@@ -62,17 +62,6 @@ module.exports = Backbone.Router.extend({
         callback(data.objects);
     },
 
-    toggleFavorite: function(options){
-        options.success = options.success || $.noop;
-        options.error = options.error || $.noop;
-        _.extend(options, {
-            url: this.serverRoutes.toggleFavorite,
-            type: "post",
-            headers: {'X-CSRFToken': $.cookie('csrftoken')}
-        });
-        $.ajax(options);
-    },
-
     switchSearch: function(searchType){
         var url = window.location.origin + window.location.pathname + "?type=" + searchType;
         window.location.href = url;
