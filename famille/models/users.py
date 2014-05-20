@@ -644,6 +644,27 @@ class Reference(BaseModel):
     class Meta:
         app_label = 'famille'
 
+    def get_famille_display(self):
+        """
+        Retrieve the famille, depending on reference type
+        """
+        if not self.referenced_user:
+            return self.name
+        return u"de %s (utilise notre site)" % self.referenced_user.get_pseudo()
+
+    def get_dates_display(self):
+        """
+        Retrieve the dates of the reference for display.
+        """
+        if not self.date_from or not self.current or not self.date_to:
+            return ""
+
+        date_from = self.date_from.strftime("%d/%m/%Y")
+        date_to = u"aujourd'hui" if self.current else self.date_to.strftime("%d/%m/%Y")
+
+        return u"Du %s à %s" % (date_from, date_to)
+
+
 # consts
 USER_CLASSES = {
     "Famille": Famille,

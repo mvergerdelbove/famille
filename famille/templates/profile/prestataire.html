@@ -27,4 +27,20 @@
 
 {% block block5Title %}Plus de détails sur moi{% endblock %}
 
-{% block contentBlock6 %}{% endblock %}  <!-- references -->
+{% block contentBlock6 %}  <!-- references -->
+<h5>Mes références</h5>
+{% for reference in profile.references.all %}
+<div class="row">
+    <div class="col-md-8">
+        <h5>Avec la famille {{ reference.get_famille_display }} <small>{{ reference.get_dates_display }}</small></h5>
+        {% if reference.garde != "Autre" %}
+        <p>Garde de type {{ reference.get_garde_display }}</p>
+        {% endif %}
+        <p>Mission(s) éffectuée(s):</p>
+        <p>{{ reference.missions }}</p>
+    </div>
+</div>
+{% empty %}
+<p>Cette utilisateur n'a pas encore rempli ses références.</p>
+{% endfor %}
+{% endblock %}
