@@ -1,0 +1,49 @@
+{% extends "profile/base.html" %}
+
+{% block subtitle %}
+{% with nb_enfants=profile.enfants.all.count %}
+{% if nb_enfants %}
+<h2>
+    {{ nb_enfants }} enfant{% if nb_enfants > 1%}s{% endif %}
+</h2>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+{% block contentBlock1 %}  <!-- infos générales -->
+    <h5>Attentes générales</h5>
+    <div class="form-group">
+        <p>
+        Type de prestataire: {% if profile.type_presta %}{{ profile.get_type_presta_display }}{% else %}--{% endif %}
+        </p>
+    </div>
+    <div class="form-group">
+        <p>Type de garde: {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+    </div>
+    <div class="form-group">
+        <p>Tarif souhaité: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+    </div>
+{% endblock %}
+
+{% block contentBlock2 %}  <!-- enfants -->
+{% with nb_enfants=profile.enfants.all.count %}
+{% if nb_enfants %}
+    <h5>Les enfants</h5>
+    <ul>
+        {% for enfant in profile.enfants.all %}
+        <li>{{ enfant.display }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+{% block block3Title %}Mes besoins{% endblock %}
+
+{% block block4Title %}Les p'tits plus recherchés{% endblock %}
+
+{% block block5Title %}Plus de détails sur notre famille{% endblock %}
+
+{% block extra %}
+<span data-field="resource_uri" class="hidden">/api/v1/familles/{{ profile.pk }}/</span>
+{% endblock %}

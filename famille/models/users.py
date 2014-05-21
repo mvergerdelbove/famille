@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-from datetime import datetime
+from datetime import date
 import logging
 
 from django.contrib.auth.models import User
@@ -18,7 +18,7 @@ from famille.utils import (
     fields as extra_fields, payment
 )
 from famille.utils.mail import send_mail_from_template_with_noreply
-from famille.utils.python import pick
+from famille.utils.python import pick, get_age_from_date
 
 
 __all__ = [
@@ -412,12 +412,6 @@ class Criteria(UserInfo):
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
         "bafa": u"Bafa",
     }
-    LANGUAGES = {
-        "en": "Anglais",
-        "de": "Allemand",
-        "es": "Espagnol",
-        "it": "Italien",
-    }
     STUDIES = (
         ("brevet", u"Brevet"),
         ("bac", u"Bac"),
@@ -476,12 +470,6 @@ class Prestataire(Criteria):
         ("pair", "Au pair"),
         ("other", "Autre"),
     )
-    LEVEL_LANGUAGES = {
-        "deb": u"Débutant",
-        "mid": u"Intermédiaire",
-        "pro": u"Maîtrisé",
-        "bil": "Bilingue"
-    }
     RESTRICTIONS = {
         "bebe": u"Bébé (0 à 1 an)",
         "jeune": u"Jeunes enfants (1 à 3 ans)",
@@ -509,6 +497,9 @@ class Prestataire(Criteria):
 
     class Meta:
         app_label = 'famille'
+
+    def get_age(self):
+        return get_age_from_date(self.birthday)
 
     def get_type(self):
         """
@@ -553,6 +544,7 @@ class Enfant(BaseModel):
     """
     An child of a Famille.
     """
+
     famille = models.ForeignKey(Famille, related_name="enfants")
     # compelled to do this naming because we cannot change the form field names...
     e_name = models.CharField(max_length=20, db_column="name")
@@ -561,6 +553,19 @@ class Enfant(BaseModel):
 
     class Meta:
         app_label = 'famille'
+
+    @property
+    def display(self):
+        """
+        Display of the enfant.
+        """
+        disp = self.e_name
+        if self.e_birthday:
+            disp += u", %s ans" % get_age_from_date(self.e_birthday)
+        if self.e_school:
+            disp += u", scolarisé à %s" % self.e_school
+
+        return disp
 
 
 class BaseFavorite(BaseModel):
@@ -638,6 +643,27 @@ class Reference(BaseModel):
 
     class Meta:
         app_label = 'famille'
+
+    def get_famille_display(self):
+        """
+        Retrieve the famille, depending on reference type
+        """
+        if not self.referenced_user:
+            return self.name
+        return u"de %s (utilise notre site)" % self.referenced_user.get_pseudo()
+
+    def get_dates_display(self):
+        """
+        Retrieve the dates of the reference for display.
+        """
+        if not self.date_from or not (self.current or self.date_to):
+            return ""
+
+        date_from = self.date_from.strftime("%d/%m/%Y")
+        date_to = u"à aujourd'hui" if self.current else "au %s" % self.date_to.strftime("%d/%m/%Y")
+
+        return u"Du %s %s" % (date_from, date_to)
+
 
 # consts
 USER_CLASSES = {

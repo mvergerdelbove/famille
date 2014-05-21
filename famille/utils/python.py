@@ -78,3 +78,13 @@ def generate_timestamp():
     Generate a timestamp. Useful for FileField's upload_to parameter.
     """
     return int(time.time())
+
+
+def get_age_from_date(born):
+    """
+    Return the age from a date.
+    """
+    today = datetime.date.today()
+    if not born:
+        return None
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))

@@ -1,3 +1,5 @@
+# -*- coding=utf-8 -*-
+from datetime import datetime, timedelta
 import types
 
 from django.conf import settings
@@ -11,7 +13,7 @@ from paypal.standard.ipn.models import PayPalIPN
 from verification.models import KeyGroup, Key
 
 from famille import models, errors
-from famille.models import utils
+from famille.models import utils, planning
 from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
 from famille.utils import payment
 
@@ -256,6 +258,26 @@ class ModelsTestCase(TestCase):
         presta = User.objects.get(pk=self.presta.user.pk)
         self.assertTrue(self.presta.user.is_active)
 
+    def test_enfant_display_only_name(self):
+        e = models.Enfant(e_name="John")
+        self.assertEqual(e.display, "John")
+
+    def test_enfant_display_no_birthday(self):
+        e = models.Enfant(e_name="John", e_school="Best school in the World")
+        self.assertEqual(e.display, u"John, scolarisé à Best school in the World")
+
+    def test_enfant_display_no_school(self):
+        today = datetime.now()
+        bday = today - timedelta(days=360*10)
+        e = models.Enfant(e_name="John", e_birthday=bday)
+        self.assertEqual(e.display, "John, 9 ans")
+
+    def test_enfant_display_all(self):
+        today = datetime.now()
+        bday = today - timedelta(days=360*10)
+        e = models.Enfant(e_name="John", e_school="Best school in the World", e_birthday=bday)
+        self.assertEqual(e.display, u"John, 9 ans, scolarisé à Best school in the World")
+
 
 class GeolocationTestCase(TestCase):
 
@@ -363,3 +385,68 @@ class UtilsTestCase(TestCase):
         self.assertTrue(utils.email_is_unique("d@gmail.com", self.presta2))
         self.assertFalse(utils.email_is_unique("a@gmail.com", self.presta2))
         self.assertFalse(utils.email_is_unique("b@gmail.com", self.presta2))
+
+
+class PlanningTestCase(TestCase):
+
+    def setUp(self):
+        self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
+        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
+        self.famille.save()
+        self.planning = planning.FamillePlanning(famille=self.famille)
+        self.planning.save()
+        self.planning.start_date = datetime(year=1991, month=7, day=12)
+        self.lundi = planning.Weekday(name="Lundi")
+        self.mardi = planning.Weekday(name="Mardi")
+        self.lundi.save()
+        self.mardi.save()
+        self.planning.weekday.add(self.lundi)
+
+    def tearDown(self):
+        self.planning.delete()
+        self.famille.delete()
+        self.user1.delete()
+        self.lundi.delete()
+        self.mardi.delete()
+
+    def test_display_one_day_no_freq(self):
+        expected = u"Les Lundi, ponctuellement à partir du 12/07/1991"
+        self.assertEqual(self.planning.display, expected)
+
+    def test_display_several_days_no_freq(self):
+        self.planning.weekday.add(self.mardi)
+        expected = u"Les Lundi, Mardi, ponctuellement à partir du 12/07/1991"
+        self.assertEqual(self.planning.display, expected)
+
+    def test_display_several_days_freq(self):
+        self.planning.weekday.add(self.mardi)
+        self.planning.frequency = "hebdo"
+        expected = u"Les Lundi, Mardi, toutes les semaines à partir du 12/07/1991"
+        self.assertEqual(self.planning.display, expected)
+
+
+class ReferenceTestCase(TestCase):
+
+    def test_get_famille_display_no_user(self):
+        r = models.Reference(name="Coco")
+        self.assertEqual(r.get_famille_display(), "Coco")
+
+    def test_get_famille_display_referenced_user(self):
+        f = models.Famille(pseudo="Mister T")
+        r = models.Reference(referenced_user=f)
+        self.assertEqual(r.get_famille_display(), "de Mister T (utilise notre site)")
+
+    def test_get_dates_display_bad_conf(self):
+        r = models.Reference(name="Coco")
+        self.assertFalse(r.get_dates_display())
+
+    def test_get_dates_display_current(self):
+        r = models.Reference(current=True, date_from=datetime(year=2013, day=30, month=11))
+        self.assertEqual(r.get_dates_display(), u"Du 30/11/2013 à aujourd'hui")
+
+    def test_get_dates_display_no_current(self):
+        r = models.Reference(
+            date_from=datetime(year=2013, day=30, month=11),
+            date_to=datetime(year=2100, day=30, month=11)
+        )
+        self.assertEqual(r.get_dates_display(), u"Du 30/11/2013 au 30/11/2100")

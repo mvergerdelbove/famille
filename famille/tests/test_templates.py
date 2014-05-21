@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from famille import models
-from famille.templatetags import helpers
+from famille.templatetags import helpers, users
 
 
 __all__ = ["TemplateTagsTestCase", ]
@@ -23,3 +23,9 @@ class TemplateTagsTestCase(TestCase):
     def test_subtract(self):
         self.assertEqual(helpers.substract("5", ""), 5)
         self.assertEqual(helpers.substract("5", "2"), 3)
+
+    def test_get_languages_display(self):
+        self.assertEqual(users.get_languages_display(None), "--")
+        self.assertEqual(users.get_languages_display("1"), "Anglais")
+        self.assertEqual(users.get_languages_display("1,2"), "Anglais, Allemand")
+        self.assertEqual(users.get_languages_display("1,829162,2"), "Anglais, Allemand")

@@ -1,6 +1,8 @@
 var notifier = require("../notifier.js");
 var SignalUser = require("../signal.js");
 var RatingView = require("../profile/views/rating.js");
+var Favorite = require("../favorite.js");
+
 
 var constructFilterForString = function(name, query, value){
     return name + "__" + query + "=" + value;
@@ -243,21 +245,11 @@ module.exports = Backbone.View.extend({
 
     toggleFavorite: function(e){
         if (!this.isAuthenticated()) return;
-        var $target = $(e.target),
-        $star = $(".glyphicon", $target),
-        resource_uri = $("[data-field=resource_uri]", $target.parents(".one-search-result")).html(),
-        action = ($star.hasClass("favorited")) ? "remove": "add";
 
-        $star.toggleClass("favorited");
-        if (action == "add") famille.userData.favorites.push(resource_uri);
-        else famille.userData.favorites = _.without(famille.userData.favorites, resource_uri);
-
-        famille.router.toggleFavorite({
-            data: {
-                resource_uri: resource_uri,
-                action: action
-            },
-            error: this.error
+        Favorite({
+            event: e,
+            container: ".one-search-result",
+            userData: famille.userData
         });
     },
 

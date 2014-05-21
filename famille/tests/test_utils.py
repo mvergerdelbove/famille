@@ -111,6 +111,11 @@ class PythonTestCase(TestCase):
         t = python.generate_timestamp()
         self.assertIsInstance(t, int)
 
+    def test_get_age_from_date(self):
+        self.assertIsNone(python.get_age_from_date(None))
+        d = date.today() - timedelta(days=360*10)
+        self.assertEquals(python.get_age_from_date(d), 9)
+
 
 class HTTPTestCase(TestCase):
 

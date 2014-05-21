@@ -185,11 +185,15 @@ def profile(request, type, uid):
 
     if has_user_related(request.user):
         related_user = get_user_related(request.user)
-        if not RatingClass.user_has_voted_for(related_user, user):
+        context["related_user"] = related_user
+        context["favorited"] = related_user.favorites.filter(object_id=user.pk, object_type=type.title()).count()
+
+        # users cant vote for themselves or twice for a user
+        if user != related_user and not RatingClass.user_has_voted_for(related_user, user):
             rating = RatingClass(user=user, by=related_user.simple_id)
             context["rating_form"] = RatingFormClass(instance=rating)
 
-    return render(request, "profile/base.html", get_context(profile=user, **context))
+    return render(request, "profile/%s.html" % type, get_context(profile=user, **context))
 
 
 @login_required
