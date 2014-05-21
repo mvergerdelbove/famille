@@ -98,6 +98,10 @@
             <input type="hidden" class="total-nb-search-results" value="{{ total_search_results }}"/>
             <input type="hidden" class="search-type" value="{{ search_type }}"/>
             <input type="hidden" class="p-type" value="{{ user|plan }}"/>
+            <div class="disabled-popover-content-not-logged hide">
+                <p>Inscrivez-vous gratuitement pour accéder à plus de fonctionnalités.</p>
+                <p><a href="{% url 'register' %}" class="btn btn-success">M'inscrire gratuitement</a></p>
+            </div>
         </div>
     </div>
 </div>

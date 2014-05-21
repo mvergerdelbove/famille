@@ -41,12 +41,16 @@ App.prototype.initEvents = function(){
         $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
-    $('body').on('click', function (e) {
-        if ($(e.target).data('toggle') !== 'popover'
-            && $(e.target).parents('.popover.in').length === 0) {
-            $('[data-toggle="popover"]').popover('hide');
-        }
-    });
+
+    // FIXME : this engender problems : the popover is just hidden but
+    //         covers the possibly underlying buttons
+
+    // $('body').on('click', function (e) {
+//         if ($(e.target).data('toggle') !== 'popover'
+//             && $(e.target).parents('.popover.in').length === 0) {
+//             $('[data-toggle="popover"]').popover('hide');
+//         }
+//     });
 };
 
 App.prototype.initSlider = function($el){
