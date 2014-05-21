@@ -68,6 +68,9 @@ def search(request):
     if not form.is_valid():
         form = FormClass()
 
+    if not settings.ALLOW_BASIC_PLAN_IN_SEARCH:
+        objects = objects.filter(plan=UserInfo.PLANS["premium"])
+
     # TODO: do location filtering, together with geolocation stuff ?
     objects = objects.order_by("-updated_at")
     total_search_results = objects.count()
