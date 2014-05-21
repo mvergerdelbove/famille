@@ -253,6 +253,7 @@
         </div>
     </div>
     {% endblock %}
+    {% if user.is_authenticated %}  <!--Keep this for premium-->
     <div class="col-md-offset-1 col-md-3 margin-top-2">
         <div class="list-group">
           <a href="{% url 'account' %}"
@@ -267,11 +268,13 @@
              class="list-group-item {% if request.path_info == '/mon-compte/parametres-avances/' %}active{% endif %}">
               <i class="glyphicon glyphicon-cog"></i> Paramètres avancés
           </a>
-          <a href="{% url 'premium' %}" class="list-group-item">
+          <a href="{% url 'premium' %}"
+             class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}">
               <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
           </a>
         </div>
     </div>
+    {% endif %}
 </div>
 <input type="hidden" class="url-hash" value="#{{ url_hash }}">
 {% endblock %}
