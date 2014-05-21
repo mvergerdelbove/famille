@@ -210,7 +210,7 @@ LANGUAGES = {
     "8": "Portugais",
 }
 class CriteriaForm(forms.ModelForm):
-    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items())
+    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items(), required=False)
 
     class Meta:
         labels = {
