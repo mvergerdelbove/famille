@@ -108,8 +108,6 @@ class SearchResource(object):
 
         if order_by == "-rating":
             return sorted(obj_list, key=lambda u: - u.total_rating)
-        elif order_by == "geolocation":
-            pass  # IDEA: dehydrate_geolocation when needed (filter / sort in request)
         else:
             return super(SearchResource, self).apply_sorting(obj_list, options)
 
