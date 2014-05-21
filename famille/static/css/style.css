@@ -49,12 +49,16 @@
 
     .padding-top-1{padding-top: 4%;}
     .padding-min{ padding: 1%; }
+    .padding-bottom-min{padding-bottom: 2%;}
+    .padding-bottom-little{padding-bottom: 8%;}
+    div.panel.panel-default.favorite-panel.margin-bottom-long, .margin-bottom-long{margin-bottom:70%;}
 
     #avantages{background-image: url("../img/bckg_avtg.jpg");background-size: 100%;}
     .blur{background-color: rgba(255,255,255,0.7);}
     #description{background-image: url("../img/bckg_descr.jpg");background-size: 100%;}
     .tool-page{background-image: url("../img/manon.jpg");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
 background-attachment:fixed;}
+    .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
 
     .profil-pict {
         position: absolute;
@@ -95,13 +99,13 @@ background-attachment:fixed;}
 .btn-download-min:active{box-shadow: -1px 1px 10px 3px rgba(0, 0, 0, 0.3) inset;}
 
 .btn-green {background-color: #6CB292; border: 1px solid #7CC1A0; font-size: 23px;}
-.btn-green-min {background-color: #6CB292; border: 1px solid #7CC1A0;}
+.btn-green-min {background-color: #6CB292; border: 1px solid #6CB292;}
 
 .btn-brown {background-color: #A69F88; border:1px solid #C4BCA5;padding:7px 12px;}
 .btn-brown-min {background-color: #A69F88; border:1px solid #C4BCA5;}
 
 .btn-blue {background-color: #408394; border:1px solid #5099AA; font-size: 23px;}
-.btn-blue-min {background-color: #408394; border:1px solid #5099AA;}
+.btn-blue-min {background-color: #408394; border:1px solid #408394;}
 
 .btn-color{color: #fff;font-weight: bold;}
 .btn-color:hover{color: #fff;box-shadow: -1px 1px 10px 3px rgba(255, 255, 255, 0.3) inset;font-weight: bold;}
@@ -112,6 +116,12 @@ background-attachment:fixed;}
 
 h4{font-size: 25px;text-align: center;color:#555555;}
 .nav.navbar,.navbar-default{margin-bottom: 0; width: 100%;}
+
+a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.active:focus{
+  background-color: #408394;
+  border-color:#408394;
+}
+
 
 /* formating font */
 

@@ -26,7 +26,7 @@
                     <div class="form form-horizontal col-md-12 min-height-little">
                         <div class="reference-list"></div>
                         <div class="no-reference-list"></div>
-                        <button type="button" class="btn btn-primary add-reference"
+                        <button type="button" class="btn btn-color btn-blue-min add-reference"
                                 data-toggle="modal" data-target="#referenceModal">
                             Ajouter une référence
                         </button>
@@ -42,7 +42,7 @@
                     {% endfor %}
                 </div>
                 <div class="row"><div class="col-md-3 col-md-offset-9">
-                    <button type="submit" name="submit" value="compte" class="btn btn-success">
+                    <button type="submit" name="submit" value="compte" class="btn btn-color btn-green-min">
                         Sauvegarder
                     </button>
                 </div></div>
@@ -136,10 +136,10 @@
 {% block profile_form %}
 <div class="row">
     <div class="form form-horizontal col-md-12">
-        <h4 class="margin-bottom-0">Coordonnées</h4>
+        <h4 class="margin-bottom-0">Informations générales</h4>
         <div class="row">
             <div class="col-md-6">
-                {% bootstrap_field profil.pseudo field_class="col-md-6" label_class="col-md-4" %}
+<!--                 {% bootstrap_field profil.pseudo field_class="col-md-6" label_class="col-md-4" %} -->
                 {% bootstrap_field profil.name field_class="col-md-6" label_class="col-md-4" %}
                 {% bootstrap_field profil.first_name field_class="col-md-6" label_class="col-md-4" %}
                 {% bootstrap_field profil.email field_class="col-md-6" label_class="col-md-4" %}
@@ -165,7 +165,7 @@
                 {% bootstrap_field profil.city field_class="col-md-6" label_class="col-md-4" %}
                 {% bootstrap_field profil.country field_class="col-md-6" label_class="col-md-4" %}
                 {% bootstrap_field profil.tel field_class="col-md-6" label_class="col-md-4" %}
-                {% bootstrap_field profil.tel_visible field_class="col-md-offset-4 col-md-6" %}
+                {% bootstrap_field profil.tel_visible field_class="col-md-10" %}
             </div>
         </div>
     </div>
@@ -177,7 +177,7 @@
     <form method="post" action="{% url "account" %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-6">
                 <h4>Mes compétences</h4>
                 {% bootstrap_field competences.studies %}
                 {% bootstrap_field competences.diploma %}
@@ -188,32 +188,69 @@
                 {% bootstrap_field competences.language %}
                 {% bootstrap_field competences.experience_type %}
                 {% bootstrap_field competences.experience_year %}
-                <h4>Mes petits plus</h4>
-                <img src="{% static "img/badges/enfant_malade.png" %}" width="30px"/>
-                {% bootstrap_field competences.enfant_malade %}
-                <img src="{% static "img/badges/menage.png" %}" width="30px"/>
-                {% bootstrap_field competences.menage %}
-                <img src="{% static "img/badges/repassage.png" %}" width="30px"/>
-                {% bootstrap_field competences.repassage %}
-                <img src="{% static "img/badges/cuisine.png" %}" width="30px"/>
-                {% bootstrap_field competences.cuisine %}
-                <img src="{% static "img/badges/devoirs.png" %}" width="30px"/>
-                {% bootstrap_field competences.devoirs %}
-                <img src="{% static "img/badges/animaux.png" %}" width="30px"/>
-                {% bootstrap_field competences.animaux %}
-                <img src="{% static "img/badges/permis.png" %}" width="30px"/>
-                {% bootstrap_field competences.permis %}
-                <img src="{% static "img/badges/psc1.png" %}" width="30px"/>
-                {% bootstrap_field competences.psc1 %}
-                <img src="{% static "img/badges/non_fumeur.png" %}" width="30px"/>
-                {% bootstrap_field competences.non_fumeur %}
-
                 {% bootstrap_field competences.restrictions %}
+            </div>
+            <div class="col-md-5 col-md-offset-1">    
+                <h4>Mes petits plus</h4>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/enfant_malade.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.enfant_malade %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/menage.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">    
+                    {% bootstrap_field competences.menage %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/repassage.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.repassage %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/cuisine.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.cuisine %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/devoirs.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.devoirs %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/animaux.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.animaux %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/permis.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.permis %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/psc1.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.psc1 %}
+                </div>
+                <div class="col-md-1">
+                    <img src="{% static "img/badges/non_fumeur.png" %}" width="30"/>
+                </div>
+                <div class="col-md-9 col-md-offset-1">
+                    {% bootstrap_field competences.non_fumeur %}
+                </div>
                 {% bootstrap_field competences.description %}
             </div>
-            <div class="row">
+            <div class="row padding-bottom-min">
                 <div class="col-md-4 col-md-offset-5">
-                    <button type="submit" name="submit" value="competences" class="btn btn-success">
+                    <button type="submit" name="submit" value="competences" class="btn btn-color btn-green-min">
                         Sauvegarder
                     </button>
                 </div>
