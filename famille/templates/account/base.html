@@ -181,6 +181,10 @@
                     <div class="row">
                         <div class="form form-horizontal col-md-12">
                             <h4 class="margin-bottom-0">Planning</h4>
+                            <h5>
+                                Grâce à ce planning, détaillez vos besoins. Vous pouvez créer plusieurs
+                                planning, en cliquant sur <em>Ajouter un planning</em>.
+                            </h5>
                             <div class="no-planning">
                                 Vous n'avez pas encore ajouté de préférences de planning.
                             </div>
@@ -198,7 +202,13 @@
                                     </div>
                                     {% bootstrap_field form.frequency field_class="col-sm-7" label_class="col-sm-5" %}
                                     {% bootstrap_field form.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                                    <span class="help-block">
+                                        Vous pouvez selectionner plusieurs jours de la semaine.
+                                    </span>
                                     {% bootstrap_field form.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                                    <span class="help-block">
+                                        Vous pouvez selectionner plusieurs horaires.
+                                    </span>
                                     <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                                 </div>
                                 {% endfor %}
@@ -228,7 +238,13 @@
                         </div>
                         {% bootstrap_field planning.sub_form_empty.frequency field_class="col-sm-7" label_class="col-sm-5"%}
                         {% bootstrap_field planning.sub_form_empty.weekday field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                        <span class="help-block">
+                            Vous pouvez selectionner plusieurs jours de la semaine.
+                        </span>
                         {% bootstrap_field planning.sub_form_empty.schedule field_class="col-sm-7" label_class="col-sm-5" show_help=False %}
+                        <span class="help-block">
+                            Vous pouvez selectionner plusieurs horaires.
+                        </span>
                         <i class="glyphicon glyphicon-minus remove-planning pull-right"></i>
                     </div>
                 </div>
