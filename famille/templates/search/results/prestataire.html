@@ -30,7 +30,7 @@
                         {% endfor %}
                     </div>
                     <div class="row margin-top-0">
-                        <div class="col-md-3 title-blue nav-title">{{ result.total_rating }}</div>
+                        <div class="col-md-3 title-blue nav-title">{{ result.total_rating|floatformat:"0" }}</div>
                         <div class="col-md-9">
                             <div class="progress link tooltip-link" data-toggle="tooltip"
                                  data-original-title="{{ result.nb_ratings }} évaluation{% if result.nb_ratings != 1%}s{% endif%}">

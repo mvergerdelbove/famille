@@ -454,9 +454,7 @@ class PrestataireSearchForm(BaseSearchForm):
 
     ordering_dict = {
         "-updated_at": u"Le plus récent",
-         "tarif": u"Le mieux noté",
-         "geolocation": "Le moins cher",
-         "-rating": "Le plus proche"
+        "-rating": u"Le mieux noté"
     }
     # BOX 2
     nationality = forms.CharField(
@@ -535,8 +533,7 @@ class FamilleSearchForm(BaseSearchForm):
     search_blocks = []
     ordering_dict = {
         "-updated_at": u"Le plus récent",
-         "geolocation": "Le plus proche",
-         "-rating": u"Le mieux noté"
+        "-rating": u"Le mieux noté"
     }
     type_attente_famille = forms.MultipleChoiceField(
         label=u"Type d'attentes", required=False, choices=Famille.TYPE_ATTENTES_FAMILLE,

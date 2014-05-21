@@ -1,5 +1,6 @@
 {% extends "registration/login.html" %}
 {% load staticfiles %}
+{% load static %}
 {% load bootstrap3 %}
 
 {% block title %}Je créée mon compte{% endblock %}
@@ -25,6 +26,26 @@
             </label>
         </div>
     </div>
+{% endblock %}
+
+{% block cgu %}
+<div class="form-group">
+    <em>
+        En créant mon compte, j'accepte les
+        <a href="{% get_media_prefix %}miscellaneous/CGU.pdf">conditions générales d'utilisation</a>
+        du site Une vie de famille.
+    </em>
+</div>
+{% endblock %}
+
+{% block cgu2 %}
+<div class="form-group">
+    <em>
+        En créant mon compte, j'accepte les
+        <a href="{% get_media_prefix %}miscellaneous/CGU.pdf">conditions générales d'utilisation</a>
+        du site Une vie de famille.
+    </em>
+</div>
 {% endblock %}
 
 {% block social_auth %}

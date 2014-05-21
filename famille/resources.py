@@ -107,24 +107,22 @@ class SearchResource(object):
         order_by = options.get("order_by")
 
         if order_by == "-rating":
-            return sorted(obj_list, key=lambda u: - u.total_rating)
-        elif order_by == "geolocation":
-            pass  # IDEA: dehydrate_geolocation when needed (filter / sort in request)
+            obj_list = sorted(obj_list, key=lambda u: - u.total_rating)
         else:
-            return super(SearchResource, self).apply_sorting(obj_list, options)
+            obj_list = super(SearchResource, self).apply_sorting(obj_list, options)
+
+        return self.filters_post_sorting(obj_list)
 
     def apply_filters(self, request, applicable_filters):
         """
         Apply filtering on the objects. It first filters user that
         are premium (depending on the setting ALLOW_BASIC_PLAN_IN_SEARCH),
-        and then apply (if needed) the filtering on number of children,
-        on distance and on postal code.
+        and then apply (if needed) the filtering on number of children.
 
         :param request:                a django HttpRequest object
         :param applicable_filters:     a dict of resource filters
         """
-        distance = request.GET.get("distance__iexact")
-        postal_code = request.GET.get("pc__iexact")
+        self.__request = request
         nb_enfants = request.GET.get("n_enfants__length")
         language = applicable_filters.pop("language__in", None)
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
@@ -139,15 +137,25 @@ class SearchResource(object):
         if language:
             qs = self.filter_language(language, qs)
 
+        return qs
+
+    def filters_post_sorting(self, object_list):
+        """
+        Apply distance filtering after sorting since it returns a list.
+        """
+        distance = self.__request.GET.get("distance__iexact")
+        postal_code = self.__request.GET.get("pc__iexact")
+        user = self.__request.user
+        del self.__request
+
         if postal_code:
-            return self.filter_postal_code(postal_code, qs)
+            return self.filter_postal_code(postal_code, object_list)
 
-        if not distance or not models.user_is_located(request.user):
-            return qs
+        if not distance or not models.user_is_located(user):
+            return object_list
 
-        related = models.get_user_related(request.user)
-        return self.filter_distance(distance, related.geolocation, qs)
-
+        related = models.get_user_related(user)
+        return self.filter_distance(distance, related.geolocation, object_list)
 
     def filter_distance(self, distance, geoloc, queryset):
         """
