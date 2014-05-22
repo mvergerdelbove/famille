@@ -1,0 +1,101 @@
+{% load static %}
+{% load staticfiles %}
+{% load helpers %}
+{% load users %}
+
+
+<div class="row margin-top-little one-search-result-outer">
+    <div class="row one-search-result">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row">
+                        <img src="../../static/img/pola.png" width="100%;">
+                        {% if result.profile_pic %}
+                        <img class="profil-pict" src="{% get_media_prefix %}{{ result.profile_pic }}"
+                             width="50%;" alt="Photo de profil">
+                        {% else %}
+                        <img class="profil-pict" src="{% static "img/nopic.png" %}"
+                             width="50%;" alt="Photo de profil">
+                        {% endif %}
+                    </div>
+                    {% block belowPic %}{% endblock %}
+                    <div class="row margin-top-0">
+                        <div class="col-md-3 title-blue nav-title">{{ result.total_rating|floatformat:"2" }}</div>
+                        <div class="col-md-9">
+                            <div class="progress link tooltip-link" data-toggle="tooltip"
+                                 data-original-title="{{ result.nb_ratings }} évaluation{% if result.nb_ratings != 1%}s{% endif%}">
+                                <div class="progress-bar btn-blue-min"
+                                     style="width:{{ result.total_rating_percent }}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-7 nav-title text-blue">
+                        {% if not user.is_authenticated %}
+                            {% include 'helpers/anchor_visitor.html' with wording=result.get_pseudo only %}
+                        {% elif user|plan == "premium" %}
+                            <a href="{% url 'profile' result|class_name|lower result.pk %}" target="_blank">
+                                {{ result.get_pseudo }}
+                            </a>
+                        {% else %}
+                            {% include 'helpers/anchor_logged.html' with wording=result.get_pseudo only %}
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7 nav-title title-blue subtlt">
+                            {% block subtitleBlock %}{% endblock %}
+                        </div>
+                    </div>
+                    {% block resultContent %}{% endblock %}
+                </div>
+                <div class="col-md-2">
+                    <div class="row">
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-color btn-brown-min btn-block favorite">
+                            <i class="glyphicon glyphicon-star"></i> Favori
+                        </button>
+                    {% else %}
+                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-star" wording="Favori" only %}
+                    {% endif %}
+                    </div>
+                    <div class="row margin-top-2">
+                    {% if not user.is_authenticated %}
+                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-user" wording="Contacter" only %}
+                    {% elif user|plan == "premium" %}
+                        <a href="{% url 'postman_write' %}" target="_blank"
+                           class="btn btn-color btn-brown-min btn-block contact-result">
+                            <span class="glyphicon glyphicon-user"></span> Contacter
+                        </a>
+                    {% else %}
+                        {% include 'helpers/popover_logged.html' with icon="glyphicon-user" wording="Contacter" only %}
+                    {% endif %}
+                    </div>
+                    <div class="row margin-top-little">
+                    {% if not user.is_authenticated %}
+                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-stats" wording="Noter" only %}
+                    {% elif user|plan == "premium" %}
+                        {% include 'helpers/rating_in_search.html' with rating_form=result|rating_form:user profile=result only %}
+                    {% else %}
+                        {% include 'helpers/popover_logged.html' with icon="glyphicon-stats" wording="Noter" only %}
+                    {% endif %}
+                    </div>
+                    <div class="row margin-top-little">
+                    {% if not user.is_authenticated %}
+                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-bell" wording="Signaler" only %}
+                    {% elif user|plan == "premium" %}
+                        {% include 'helpers/signal_modal.html' with profile=result only %}
+                    {% else %}
+                        {% include 'helpers/popover_logged.html' with icon="glyphicon-bell" wording="Signaler" only %}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block resourceUri %}{% endblock %}
+    </div>
+</div>

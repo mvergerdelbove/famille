@@ -98,6 +98,14 @@
             <input type="hidden" class="total-nb-search-results" value="{{ total_search_results }}"/>
             <input type="hidden" class="search-type" value="{{ search_type }}"/>
             <input type="hidden" class="p-type" value="{{ user|plan }}"/>
+            <div class="disabled-popover-content-not-logged hide">
+                <p>
+                    Vous vous appretez à acceder à la recherche personnalisée d’<em>Une vie de famille</em>.
+                    N’étant pas inscrit, vous ne pourrez pas profiter de l’ensemble des fonctionnalités d’
+                    <em>Une vie de famille</em>
+                </p>
+                <p><a href="{% url 'register' %}" class="btn btn-success">M'inscrire gratuitement</a></p>
+            </div>
         </div>
     </div>
 </div>
@@ -109,7 +117,6 @@
     window._auth = true;
 </script>
 {% endif %}
-<script src="{% static "lib/underscore/underscore-min.js" %}"></script>
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "lib/select2/select2.min.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>

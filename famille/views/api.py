@@ -11,7 +11,8 @@ from famille.utils.mail import send_mail_from_template
 
 __all__ = [
     "contact_favorites", "plannings", "profile_pic",
-    "submit_rating", "message_autocomplete", "signal_user"
+    "submit_rating", "message_autocomplete", "signal_user",
+    "contact_us"
 ]
 
 
@@ -147,6 +148,26 @@ def signal_user(request, userType, uid):
             "reason": reason, "user_to_signal": user_to_signal,
             "user": request.related_user
         }, subject=u"Un utilisateur a été signalé",
+        recipient_list=[settings.CONTACT_EMAIL, ],
+        from_email=settings.NOREPLY_EMAIL
+    )
+
+    return HttpResponse()
+
+
+@require_POST
+def contact_us(request):
+    """
+    Contact us, i.e. sends an email to contact email.
+    """
+    name = request.POST.get("name")
+    message = request.POST.get("message")
+    email = request.POST.get("email")
+
+    send_mail_from_template(
+        "email/contact_us.html", {
+            "name": name, "message": message, "email": email
+        }, subject=u"Un utilisateur vous a contacté",
         recipient_list=[settings.CONTACT_EMAIL, ],
         from_email=settings.NOREPLY_EMAIL
     )

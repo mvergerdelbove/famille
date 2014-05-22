@@ -1,5 +1,7 @@
 {% extends "profile/base.html" %}
 
+{% load static %}
+
 {% block subtitle %}
     <h2>
     {% if profile.get_age %}
@@ -9,6 +11,12 @@
       {{ profile.get_type.upper }}
     </small>
     </h2>
+{% endblock %}
+
+{% block extra-header %}
+<a class="btn btn-color btn-brown-min btn-block" href="{% get_media_prefix %}{{ profile.resume }}" target="_blank">
+    Accéder au CV
+</a>
 {% endblock %}
 
 {% block contentBlock1 %}  <!-- infos générales -->

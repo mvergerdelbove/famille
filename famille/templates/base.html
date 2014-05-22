@@ -65,7 +65,11 @@
           </li>
           {% endif %}
           <li><a href="{% url 'tools' %}">Tout sur la garde d'enfants</a></li>
-          <li><a href="#">Nous contacter</a></li>
+          <li>
+              <a href="#" data-toggle="modal" data-target="#contactModal">
+                  Contact
+              </a>
+          </li>
       </ul>
       {% if user.is_authenticated %}
       <ul class="nav navbar-nav navbar-right">
@@ -87,12 +91,49 @@
       {% endif %}
     </div><!-- /.navbar-collapse -->
   </nav>
+  <!-- Contact modal -->
+  <div class="modal fade" id="contactModal" tabindex="-1"
+  role="dialog" aria-labelledby="contact-modal" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="contact-modal">
+                  Nous contacter<br/>
+                  <small>Merci de nous laisser votre message. Nous vous répondrons dans les plus brefs délais.</small>
+              </h4>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <div class="form-group">
+                      <label for="contact-name">Votre nom ou raison sociale</label>
+                      <input type="text" name="name" id="contact-name" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <label for="contact-email">Email / contact</label>
+                      <input type="text" name="name" id="contact-email" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <label for="contact-messageContent">Contenu du message</label>
+                      <textarea rows="10" name="messageContent" id="contact-messageContent" class="form-control"></textarea>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-primary send-contact-message" data-dismiss="modal">Envoyer</button>
+          </div>
+      </div>
+  </div>
+</div>
   {% endblock %}
   {% block content %}{% endblock %}<br/>
   <script src="{% static "lib/jquery/dist/jquery.min.js" %}"></script>
   <script src="{% static "lib/jquery.cookie/jquery.cookie.js" %}"></script>
   <script src="{% static "lib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
   <script src="{% static "lib/growl/javascripts/jquery.growl.js" %}"></script>
+  <script src="{% static "lib/underscore/underscore-min.js" %}"></script>
+  <script src="{% static "js/build/contact_us.js" %}"></script>
   <script>
   window.Settings = {
       urls: {

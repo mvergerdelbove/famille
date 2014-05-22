@@ -208,7 +208,8 @@ module.exports = Backbone.View.extend({
             placement: "bottom",
             trigger: "click",
             title: "Fonctionalité indisponible",
-            content: "Créez un compte pour pouvoir l'utiliser :-)"
+            html: true,
+            content: this.$(".disabled-popover-content-not-logged").html()
         });
     },
 

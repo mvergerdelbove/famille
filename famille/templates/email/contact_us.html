@@ -1,0 +1,20 @@
+{% extends "email/base.html" %}
+
+{% load helpers %}
+
+{% block title %}
+Un utilisateur vous a contacté
+{% endblock %}
+
+{% block content %}
+<div>
+    {% if name %}
+    <p>Nom ou raison social: {{ name }}</p>
+    {% endif %}
+    {% if email %}
+    <p>Contact / email: {{ email }}</p>
+    {% endif %}
+    <p>Message envoyé</p><br/>
+    <p>{{ message }}</p>
+</div>
+{% endblock %}

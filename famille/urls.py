@@ -65,6 +65,7 @@ urlpatterns = patterns(
     url(r'^submit-rating/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.submit_rating", name="submit_rating"),
     url(r'^autocomplete/', "famille.views.message_autocomplete", name="message_autocomplete"),
     url(r'^signal-user/(?P<userType>[a-z]+)/(?P<uid>\d+)/$', "famille.views.signal_user", name="signal_user"),
+    url(r'^contact-us/$', "famille.views.contact_us", name="contact_us"),
     url(r'^api/', include(api.urls)),
 
     # static pages

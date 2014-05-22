@@ -10,7 +10,7 @@
 <div class="col-md-12 profile-container">
     <div class="row">  <!-- row header -->
         <div class="page-header col-md-6 col-md-offset-1">  <!-- page header -->
-            <div class="col-xs-4 col-md-2">
+            <div class="col-md-4">
                 <a href="#" class="thumbnail">
                     {% if profile.profile_pic %}
                     <img src="{% get_media_prefix %}{{ profile.profile_pic.name }}" alt="Photo de profil">
@@ -19,21 +19,24 @@
                     {% endif %}
                 </a>
             </div>
-            <h1>{{ profile.get_pseudo }} <small>{{ profile.city }}</small></h1>
-            {% block subtitle %}
-            {% endblock subtitle %}
-            <div class="user-score">
-                {% with ratings=profile.total_rating %}
-                    {% for i in ratings|get_range %}
-                        <i class="score-star glyphicon glyphicon-star"></i>
-                    {% endfor %}
-                    {% with remaining=5|substract:ratings|get_range %}
-                        {% for i in remaining %}
-                            <i class="score-star glyphicon glyphicon-star-empty"></i>
+            <div class="col-md-8">
+                <h1>{{ profile.get_pseudo }} <small>{{ profile.city }}</small></h1>
+                {% block subtitle %}
+                {% endblock subtitle %}
+                <div class="user-score">
+                    {% with ratings=profile.total_rating %}
+                        {% for i in ratings|get_range %}
+                            <i class="score-star glyphicon glyphicon-star"></i>
                         {% endfor %}
+                        {% with remaining=5|substract:ratings|get_range %}
+                            {% for i in remaining %}
+                                <i class="score-star glyphicon glyphicon-star-empty"></i>
+                            {% endfor %}
+                        {% endwith %}
+                        <strong class="rating-score">{{ ratings|floatformat:2 }}</strong>
                     {% endwith %}
-                <strong class="rating-score">{{ ratings|floatformat:2 }}</strong>
-                {% endwith %}
+                </div>
+                <div class="extra-header col-md-8">{% block extra-header %}{% endblock %}</div>
             </div>
         </div>  <!-- end page header -->
         <div class="page-header col-md-2">  <!-- page header -->
@@ -155,7 +158,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="{% static "lib/underscore/underscore-min.js" %}"></script>
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "js/build/profile.js" %}"></script>
 {% endblock %}

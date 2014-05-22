@@ -210,7 +210,7 @@ LANGUAGES = {
     "8": "Portugais",
 }
 class CriteriaForm(forms.ModelForm):
-    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items())
+    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items(), required=False)
 
     class Meta:
         labels = {
@@ -387,8 +387,8 @@ class AccountFormManager(object):
 
 class SimpleSearchForm(forms.Form):
     SEARCH_TYPE = {
-        "prestataire": "Un prestataire pour garder mes enfants",
-        "famille": "Une famille pour garder mes enfants"
+        "prestataire": u"Je recherche une personne pour faire garder mes enfants",
+        "famille": u"Je souhaiter garder des enfants"
     }
     postal_code = forms.CharField(label="Code postal", required=False)
     type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())

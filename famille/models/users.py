@@ -514,9 +514,11 @@ class Famille(Criteria):
     The Famille user.
     """
     TYPE_FAMILLE = {
-        "mono": "Famille monoparentale",
-        "foyer": "Famille Mère/Père au foyer",
-        "actif": "Famille couple actif",
+        "mono": u"Famille monoparentale",
+        "foyer": u"Famille Mère/Père au foyer",
+        "actif": u"Les deux parents travaillent",
+        "mi-actif": u"Un des deux parents travaille",
+        "autre": u"Autre",
     }
     TYPE_ATTENTES_FAMILLE = (
         ("part", u"Garde partagée"),
