@@ -10,6 +10,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": false,
             "city": "Meudon",
@@ -53,6 +54,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": false,
             "city": "Meudon",
@@ -96,6 +98,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Marseille",
@@ -139,6 +142,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": false,
             "cdt_periscolaire": true,
             "city": "Meudon",
@@ -182,6 +186,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Meudon",
@@ -225,6 +230,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Paris",
@@ -268,6 +274,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": false,
             "city": "Meudon",
@@ -311,6 +318,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": false,
             "city": "Paris",
@@ -354,6 +362,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Marseille",
@@ -397,6 +406,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": false,
             "cdt_periscolaire": false,
             "city": "Marseille",
@@ -440,6 +450,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Meudon",
@@ -483,6 +494,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Meudon",
@@ -526,6 +538,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Marseille",
@@ -569,6 +582,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": false,
             "cdt_periscolaire": false,
             "city": "Marseille",
@@ -612,6 +626,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": false,
             "city": "Paris",
@@ -655,6 +670,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Marseille",
@@ -698,6 +714,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Paris",
@@ -741,6 +758,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": false,
             "cdt_periscolaire": false,
             "city": "Paris",
@@ -784,6 +802,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": false,
             "cdt_periscolaire": true,
             "city": "Paris",
@@ -827,6 +846,7 @@
     },
     {
         "fields": {
+            "plan": "premium",
             "baby": true,
             "cdt_periscolaire": true,
             "city": "Paris",
