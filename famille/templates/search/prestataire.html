@@ -3,7 +3,7 @@
 {% load helpers %}
 
 {% block form %}
-<div class="panel-group" id="accordion">
+<div class="panel-group panel-brown" id="accordion">
     <div class="panel panel-info">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -19,10 +19,10 @@
                     {% if request.user|has_related %}
                         {% buttons %}
                         <div class="btn-group btn-group-distance">
-                            <button type="button" class="btn btn-primary control-distance" data-distance="10">
+                            <button type="button" class="btn btn-color btn-blue-min control-distance" data-distance="10">
                                 <i class="glyphicon glyphicon-map-marker"></i> Près de chez moi
                             </button>
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" class="btn btn-color btn-blue-min dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                                 <span class="sr-only">Choisir une distance</span>
                             </button>

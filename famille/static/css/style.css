@@ -60,6 +60,10 @@
 background-attachment:fixed;}
     .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
 
+    .panel-brown .panel-info .panel-heading{ background-color: #A69F88; color: #FFFFFF; border-color: #A69F88;}
+    .panel-brown .panel-info{border-color: #CCC3AC;}
+    .panel-brown .panel-info .panel-heading+ .panel-collapse .panel-body{border-color: #CCC3AC;}
+
     .profil-pict {
         position: absolute;
         z-index: 99;
