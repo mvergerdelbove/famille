@@ -14,7 +14,9 @@ install: venv settings dependencies
 
 install_test: venv settings pydependencies
 
-up: dependencies migrate fixtures
+up: dependencies migrate
+
+up_dev: up fixtures
 
 dependencies: pydependencies jsdependencies
 
