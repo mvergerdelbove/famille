@@ -59,10 +59,13 @@
     .tool-page{background-image: url("../img/manon.jpg");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
 background-attachment:fixed;}
     .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
+    .search-view{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}
 
     .panel-brown .panel-info .panel-heading{ background-color: #A69F88; color: #FFFFFF; border-color: #A69F88;}
     .panel-brown .panel-info{border-color: #CCC3AC;}
     .panel-brown .panel-info .panel-heading+ .panel-collapse .panel-body{border-color: #CCC3AC;}
+    .panel-brown .panel-collapse.collapse.in {background-color: rgba(255,255,255,0.1);}
+    .panel-brown .panel-body {background-color: rgba(255,255,255,0.1);}
 
     .profil-pict {
         position: absolute;
