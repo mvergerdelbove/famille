@@ -56,15 +56,40 @@
 	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
 	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big radius-bottom-right"></span></td>
 	  		</tr>
-	  		<tr>
-	  			<td colspan="4" class="text-center">
-		  			<button type="submit" class="btn btn-color btn-brown margin-top-little">
-	                	<span class="glyphicon glyphicon-bookmark"></span> Devenir premium
-	                </button>
-	  			</td>
-	  		</tr>
-	  	</tbody>  	
+		  	</tbody>  	
+		</table>
+  		<div class="list-group col-md-offset-4">
+            <div class="col-md-5 margin-left-little margin-top-little">
+                 <div class="col-md-12">
+                    <div class="row heading-tool">
+                        <h4 class="list-group-item-heading">forfait</h4>
+                    </div>
+                    <div class="row describe-tool">
+                        <p class="list-group-item-text text-center">
+                            Abonnement illimité pendant un an
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xs-2">
+                    <div class="row link-tool text-white">
+                        <p><a href="{{ tool.file_content.url }}" target="_blank">
+                            5€ pour toute l'année
+                        </a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    	<table class="table">
+    	  	<tbody>
+		  		<tr>
+		  			<td colspan="4" class="text-center">
+			  			<a type="submit" href="{% url 'premium' %}" class="btn btn-color btn-brown margin-top-little">
+		                	<span class="glyphicon glyphicon-bookmark"></span> Devenir premium
+		                </a>
+		  			</td>
+		  		</tr>
+		  	</tbody>  	
 	  </table>
-	  </div>
+	</div>
 </div>
 {% endblock %}
