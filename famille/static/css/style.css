@@ -135,7 +135,9 @@ a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.acti
 .text-center{
     text-align:center;
 }
-
+.text-left, h4 .text-left{
+    text-align:left;
+}
 .text-justify{
     text-align:justify;
 }
@@ -146,7 +148,7 @@ a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.acti
     color: #000000;
 }
 
-.text-white{
+.text-white, .text-white a{
   color: #FFFFFF
 }
 
