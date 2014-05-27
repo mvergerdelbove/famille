@@ -387,8 +387,8 @@ class AccountFormManager(object):
 
 class SimpleSearchForm(forms.Form):
     SEARCH_TYPE = {
-        "prestataire": u"Je recherche une personne pour faire garder mes enfants",
-        "famille": u"Je souhaiter garder des enfants"
+        "prestataire": u"Je recherche quelqu'un pour garder mes enfants",
+        "famille": u"Je souhaite garder des enfants"
     }
     postal_code = forms.CharField(label="Code postal", required=False)
     type = forms.ChoiceField(label="Type de recherche", choices=SEARCH_TYPE.items())
