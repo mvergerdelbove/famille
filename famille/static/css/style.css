@@ -148,7 +148,7 @@ a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.acti
     color: #000000;
 }
 
-.text-white, .text-white a{
+.text-white, .text-white a .text-white p a{
   color: #FFFFFF
 }
 
