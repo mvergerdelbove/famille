@@ -18,7 +18,7 @@
     background-image: url("../img/backg_home.jpg");
     background-size: 110%;
     background-repeat: no-repeat;
-    padding-bottom: 16%;
+    padding-bottom: 10%;
     }
     .connex{
     margin-top: 0;
@@ -59,7 +59,7 @@
     .tool-page{background-image: url("../img/manon.jpg");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
 background-attachment:fixed;}
     .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
-    .search-view{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}
+/*    .search-view{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}*/
 
     .panel-brown .panel-info .panel-heading{ background-color: #A69F88; color: #FFFFFF; border-color: #A69F88;}
     .panel-brown .panel-info{border-color: #CCC3AC;}
@@ -120,6 +120,9 @@ background-attachment:fixed;}
 
 .text-green, {color: #6CB292}
 .text-blue, {color: #408394}
+
+.thumbnail{margin-bottom:10px;}
+.text-little{font-size:11px;}
 
 h4{font-size: 25px;text-align: center;color:#555555;}
 .nav.navbar,.navbar-default{margin-bottom: 0; width: 100%;}
