@@ -308,6 +308,8 @@ table .mea{}
 .bg-dark {background-color: #807d7f;}
 
 thead{color: #fff;}
+.table-condensed thead{color: #408394;}
+.bootstrap-datetimepicker-widget .table-condensed td.active, .bootstrap-datetimepicker-widget .table-condensed td.active:hover{background-color: #408394;}
 
 .radius-top-left{border-radius: 10px 0px 0px 0px;}
 .radius-top-right{border-radius: 0px 10px 0px 0px;}

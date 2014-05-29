@@ -71,6 +71,7 @@
         </div>
     </div>
     <div class="row">
+        <h4>Découvrez nos forfaits</h4>
         {% if action != "success" %}
             <div class="col-md-10  list-group col-md-offset-2">
                 {% for form in payment_forms %}
@@ -78,8 +79,6 @@
                          <div class="col-md-12">
                             <div class="row heading-tool">
                                 <h4 class="list-group-item-heading">{{ form.initial.item_title }}</h4>
-                            </div>
-                            <div class="row describe-tool">
                                 <p class="list-group-item-text text-center">
                                     {{ form.initial.item_name }}
                                 </p>

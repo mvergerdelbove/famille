@@ -30,7 +30,7 @@ PRODUCTS = {
         },
         {
             "amount": "7.00",
-            "item_title": "Forfait 2",
+            "item_title": "Liberte",
             "item_frequence": "/mois",
             "item_name": "Abonnement Illimite pendant 3 mois",
             "item_number": PREMIUM_IDS["3f"],
