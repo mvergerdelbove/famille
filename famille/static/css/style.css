@@ -138,7 +138,8 @@ background-attachment:fixed;}
 .btn-color:active{color: #fff;box-shadow: -1px 1px 10px 3px rgba(0, 0, 0, 0.3) inset;font-weight: bold;}
 
 .text-green, {color: #6CB292}
-.text-blue, {color: #408394}
+.text-blue, .text-blue a, .text-blue a:hover {color: #408394}
+
 
 .thumbnail{margin-bottom:10px;}
 .text-little{font-size:11px;}
