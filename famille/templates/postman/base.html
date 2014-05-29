@@ -34,9 +34,19 @@
             </div>
         </div>
     {% else %}
-    <h1>Vous n'avez pas accès à cette fonctionnalité</h1>
-    <p>
-        blah blah blah <a href="{% url 'premium' %}" class="btn btn-success">Créer un compte premium</a>
+    <h4 class="margin-top-r">Vous n'avez pas accès à cette fonctionnalité</h4>
+    <div class="row margin-top-little">
+    <p class="text-center margin-top-little margin-bottom-little col-md-3 col-md-offset-2">
+        <img src="{% static "img/mail.png" %}" width="90%">
+    </p>
+    <p class="col-md-5 margin-top-0">
+        Devenez Premium pour profiter de la messgerie.<br>Entrez ainsi facilement en relation avec toutes les personnes proches de chez vous.
+    </p>
+    </div>
+    <p class="col-md-12 text-center margin-bottom-big">
+        <a href="{% url 'premium' %}" class="btn btn-color btn-blue-min">
+            <span class="glyphicon glyphicon-remove title-red glyphicon-bookmark"></span> Créer un compte premium
+        </a>
     </p>
     {% endif %}
     </div>
