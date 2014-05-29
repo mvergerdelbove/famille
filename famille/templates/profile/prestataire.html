@@ -15,28 +15,28 @@
 
 {% block extra-header %}
 <a class="btn btn-color btn-brown-min btn-block" href="{% get_media_prefix %}{{ profile.resume }}" target="_blank">
-    Accéder au CV
+    <span class="glyphicon glyphicon-file"></span> CV
 </a>
 {% endblock %}
 
 {% block contentBlock1 %}  <!-- infos générales -->
-    <h5>Informations générales</h5>
+    <h5  class="title-profil"><span class="glyphicon glyphicon-list-alt"></span> Informations générales</h5>
     <div class="form-group">
-        <p>Type de garde: {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+        <p><a class="label-profil"> Type de garde:</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
     </div>
     <div class="form-group">
-        <p>Tarif: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+        <p><a class="label-profil"> Tarif:</a> {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
     </div>
 {% endblock %}
 
-{% block block3Title %}Mes compétences{% endblock %}
+{% block block3Title %}<span class="glyphicon glyphicon-check"></span> Mes compétences{% endblock %}
 
-{% block block4Title %}Mes p'tits plus{% endblock %}
+{% block block4Title %}<span class="glyphicon glyphicon-plus"></span> Mes p'tits plus{% endblock %}
 
 {% block block5Title %}Plus de détails sur moi{% endblock %}
 
 {% block contentBlock6 %}  <!-- references -->
-<h5>Mes références</h5>
+<h5  class="title-profil"><span class="glyphicon glyphicon-comment"></span> Mes références</h5>
 {% for reference in profile.references.all %}
 <div class="row">
     <div class="col-md-8">

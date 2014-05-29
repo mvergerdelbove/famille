@@ -60,7 +60,7 @@
 background-attachment:fixed;}
     .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
 /*    .search-view{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}*/
-
+    .profile-container{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}
     .panel-brown .panel-info .panel-heading{ background-color: #A69F88; color: #FFFFFF; border-color: #A69F88;}
     .panel-brown .panel-info{border-color: #CCC3AC;}
     .panel-brown .panel-info .panel-heading+ .panel-collapse .panel-body{border-color: #CCC3AC;}
@@ -132,6 +132,33 @@ a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.acti
   border-color:#408394;
 }
 
+.page-header{
+  padding: 2%;
+/*  box-shadow: 1px 1px 12px #CFCFCF;*/
+border: solid 1px #CFCFCF;
+border-radius: 3px;
+background-color: rgba(255, 255, 255, 0.5);
+}
+
+.info-profil{
+    padding: 2%;
+/*  box-shadow: 1px 1px 12px #CFCFCF;*/
+border: solid 1px #CFCFCF;
+margin-bottom:  20px;
+border-radius: 3px;
+background-color: rgba(255, 255, 255, 0.5);
+}
+
+.title-profil, h5 .title-profil{
+  padding: 1%;
+  background-color: #408394;
+  color: #FFF;
+  text-align: center;
+}
+.label-profil, a .label-profil{
+  color: #408394;
+  font-weight: bold;
+}
 
 /* formating font */
 

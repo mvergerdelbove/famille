@@ -10,7 +10,7 @@
 <div class="col-md-12 profile-container">
     <div class="row">  <!-- row header -->
         <div class="page-header col-md-6 col-md-offset-1">  <!-- page header -->
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="#" class="thumbnail">
                     {% if profile.profile_pic %}
                     <img src="{% get_media_prefix %}{{ profile.profile_pic.name }}" alt="Photo de profil">
@@ -18,8 +18,9 @@
                     <img src="{% static "img/nopic.png" %}" alt="Photo de profil">
                     {% endif %}
                 </a>
+            <div class="extra-header col-md-12">{% block extra-header %}{% endblock %}</div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <h1>{{ profile.get_pseudo }} <small>{{ profile.city }}</small></h1>
                 {% block subtitle %}
                 {% endblock subtitle %}
@@ -36,42 +37,24 @@
                         <strong class="rating-score">{{ ratings|floatformat:2 }}</strong>
                     {% endwith %}
                 </div>
-                <div class="extra-header col-md-8">{% block extra-header %}{% endblock %}</div>
             </div>
-        </div>  <!-- end page header -->
-        <div class="page-header col-md-2">  <!-- page header -->
-            <div class="row">  <!-- favorite button -->
-                <div class="col-md-12">
-                    <button class="btn btn-color btn-brown-min btn-block favorite {% if profile == related_user %}disabled {% endif %}">
-                        <i class="glyphicon glyphicon-star {% if favorited %}favorited{% endif %}"></i> Favori
-                    </button>
-                </div>
-            </div>  <!-- end favorite button -->
-            <div class="row margin-top-little">  <!-- contact button -->
-                <div class="col-md-12">
-                    <a href="{% url 'postman_write' %}" target="_blank"
-                       class="btn btn-color btn-brown-min btn-block">
-                        <span class="glyphicon glyphicon-user"></span> Contacter
-                    </a>
-                </div>
-            </div>  <!-- end contact button -->
-            <div class="row margin-top-little">
-                <div class="col-md-12">  <!-- rating button -->
-                    {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
-                </div>  <!-- end rating button -->
-            </div>
-            <div class="row margin-top-little">
-                <div class="col-md-12">  <!-- signal button -->
-                    {% include 'helpers/signal_modal.html' with profile=profile only %}
-                </div>  <!-- end signal button -->
-            </div>
+                    <div class="col-md-3 btn-group-vertical">
+                        <button class="btn btn-color btn-brown-min favorite {% if profile == related_user %}disabled {% endif %}">
+                            <i class="glyphicon glyphicon-star {% if favorited %}favorited{% endif %}"></i> Favori
+                        </button>
+                        <a class="btn btn-color btn-brown-min" href="{% url 'postman_write' %}" target="_blank">
+                            <span class="glyphicon glyphicon-user"></span> Contacter
+                        </a>
+                        {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
+                        {% include 'helpers/signal_modal.html' with profile=profile only %}
+                    </div>
         </div>  <!-- end page header -->
     </div>  <!-- end row header -->
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-6 col-md-offset-1 info-profil">
             {% block contentBlock1 %}
             {% endblock %}  <!-- infos générales -->
-            <h5>Planning</h5>
+            <h5 class="title-profil"><span class="glyphicon glyphicon-calendar"></span> Planning</h5>
             <ul>
                 {% for planning in profile.planning.all %}
                 <li>{{ planning.display }}</li>
@@ -79,75 +62,90 @@
                 <li>Cet utilisateur n'a pas de préférence de planning.</li>
                 {% endfor %}
             </ul>
-        </div>
-    </div>
+
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             {% block contentBlock2 %}{% endblock %}  <!-- enfants -->
         </div>
     </div>
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             {% block contentBlock3 %}  <!-- mes besoins -->
-            <h5>{% block block3Title %}{% endblock %}</h5>
-            <p>Langues parlées: {{ profile.language|languages_display }}</p>
-            <p>Niveau d'étude: {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
-            <p>Diplôme: {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
+            <h5  class="title-profil">{% block block3Title %}{% endblock %}</h5>
+            <p><a class="label-profil"> Langues parlées:</a> {{ profile.language|languages_display }}</p>
+            <p><a class="label-profil"> Niveau d'étude:</a> {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
+            <p><a class="label-profil"> Diplôme:</a> {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
             <p>
-                Type d'expérience:
+                <a class="label-profil"> Type d'expérience:</a>
                 {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}
             </p>
-            <p>Nombre d’années d’experiences: {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
+            <p><a class="label-profil"> Nombre d’années d’experiences:</a> {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
             {% endblock %}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             {% block contentBlock4 %}  <!-- petits plus -->
-            <h5>{% block block4Title %}{% endblock %}</h5>
+            <h5  class="title-profil">{% block block4Title %}{% endblock %}</h5>
             <div class="row">
-                <div class="col-md-10">
-                    <img src="{% static profile|badge_icon:'repassage' %}" width="50px">
-                    J'accepte de faire du repassage
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'repassage' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'accepte de faire du repassage
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'menage' %}" width="60px">
+                    </div>
+                    <div class="row">    
+                        J'accepte de faire du ménage
+                    </div>    
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'non_fumeur' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je ne fume pas
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'cuisine' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je sais cuisiner
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-10">
-                    <img src="{% static profile|badge_icon:'menage' %}" width="50px">
-                    J'accepte de faire du ménage
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                    <img src="{% static profile|badge_icon:'non_fumeur' %}" width="50px">
-                    Je ne fume pas
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                    <img src="{% static profile|badge_icon:'cuisine' %}" width="50px">
-                    Je sais cuisiner
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                    <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="50px">
-                    J'aide vos enfants dans leur devoirs
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'aide vos enfants dans leur devoirs
+                    </div>
                 </div>
             </div>
             {% endblock %}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             {% if profile.description %}
-            <h5>{% block block5Title %}{% endblock %}</h5>
+            <h5  class="title-profil">{% block block5Title %}{% endblock %}</h5>
             <p>{{ profile.description }}</p>
             {% endif %}
         </div>
     </div>
+            </div>
+    </div>
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-6 col-md-offset-1 info-profil">
             {% block contentBlock6 %}{% endblock %}  <!-- references -->
         </div>
     </div>
