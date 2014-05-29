@@ -11,24 +11,24 @@
 {% endblock %}
 
 {% block contentBlock1 %}  <!-- infos générales -->
-    <h5>Attentes générales</h5>
+    <h5 class="title-profil">Attentes générales</h5>
     <div class="form-group">
         <p>
-        Type de prestataire: {% if profile.type_presta %}{{ profile.get_type_presta_display }}{% else %}--{% endif %}
+        <a class="label-profil"> Type de prestataire:</a> {% if profile.type_presta %}{{ profile.get_type_presta_display }}{% else %}--{% endif %}
         </p>
     </div>
     <div class="form-group">
-        <p>Type de garde: {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+        <p><a class="label-profil"> Type de garde:</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
     </div>
     <div class="form-group">
-        <p>Tarif souhaité: {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+        <p><a class="label-profil"> Tarif souhaité:</a> {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
     </div>
 {% endblock %}
 
 {% block contentBlock2 %}  <!-- enfants -->
 {% with nb_enfants=profile.enfants.all.count %}
 {% if nb_enfants %}
-    <h5>Les enfants</h5>
+    <h5 class="title-profil">Les enfants</h5>
     <ul>
         {% for enfant in profile.enfants.all %}
         <li>{{ enfant.display }}</li>

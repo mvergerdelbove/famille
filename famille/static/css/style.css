@@ -41,6 +41,7 @@
     .margin-bottom-r{margin-bottom:3%;}
     .margin-bottom-big{margin-bottom:35%;}
     .margin-bottom-little{margin-bottom:10%;}
+    .margin-bottom-med{margin-bottom:20%;}
 
     .panel-group .panel + .panel{margin-top:0%;}
 
@@ -110,6 +111,8 @@ background-attachment:fixed;}
 .btn-green-min {background-color: #6CB292; border: 1px solid #6CB292;}
 
 .btn-red-min {background-color: #C96565; border: 1px solid #C96565;}
+
+.btn-orange-min {background-color: #E5A339; border: 1px solid #E5A339;}
 
 .btn-brown {background-color: #A69F88; border:1px solid #C4BCA5;padding:7px 12px;}
 .btn-brown-min {background-color: #A69F88; border:1px solid #C4BCA5;}

@@ -3,7 +3,7 @@
 {% if rating_form %}
 <div id="ratings">
     {% block ratingButton %}
-    <button type="button" class="btn btn-color btn-brown-min btn-block popover-rating"
+    <button type="button" class="btn btn-color btn-blue-min btn-block popover-rating"
             data-title="Noter {{ profile.get_pseudo }}" data-toggle="popover" data-placement="bottom"
             data-container=".popover-rating-container" data-html="true">
         <span class="glyphicon glyphicon-stats"></span> Noter
@@ -28,7 +28,7 @@
 </div>
 {% else %}
 {% block noRating %}
-<button type="button" class="btn btn-color btn-brown-min btn-block disabled">
+<button type="button" class="btn btn-color btn-blue-min btn-block disabled">
     <span class="glyphicon glyphicon-stats"></span> Noter
 </button>
 {% endblock %}

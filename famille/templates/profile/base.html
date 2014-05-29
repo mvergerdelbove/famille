@@ -39,10 +39,10 @@
                 </div>
             </div>
                     <div class="col-md-3 btn-group-vertical">
-                        <button class="btn btn-color btn-brown-min favorite {% if profile == related_user %}disabled {% endif %}">
+                        <button class="btn btn-color btn-blue-min favorite {% if profile == related_user %}disabled {% endif %}">
                             <i class="glyphicon glyphicon-star {% if favorited %}favorited{% endif %}"></i> Favori
                         </button>
-                        <a class="btn btn-color btn-brown-min" href="{% url 'postman_write' %}" target="_blank">
+                        <a class="btn btn-color btn-blue-min" href="{% url 'postman_write' %}" target="_blank">
                             <span class="glyphicon glyphicon-user"></span> Contacter
                         </a>
                         {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
