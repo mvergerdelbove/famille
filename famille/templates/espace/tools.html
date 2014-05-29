@@ -12,7 +12,7 @@
             {% endfor %}
         </ul>
     </div>
-    <section class="col-md-8 margin-top-little">
+<!--     <section class="col-md-8 margin-top-little">
         {% for kind, tool_file_list in tool_files.items %}
         <article id="{{ kind }}">
             <header class="tool-category"><h3>{{ kinds|key:kind }}</h3></header>
@@ -22,8 +22,6 @@
                      <div class="col-md-12">
                         <div class="row heading-tool">
                             <h4 class="list-group-item-heading">{{ tool.name }}</h4>
-                        </div>
-                        <div class="row describe-tool">
                             <p class="list-group-item-text">
                                 {{ tool.description }}
                             </p>
@@ -31,7 +29,7 @@
                     </div>
                     <div class="col-md-12 col-xs-2">
                         <div class="row link-tool">
-                            <p><a href="{{ tool.file_content.url }}" target="_blank">
+                            <p class="text-white"><a href="{{ tool.file_content.url }}" target="_blank">
                                 <span class="glyphicon glyphicon-eye-open"></span> Consulter
                             </a></p>
                         </div>
@@ -41,7 +39,34 @@
             </div>
         </article>
         {% endfor %}
-    </section>
+    </section> -->
+        <section class="col-md-10 margin-top-little">
+            <article id="{{ kind }}">
+                <header class="tool-category"><h3>{{ kinds|key:kind }}</h3></header>
+                <div class="list-group">
+                {% for tool in tool_file_list %}                    
+                    <div class="col-md-3 margin-left-little margin-top-little border-tool">
+                         <div class="col-md-12">
+                            <div class="row heading-tool">
+                                <h4 class="list-group-item-heading">{% for tool in tool_file_list %}</h4>
+                                <p class="list-group-item-text">
+                                    {{ tool.description }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-2">
+                            <div class="row link-tool">
+                                <p class="text-white"><a href="{{ tool.file_content.url }}" target="_blank">
+                                    <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </article>
+            {% endfor %}
+        </section>
 </div>
 {% endblock %}
 
