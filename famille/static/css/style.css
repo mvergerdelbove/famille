@@ -15,7 +15,8 @@
    .home{
     margin-top: 0;
     padding-top: 0;
-    background-image: url("../img/backg_home.jpg");
+    background-image: url("../img/backg_home.jpg");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
+background-attachment:fixed;
     background-size: 110%;
     background-repeat: no-repeat;
     padding-bottom: 10%;
