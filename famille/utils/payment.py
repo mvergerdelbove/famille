@@ -22,7 +22,7 @@ PRODUCTS = {
     "famille": [
         {
             "amount": "10.00",
-            "item_title": "Forfait 1",
+            "item_title": "Decouverte",
             "item_frequence": "/mois",
             "item_name": "Abonnement Illimite pendant 1 mois",
             "item_number": PREMIUM_IDS["1f"],
@@ -38,7 +38,7 @@ PRODUCTS = {
         },
         {
             "amount": "5.00",
-            "item_title": "Forfait 3",
+            "item_title": "Serenite",
             "item_frequence": "/mois",
             "item_name": "Abonnement Illimite pendant 1 an",
             "item_number": PREMIUM_IDS["12f"],
