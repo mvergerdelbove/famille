@@ -62,13 +62,15 @@
                         {% include 'helpers/popover_visitor.html' with icon="glyphicon-star" wording="Favori" only %}
                     {% endif %}
                     {% if not user.is_authenticated %}
-                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-user" wording="Profile" only %}
+                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-user" wording="Profil complet" only %}
                     {% elif user|plan == "premium" %}
                         <a href="{% url 'profile' result|class_name|lower result.pk %}" target="_blank"
                            class="btn btn-color btn-brown-min btn-block contact-result">
-                            <span class="glyphicon glyphicon-eye-open"></span> Profile complet
+                            <span class="glyphicon glyphicon-eye-open"></span> Profil complet
                         </a>
                     {% else %}
+                        {% include 'helpers/popover_logged.html' with icon="glyphicon-eye-open" wording="Profil complet" only %}
+                    {% endif %}
                     {% if not user.is_authenticated %}
                         {% include 'helpers/popover_visitor.html' with icon="glyphicon-user" wording="Contacter" only %}
                     {% elif user|plan == "premium" %}
