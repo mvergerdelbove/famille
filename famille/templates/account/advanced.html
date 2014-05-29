@@ -4,29 +4,29 @@
 
 {% block mainContent %}
 <div class="col-md-offset-2 col-md-6">
-    <h1>Paramètres avancés</h1>
-        <form action="{% url 'advanced' %}" method="post" class="form form-horizontal">
+    <h4>Paramètres avancés</h4>
+        <form action="{% url 'advanced' %}" method="post" class="form form-horizontal margin-bottom-med">
             {% csrf_token %}
-            <h2>Gérer ma visibilité</h2>
+            <h2><span class="glyphicon glyphicon-eye-open"></span> Gérer ma visibilité</h2>
             {% bootstrap_field form.visibility_family %}
             {% bootstrap_field form.visibility_prestataire %}
             {% bootstrap_field form.visibility_global %}
             <div class="form-group">
                 <i>"Ne pas être visible" signifie ne pas apparaître dans les résultats de recherche.</i>
             </div>
-            <h2>Newsletter</h2>
+            <h2><span class="glyphicon glyphicon-envelope"></span> Newsletter</h2>
             {% bootstrap_field form.newsletter %}
             <h2>Informations sensibles</h2>
-            <div class="form-group">
-                <a href="{% url 'password_change' %}" class="btn btn-warning">
+            <div class="form-group margin-bottom-little">
+                <a href="{% url 'password_change' %}" class="btn btn-color btn-orange-min">
                     <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
-                </a>
-                <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-danger">
-                    <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
                 </a>
             </div>
             {% buttons %}
-                <button type="submit" class="btn btn-success">Valider</button>
+                <button type="submit" class="btn btn-color btn-green-min">Valider</button>
+                <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-color btn-red-min pull-right">
+                    <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
+                </a>
             {% endbuttons %}
         </form>
     </article>
@@ -45,8 +45,8 @@
                 auprès de nos utilisateurs, gérez vous même votre visibilité.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
-                <a href="{% url 'delete_account'%}" class="btn btn-danger">Confirmer</a>
+                <button type="button" class="btn btn-color btn-color btn-blue-min" data-dismiss="modal">Annuler</button>
+                <a href="{% url 'delete_account'%}" class="btn btn-color btn-red-min">Confirmer</a>
             </div>
         </div>
     </div>
