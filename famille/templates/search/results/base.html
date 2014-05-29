@@ -34,8 +34,7 @@
                 </div>
                 <div class="col-md-7">
                     <div class="row">
-                        <h4 class="col-md-7 nav-title text-blue">
-                            <h4>
+                        <h4 class="col-md-7 nav-title text-blue text-left">
                         {% if not user.is_authenticated %}
                             {% include 'helpers/anchor_visitor.html' with wording=result.get_pseudo only %}
                         {% elif user|plan == "premium" %}
@@ -45,7 +44,6 @@
                         {% else %}
                             {% include 'helpers/anchor_logged.html' with wording=result.get_pseudo only %}
                         {% endif %}
-                            </h4>
                         </h4>
                     </div>
                     <div class="row">
