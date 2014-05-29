@@ -22,19 +22,25 @@ PRODUCTS = {
     "famille": [
         {
             "amount": "10.00",
-            "item_name": "Compte premium Une vie de famille (1 mois)",
+            "item_title": "Forfait 1",
+            "item_frequence": "/mois",
+            "item_name": "Abonnement Illimite pendant 1 mois",
             "item_number": PREMIUM_IDS["1f"],
             "button_type": PayPalPaymentsForm.BUY
         },
         {
             "amount": "7.00",
-            "item_name": "Compte premium Une vie de famille (3 mois)",
+            "item_title": "Forfait 2",
+            "item_frequence": "/mois",
+            "item_name": "Abonnement Illimite pendant 3 mois",
             "item_number": PREMIUM_IDS["3f"],
             "button_type": PayPalPaymentsForm.SUBSCRIBE
         },
         {
             "amount": "5.00",
-            "item_name": "Compte premium Une vie de famille (1 an)",
+            "item_title": "Forfait 3",
+            "item_frequence": "/mois",
+            "item_name": "Abonnement Illimite pendant 1 an",
             "item_number": PREMIUM_IDS["12f"],
             "button_type": PayPalPaymentsForm.SUBSCRIBE
         }
@@ -42,7 +48,9 @@ PRODUCTS = {
     "prestataire": [
         {
             "amount": "5.00",
-            "item_name": "Compte premium Une vie de famille (1 an)",
+            "item_title": "Forfait ",
+            "item_frequence": "pour toute l'annee",
+            "item_name": "Abonnement Illimite pendant un an",
             "item_number": PREMIUM_IDS["12p"],
             "button_type": PayPalPaymentsForm.BUY
         }

@@ -3,29 +3,102 @@
 
 <!-- TODO: feedback on cancel -->
 {% block mainContent %}
-<div class="col-md-offset-1 col-md-7">
+<div class="col-md-offset-1 col-md-7 padding-bottom-min">
     <div class="row">
-        <div class="col-md-12">
-            <div class="jumbotron">
-                <h1>Expliquer pourquoi c'est bien d'être premium <small>En mode swag</small></h1>
-            </div>
+        <div class="col-md-10 col-md-offset-1">
+            <h4 class="margin-top-little">Devenez membre premium</h4>
+            <p class="lead">profitez sans limite de l'ensemble des fonctionnalités</p>
+            <table class="table margin-top-little">
+                <thead>
+                    <tr>
+                        <td class="radius-bottom-right"></td>
+                        <td class="bg-green radius-top-left mea">Aucune inscription</td>
+                        <td class="bg-green mea">Inscription gratuite</td>
+                        <td class="bg-green radius-top-right mea">Membre privilégié</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="align-left mea col-md-6 border-right">Connaître le nombre de prestataires    près de chez moi</td>
+                        <td class="col-md-2"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="col-md-2"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="col-md-2 border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr class="bg-grey">
+                        <td class="align-left mea border-right">Recevoir les newsletters</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="align-left mea border-right">Personnaliser mes recherches</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr class="bg-grey">
+                        <td class="align-left mea border-right">Consulter les profils détaillés des autres utilisateurs</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="align-left mea border-right">Selectionner des favoris</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr class="bg-grey">
+                        <td class="align-left mea border-right">Profiter des outils et fiches pratiques</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="align-left mea border-right">Apparaitre dans les résultats des recherches</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+                    </tr>
+                    <tr class="border-bottom bg-grey">
+                        <td class="align-left mea border-right radius-bottom-left">Obtenir les coordonnées des autres utilisateurs</td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+                        <td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big radius-bottom-right"></span></td>
+                    </tr>
+                </tbody>    
+            </table>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-offset-2 col-md-8">
-            {% if action != "success" %}
-            {% for form in payment_forms %}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form.initial.item_name }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.render }}
-                </div>
+        {% if action != "success" %}
+            <div class="col-md-10  list-group col-md-offset-2">
+                {% for form in payment_forms %}
+                    <div class="col-md-3 margin-left-little margin-top-little">
+                         <div class="col-md-12">
+                            <div class="row heading-tool">
+                                <h4 class="list-group-item-heading">{{ form.initial.item_title }}</h4>
+                            </div>
+                            <div class="row describe-tool">
+                                <p class="list-group-item-text text-center">
+                                    {{ form.initial.item_name }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-2">
+                            <div class="row link-tool text-white">
+                                <p><a class="text-white">
+                                    {{ form.initial.amount }} € {{ form.initial.item_frequence }}
+                                </a></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margin-top-r">
+                            {{ form.render }}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
 </div>
 <input type="hidden" value="{{ action }}" id="paypal-action"/>

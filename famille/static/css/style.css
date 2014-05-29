@@ -58,9 +58,9 @@
     #description{background-image: url("../img/bckg_descr.jpg");background-size: 100%;}
     .tool-page{background-image: url("../img/manon.jpg");background-size: 100%;padding-bottom: 20%;background-repeat:no-repeat;
 background-attachment:fixed;}
-    .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;}
+    .account{background-image: url("../img/bckg_account2.jpg");background-size: 100%;background-repeat: no-repeat;background-attachment:fixed;}
 /*    .search-view{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}*/
-    .profile-container{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;}
+    .profile-container{background-image: url("../img/bckg_search.jpg");background-size: 100%;background-repeat: no-repeat;background-attachment: fixed;}
     .panel-brown .panel-info .panel-heading{ background-color: #A69F88; color: #FFFFFF; border-color: #A69F88;}
     .panel-brown .panel-info{border-color: #CCC3AC;}
     .panel-brown .panel-info .panel-heading+ .panel-collapse .panel-body{border-color: #CCC3AC;}
@@ -162,6 +162,10 @@ background-color: rgba(255, 255, 255, 0.5);
 
 /* formating font */
 
+
+tr td .title-red{
+  color: #CDCDCD;
+}
 .text-center{
     text-align:center;
 }
@@ -180,6 +184,10 @@ background-color: rgba(255, 255, 255, 0.5);
 
 .text-white, .text-white a .text-white p a{
   color: #FFFFFF
+}
+.text-white :hover, .text-white a .text-white p a :hover{
+  text-decoration:none;
+  color: #FFFFFF;
 }
 
 h2{

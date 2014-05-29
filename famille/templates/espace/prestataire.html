@@ -50,7 +50,13 @@
 	  			<td><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
 	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
 	  		</tr>
-	  		<tr class="border-bottom">
+	  		<tr>
+	  			<td class="align-left mea border-right">Apparaitre dans les résultats des recherches</td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
+	  			<td class="border-right"><span class="glyphicon glyphicon-ok title-green glyphicon-big"></span></td>
+	  		</tr>
+	  		<tr class="border-bottom bg-grey">
 	  			<td class="align-left mea border-right radius-bottom-left">Obtenir les coordonnées des autres utilisateurs</td>
 	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
 	  			<td><span class="glyphicon glyphicon-remove title-red glyphicon-big"></span></td>
@@ -72,7 +78,7 @@
                 </div>
                 <div class="col-md-12 col-xs-2">
                     <div class="row link-tool text-white">
-                        <p><a href="{{ tool.file_content.url }}" target="_blank" class="text-white">
+                        <p><a href="{% url 'premium' %}" target="_blank" class="text-white">
                             5€ pour toute l'année
                         </a></p>
                     </div>
