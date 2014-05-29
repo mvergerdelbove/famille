@@ -1,6 +1,4 @@
-<a class="list-group-item"
-        data-toggle="popover" data-trigger="click" data-title="Vous êtes déjà Premium"
-        data-content="<p>Vous recevrez un mail lorsque votre abonnement arrivera à expiration</p>"
-        data-placement="bottom" data-html="true">
-    <span class="glyphicon {{ icon }}"></span> {{ wording }}
-</a
+<a href="#" class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}"
+	data-toggle="tooltip" data-placement="left" title="Vous êtes déjà membre premium, vous recevrez un mail lorsque votre abonnement expirera">
+    <i class="glyphicon glyphicon-{{ icon }}"></i> {{ wording }}
+</a>

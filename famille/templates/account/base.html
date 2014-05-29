@@ -274,7 +274,6 @@
           </a>
           {% if user|plan == "premium" %}
                 {% include 'helpers/popover_premium.html' with icon="thumbs-up" wording="Devenir premium" only %}
-<!--                 <a class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}"> -->
             {% elif not user|plan == "premium"  %}
                 <a href="{% url 'premium' %}" class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}">
                     <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
