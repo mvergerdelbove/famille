@@ -17,7 +17,7 @@
 {% block mainContent %}
     {% with related=request.user|get_related %}
     <div class="col-md-offset-1 col-md-7">
-    {% if related.is_premium %}
+    {% if not related.is_premium %}
         {% postman_unread as unread_count %}
         <ul class="nav nav-tabs" id="message-tabs">
             <li id="inboxLink"><a href="{% url 'postman_inbox' %}">
@@ -28,7 +28,7 @@
             <li id="archivesLink"><a href="{% url 'postman_archives' %}">Archives</a></li>
             <li id="trashLink"><a href="{% url 'postman_trash' %}">Corbeille</a></li>
         </ul>
-        <div class="tab-content margin-top-1">
+        <div class="tab-content margin-top-min">
             <div class="tab-pane fade in active">
                 {% block postman_content %}{% endblock %}
             </div>

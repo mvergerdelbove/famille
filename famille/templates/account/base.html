@@ -4,14 +4,6 @@
 {% load static %}
 {% load helpers %}
 
-{% load postman_tags %}
-
-    {% with related=request.user|get_related %}
-        {% if related.is_premium %}
-            {% postman_unread as unread_count %}
-        {% endif%}
-    {% endwith %}
-
 {% block title %} - Mon compte{% endblock %}
 {% block extrahead %}
 <link rel="stylesheet" href="{% static "lib/bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}" media="all"/>
@@ -274,7 +266,7 @@
           </a>
           <a href="{% url 'postman_inbox' %}"
              class="list-group-item {% if '/messages/' in request.path_info %}active{% endif %}">
-              <i class="glyphicon glyphicon-envelope"></i> Messagerie {{ unread_count }}
+              <i class="glyphicon glyphicon-envelope"></i> Messagerie
           </a>
           <a href="{% url 'advanced' %}"
              class="list-group-item {% if request.path_info == '/mon-compte/parametres-avances/' %}active{% endif %}">
