@@ -77,19 +77,19 @@
         <td><input type="checkbox" {% if by_conversation and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
         </td>
         {% block pm_sender_cell %}   
-          <td>
+          <td class="text-left">
             {{ message.obfuscated_sender|or_me:user }}{% if message.count %} ({{ message.count }}){% endif %}
           </td>
         {% endblock %}
         {% block pm_recipient_cell %}   
-          <td>
+          <td class="text-left">
             {{ message.obfuscated_recipient|or_me:user }}
             {% if message.count %} 
               ({{ message.count }})
             {% endif %}
           </td>
         {% endblock %}
-        <td>
+        <td class="text-left">
           {% if message.is_new %}
             <strong>
           {% endif %}
