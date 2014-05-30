@@ -9,6 +9,8 @@
 <p>{% trans "Sorry, this page number is invalid." %}</p>
 {% else %}
 {% if pm_messages %}
+<form action="{% block pm_form_action %}{% endblock %}" method="post">{% csrf_token %}
+
 {% block pm_by_modes %}
 <div id="pm_by_modes" class="btn-group">
   <span class="pm_by_mode">
@@ -19,8 +21,6 @@
     {% endif %}
     {% trans "by conversation" %}
       </a>
-  </span>
-  <span class="pm_by_mode">
     {% if by_conversation %}
       <a href="{{ by_message_url }}" class="btn btn-default">
     {% elif by_message %}
@@ -31,12 +31,21 @@
   </span>
 </div>
 {% endblock pm_by_modes %}
-<form action="{% block pm_form_action %}{% endblock %}" method="post">{% csrf_token %}
-{% block pm_form_buttons %}<span id="pm_buttons">
-{% block pm_delete_button %}<button type="submit" onclick="this.form.action='{% url 'postman_delete' %}'">{% trans "Delete" %}</button>{% endblock %}
-{% block pm_archive_button %}<button type="submit" onclick="this.form.action='{% url 'postman_archive' %}'">{% trans "Archive" %}</button>{% endblock %}
-{% block pm_undelete_button %}<button type="submit" onclick="this.form.action='{% url 'postman_undelete' %}'">{% trans "Undelete" %}</button>{% endblock %}
-</span>{% endblock %}
+
+{% block pm_form_buttons %}
+  <span id="pm_buttons" class="btn-group">
+    {% block pm_delete_button %}
+      <button type="submit" onclick="this.form.action='{% url 'postman_delete' %}'"><span class="glyphicon glyphicon-trash"></span></button>
+    {% endblock %}
+    {% block pm_archive_button %}
+      <button type="submit" onclick="this.form.action='{% url 'postman_archive' %}'"><span class="glyphicon glyphicon-folder-open"></span></button>
+    {% endblock %}
+    {% block pm_undelete_button %}
+      <button type="submit" onclick="this.form.action='{% url 'postman_undelete' %}'">Annuler la suppression</button>
+    {% endblock %}
+  </span>
+{% endblock %}
+
 <table id="pm_messages">
  <thead>
   <tr>
