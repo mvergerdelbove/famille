@@ -5,13 +5,13 @@
 
 {% block postman_content %}
 <div id="postman">
-    <h1>{% block pm_write_title %}{% endblock %}</h1>
+    <h4>{% block pm_write_title %}{% endblock %}</h4>
     <form action="?next={% url 'postman_inbox' %}?success" class="form-messages" method="post">
         {% csrf_token %}
         {% block pm_write_recipient %}{% endblock %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button class="btn btn-success" type="submit">Envoyer</button>
+            <button class="btn btn-color btn-green-min" type="submit">Envoyer</button>
         {% endbuttons %}
     </form>
 </div>
