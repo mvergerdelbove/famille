@@ -5,6 +5,7 @@
 
 {% block postman_content %}
 <div id="postman">
+<div class="col-md-8">
     <h4>{% block pm_write_title %}{% endblock %}</h4>
     <form action="?next={% url 'postman_inbox' %}?success" class="form-messages" method="post">
         {% csrf_token %}
@@ -14,6 +15,7 @@
             <button class="btn btn-color btn-green-min" type="submit">Envoyer</button>
         {% endbuttons %}
     </form>
+</div>
 </div>
 {% endblock %}
 

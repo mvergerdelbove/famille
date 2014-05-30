@@ -185,7 +185,7 @@ background-color: rgba(255, 255, 255, 0.5);
   padding: 8px;
 }
 
-td .text-left {
+#pm_message td.padding-8 {
   padding: 8px;
 }
 
