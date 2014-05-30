@@ -7,6 +7,7 @@
 		<h4 class="text-left">{% if pm_messages|length > 1 %}{% trans "Conversation" %}{% else %}{% trans "Message" %}{% endif %}</h4>
 		{% for message in pm_messages %}
 			<div class="pm_message{% if message.is_pending %} pm_pending{% endif %}{% if message.is_rejected %} pm_rejected{% endif %}{% if message.sender == user and message.sender_archived or message.recipient == user and message.recipient_archived %} pm_archived{% endif %}{% if message.sender == user and message.sender_deleted_at or message.recipient == user and message.recipient_deleted_at %} pm_deleted{% endif %}{% if message.recipient == user and not message.read_at %} pm_unread{% endif %}">
+				<div class="row">	
 					<form action="" method="post">{% csrf_token %}
 						<input type="hidden" {% if pm_messages|length > 1 and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
 						<span id="pm_buttons" class="btn-group col-md-6 col-md-offset-1 margin-top-little pull-right">
@@ -28,6 +29,8 @@
 							{% endif %}
 						</span>
 					</form>
+				</div>
+				<div class="row">
 					<div class="pm_header">
 						<span class="pm_sender">{{ message.obfuscated_sender|or_me:user }}</span> &raquo;
 						<span class="pm_recipient">{{ message.obfuscated_recipient|or_me:user }}</span> |
@@ -42,6 +45,7 @@
 						</div>
 					{% endif %}
 					</div>
+				</div>
 	 			<div class="pm_body margin-top-little text-justify">
 					{{ message.body|linebreaksbr }}
 				</div>
