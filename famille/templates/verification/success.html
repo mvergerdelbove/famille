@@ -6,10 +6,21 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-       <h1>Votre email a été vérifié avec succès !</h1>
-       <p>Veuillez vous connecter pour accéder à votre compte.</p>
-       <a class="btn btn-success" href="{% url 'auth_login' %}">Se connecter</a>
+	<div class="col-md-offset-1 col-md-7">
+    <h4 class="margin-top-r">Votre email a été vérifié avec succès</h4>
+    <div class="row margin-top-little">
+    <p class="text-center margin-top-little margin-bottom-little col-md-3 col-md-offset-2">
+        <img src="{% static "img/mail.png" %}" width="90%">
+    </p>
+    <p class="col-md-5 margin-top-0">
+        Vous pouvez dès à présent vous connecter à votre compte et commencer vos recherches.<br>
+    </p>
     </div>
+    <p class="col-md-12 text-center margin-bottom-big">
+        <a href="{% url 'premium' %}" class="btn btn-color btn-blue-min">
+            <span class="glyphicon glyphicon-remove title-red glyphicon-bookmark"></span> Se connecter
+        </a>
+    </p>
+</div>
 </div>
 {% endblock content %}
