@@ -6,7 +6,7 @@
 {% block postman_content %}
 <div id="postman">
 <div class="col-md-8">
-    <h4>{% block pm_write_title %}{% endblock %}</h4>
+    <h4 class="text-left">{% block pm_write_title %}{% endblock %}</h4>
     <form action="?next={% url 'postman_inbox' %}?success" class="form-messages" method="post">
         {% csrf_token %}
         {% block pm_write_recipient %}{% endblock %}
