@@ -15,19 +15,19 @@
 <div id="pm_by_modes" class="col-md-6">
   Afficher en mode:
   <span class="pm_by_mode btn-group">
-    {% if by_message %}
-      <a href="{{ by_conversation_url }}" class="btn btn-default">
-    {% elif by_conversation %}
-      <a class="btn btn-default active">    
-    {% endif %}
-    conversations
-      </a>
     {% if by_conversation %}
       <a href="{{ by_message_url }}" class="btn btn-default">
     {% elif by_message %}
       <a class="btn btn-default active">  
     {% endif %}
       messages
+      </a>
+    {% if by_message %}
+      <a href="{{ by_conversation_url }}" class="btn btn-default">
+    {% elif by_conversation %}
+      <a class="btn btn-default active">    
+    {% endif %}
+    conversations
       </a>
   </span>
 </div>
