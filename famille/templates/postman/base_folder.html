@@ -12,7 +12,7 @@
 <form action="{% block pm_form_action %}{% endblock %}" method="post">{% csrf_token %}
 <div class="row">
 {% block pm_by_modes %}
-<div id="pm_by_modes">
+<div id="pm_by_modes col-md-6">
   afficher :
   <span class="pm_by_mode btn-group">
     {% if by_message %}
@@ -34,7 +34,7 @@
 {% endblock pm_by_modes %}
 
 {% block pm_form_buttons %}
-  <span id="pm_buttons" class="btn-group margin-left-little">
+  <span id="pm_buttons" class="btn-group col-md-2 col-md-offset-1">
     {% block pm_delete_button %}
       <button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman_delete' %}'"
         data-toggle="tooltip" data-placement="bottom" title="Supprimer les messages séléctionnés">
@@ -57,7 +57,7 @@
 {% endblock %}
 </div>
 <div class="row">
-<table id="pm_messages" class="col-md-8 margin-top-r">
+<table id="pm_messages" class="col-md-8 margin-top-little padding-bottom-med">
   <thead>
     <tr class="border-bottom">
       <th class="col-md-1">{% trans "Action" %}</th>
