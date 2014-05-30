@@ -322,6 +322,7 @@ table thead {vertical-align: bottom;}
 .border-right{border-right: solid 1px #DEDEDE;}
 .border-left{border-left: solid 1px #DEDEDE;}
 .border-bottom{border-bottom:solid 1px #DEDEDE;}
+.border-bottom-light{border-bottom:solid 1px #F2F2F2;}
 .no-border-top{border-top:solid 1px #ffffff;}
 .no-border-bottom{border-bottom:solid 1px #ffffff;}
 
