@@ -35,13 +35,22 @@
 {% block pm_form_buttons %}
   <span id="pm_buttons" class="btn-group">
     {% block pm_delete_button %}
-      <button type="submit" onclick="this.form.action='{% url 'postman_delete' %}'"><span class="glyphicon glyphicon-trash"></span></button>
+      <button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman_delete' %}'"
+        data-toggle="tooltip" data-placement="bottom" title="Supprimer les messages séléctionnés">
+        <span class="glyphicon glyphicon-trash"></span>
+      </button>
     {% endblock %}
     {% block pm_archive_button %}
-      <button type="submit" onclick="this.form.action='{% url 'postman_archive' %}'"><span class="glyphicon glyphicon-folder-open"></span></button>
+      <button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman_archive' %}'"
+        data-toggle="tooltip" data-placement="bottom" title="Archiver les messages séléctionnés">
+        <span class="glyphicon glyphicon-folder-open"></span>
+      </button>
     {% endblock %}
     {% block pm_undelete_button %}
-      <button type="submit" onclick="this.form.action='{% url 'postman_undelete' %}'">Annuler la suppression</button>
+      <button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman_undelete' %}'"
+        data-toggle="tooltip" data-placement="bottom" title="Annuler la suppression des messages séléctionnés">
+        Annuler la suppression
+      </button>
     {% endblock %}
   </span>
 {% endblock %}
