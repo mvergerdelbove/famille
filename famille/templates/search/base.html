@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load bootstrap3 %}
 {% load helpers %}
+{% load users %}
 
 {% block title %} - Recherche{% endblock %}
 {% block extrahead %}
@@ -11,6 +12,52 @@
 {% endblock %}
 
 {% block content %}
+
+<!-- Contact modal -->
+<div class="modal fade" id="authentificate" tabindex="-1"
+  role="dialog" aria-labelledby="contact-modal" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="contact-modal">
+                  Vous n'êtes pas connecté<br/>
+                  <small>Vous allez accéder aux fonctionnalités réduites de la recherche.<br>Pour pouvoir utiliser tous les paramètres, et ainsi répondre à votre besoin avec plus de précision, créez gratuitement un compte</small>
+              </h4>
+          </div>
+          <div class="modal-body text-center">
+            <img src="{% static "img/flechette.png" %}" width="70%">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Poursuivre sans créer de compte</button>
+              <a href='{% url 'register' %}' type="button" class="btn btn-color btn-blue-min send-contact-message" data-dismiss="modal">Créer un compte gratuit</a>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="be-premium" tabindex="-1"
+  role="dialog" aria-labelledby="contact-modal" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="contact-modal">
+                  Vous n'êtes pas Premium<br/>
+                  <small>Vous pouvez dès à présent éffectuer des recherches...<br>Cependant, pour pouvoir entrer en contact avec les autres utilisateurs et pour être référencé auprès des autres utilisateurs, vous devez devenir membre premium.</small>
+              </h4>
+          </div>
+          <div class="modal-body text-center">
+            <img src="{% static "img/premium.png" %}" width="70%">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Poursuivre sans être Premium</button>
+              <a href='{% url 'register' %}' type="button" class="btn btn-color btn-blue-min send-contact-message" data-dismiss="modal">Devenir Premium</a>
+          </div>
+      </div>
+  </div>
+</div>
+
 <div class="row search-view">
     <div class="col-md-3 col-md-offset-1">
             <h3>Vous recherchez...</h3>
@@ -117,6 +164,21 @@
     window._auth = true;
 </script>
 {% endif %}
+
+{% if not user.is_authenticated %}
+<script>
+$('#authentificate').modal({
+  show: true
+})
+</script>
+{% elif user|plan == "basic" %}
+<script>
+$('#be-premium').modal({
+  show: true
+})
+</script>
+{% endif %}
+
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
 <script src="{% static "lib/select2/select2.min.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
