@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block contentBlock1 %}  <!-- infos générales -->
-    <h5 class="title-profil">Attentes générales</h5>
+    <h5 class="title-profil"><span class="glyphicon glyphicon-list-alt"></span> Attentes générales</h5>
     <div class="form-group">
         <p>
         <a class="label-profil"> Type de prestataire:</a> {% if profile.type_presta %}{{ profile.get_type_presta_display }}{% else %}--{% endif %}
@@ -38,11 +38,11 @@
 {% endwith %}
 {% endblock %}
 
-{% block block3Title %}Mes besoins{% endblock %}
+{% block block3Title %}<span class="glyphicon glyphicon-check"></span> Mes besoins{% endblock %}
 
-{% block block4Title %}Les p'tits plus recherchés{% endblock %}
+{% block block4Title %}<span class="glyphicon glyphicon-plus"></span> Les p'tits plus recherchés{% endblock %}
 
-{% block block5Title %}Plus de détails sur notre famille{% endblock %}
+{% block block5Title %}<span class="glyphicon glyphicon-comment"></span> Plus de détails sur notre famille{% endblock %}
 
 {% block extra %}
 <span data-field="resource_uri" class="hidden">/api/v1/familles/{{ profile.pk }}/</span>
