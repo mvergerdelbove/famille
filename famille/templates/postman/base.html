@@ -17,7 +17,7 @@
 
 {% block mainContent %}
     {% with related=request.user|get_related %}
-    <div class="col-md-offset-1 col-md-7">
+    <div class="col-md-offset-1 col-md-7 margin-bottom-med">
     {% if related.is_premium %}
         {% postman_unread as unread_count %}
         <ul class="nav nav-tabs" id="message-tabs">
