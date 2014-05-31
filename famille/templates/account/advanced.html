@@ -1,34 +1,65 @@
 {% extends "account/base.html" %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load static %}
+{% load helpers %}
 
 {% block mainContent %}
 <div class="col-md-offset-2 col-md-6">
     <h4 class="text-left">Paramètres avancés</h4>
-        <form action="{% url 'advanced' %}" method="post" class="form form-horizontal margin-bottom-med">
-            {% csrf_token %}
-            <h2><span class="glyphicon glyphicon-eye-open"></span> Gérer ma visibilité</h2>
-            {% bootstrap_field form.visibility_family %}
-            {% bootstrap_field form.visibility_prestataire %}
-            {% bootstrap_field form.visibility_global %}
-            <div class="form-group">
-                <i>"Ne pas être visible" signifie ne pas apparaître dans les résultats de recherche.</i>
+        {% if user|plan == "basic" %}
+        <div class="row well col-md-11 margin-top-little">
+            <div class="col-md-8">
+                Pour être visible sur le site et entrer en contact avec les autres utilisateurs, devenez membre Premium.
             </div>
-            <h2><span class="glyphicon glyphicon-envelope"></span> Newsletter</h2>
-            {% bootstrap_field form.newsletter %}
-            <h2>Informations sensibles</h2>
-            <div class="form-group margin-bottom-little">
-                <a href="{% url 'password_change' %}" class="btn btn-color btn-orange-min">
-                    <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
+            <div class="col-md-2">
+                <a href="{% url 'premium' %}" class="btn btn-color btn-green-min" onclick="visible()">
+                    <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
                 </a>
             </div>
-            {% buttons %}
-                <button type="submit" class="btn btn-color btn-green-min">Valider</button>
-                <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-color btn-red-min pull-right">
-                    <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
-                </a>
-            {% endbuttons %}
-        </form>
+        </div>
+        {% endif %}
+        <div class="row col-md-11">
+            <form action="{% url 'advanced' %}" method="post" class="form form-horizontal margin-bottom-med">
+                {% csrf_token %}
+                <h2><span class="glyphicon glyphicon-eye-open"></span> Gérer ma visibilité</h2>
+                {% bootstrap_field form.visibility_family %}
+                {% bootstrap_field form.visibility_prestataire %}
+                {% bootstrap_field form.visibility_global %}
+                <div class="form-group">
+                    <i>"Etre visible" permet d'apparaître dans les résultats de recherche des autres utilisateurs.</i>
+                </div>
+                <h2><span class="glyphicon glyphicon-envelope"></span> Newsletter</h2>
+                {% bootstrap_field form.newsletter %}
+                <h2>Informations sensibles</h2>
+                <div class="form-group margin-bottom-little">
+                    <a href="{% url 'password_change' %}" class="btn btn-color btn-orange-min">
+                        <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
+                    </a>
+                </div>
+                {% buttons %}
+                    <button type="submit" class="btn btn-color btn-green-min">Valider</button>
+                    <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-color btn-red-min pull-right">
+                        <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
+                    </a>
+                {% endbuttons %}
+
+                <script>
+
+                {% if user|plan == "basic" %}
+                    window.onload = visible
+                    function visible()
+                    {
+                        document.getElementById("id_visibility_family").disabled=true;
+                        document.getElementById("id_visibility_prestataire").disabled=true;
+                        document.getElementById("id_visibility_global").disabled=true;
+                    }
+
+                {% endif %} 
+                </script>
+
+            </form>
+        </div>
     </article>
 </div>
 <!-- Conformation modal for account deletion -->
@@ -51,6 +82,8 @@
         </div>
     </div>
 </div>
+<form>
+
 {% endblock %}
 
 {% block extraScript %}
