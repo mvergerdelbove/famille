@@ -71,11 +71,15 @@
                 <h4 class="modal-title" id="account-deletion">Souhaitez vous réellement supprimer votre compte ?</h4>
             </div>
             <div class="modal-body">
-                La suppression de votre compte effacera toutes vos donnés personnelles.
-                Si vous ne souhaitez plus utiliser notre service et ne plus être visible
-                auprès de nos utilisateurs, gérez vous même votre visibilité.
+                ATTENTION : La suppression de votre compte effacera toutes vos données personnelles.<br>
+                Cependant, pour les membres Premium, conformément aux <a>CGU</a>, la suppression du compte ne vous désengage pas de votre abonnement.<br><br>
+                Nous vous conseillons de priviligier la gestion de la visibilité.<br>
+                En cas de question, n'hésitez pas à nous contacter, une équipe est là pour vous répondre.
             </div>
             <div class="modal-footer">
+                <a href="#" data-toggle="modal" data-target="#contactModal" class="btn btn-color btn-blue-min pull-left">
+                    <span class="glyphicon glyphicon-send"></span> Contacter
+                </a>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                 <a href="{% url 'delete_account'%}" class="btn btn-color btn-red-min">Confirmer</a>
             </div>

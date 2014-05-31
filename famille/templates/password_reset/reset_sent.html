@@ -1,15 +1,24 @@
 {% extends "password_reset/base.html" %}
 {% load url from future %}
 {% load bootstrap3 %}
+{% load staticfiles %}
+{% load static %}
 
 {% block title %}Mot de passe envoyé avec succès{% endblock %}
 
 {% block content %}
-<div class="row"><div class="col-md-offset-3 col-md-6">
-    <h1>Mot de passe envoyé avec succès</h1>
-	<p>
-	    Un email vous a été envoyé à l'adresse suivante <strong>{{ email }}</strong>. Veuillez cliquer sur le lien contenu
-        dans l'email pour réinitialiser votre mot de passe.
-	</p>
+<div class="row"><div class="col-md-offset-2 col-md-7 margin-top-little">
+    <h4 class="text-left">Changement de mot de passe</h4>
+	<div class="row margin-top-little">
+        <p class="text-center margin-top-little margin-bottom-r col-md-4 col-md-offset-2">
+            <img src="{% static "img/confirmation.png" %}" width="90%">
+        </p>
+        <p class="col-md-6 margin-top-0">
+        	Un email vous a été envoyé à l'adresse suivante <strong>{{ email }}</strong>.<br>
+        	Veuillez cliquer sur le lien contenu dans l'email pour réinitialiser votre mot de passe.<br>
+        	<br>
+        	<i>Pensez à regarder dans vos spams</i>
+        </p>
+      </div>
 </div></div>
 {% endblock %}
