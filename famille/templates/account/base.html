@@ -260,25 +260,21 @@
     {% if user.is_authenticated %}  <!--Keep this for premium-->
     <div class="col-md-offset-1 col-md-3 margin-top-r">
         <div class="list-group">
-          <a href="{% url 'account' %}"
-             class="list-group-item {% if request.path_info == '/mon-compte/' %}active{% endif %}">
-              <i class="glyphicon glyphicon-user"></i> Mon compte
-          </a>
-          <a href="{% url 'postman_inbox' %}"
-             class="list-group-item {% if '/messages/' in request.path_info %}active{% endif %}">
-              <i class="glyphicon glyphicon-envelope"></i> Messagerie
-          </a>
-          <a href="{% url 'advanced' %}"
-             class="list-group-item {% if request.path_info == '/mon-compte/parametres-avances/' %}active{% endif %}">
-              <i class="glyphicon glyphicon-cog"></i> Paramètres avancés
-          </a>
-          {% if user|plan == "premium" %}
-                {% include 'helpers/popover_premium.html' with icon="thumbs-up" wording="Devenir premium" only %}
-            {% elif not user|plan == "premium"  %}
-                <a href="{% url 'premium' %}" class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}">
-                    <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
-                </a>
-            {% endif %}
+            <a href="{% url 'account' %}"
+                class="list-group-item {% if request.path_info == '/mon-compte/' %}active{% endif %}">
+                <i class="glyphicon glyphicon-user"></i> Mon compte
+            </a>
+            <a href="{% url 'postman_inbox' %}"
+                class="list-group-item {% if '/messages/' in request.path_info %}active{% endif %}">
+                <i class="glyphicon glyphicon-envelope"></i> Messagerie
+            </a>
+            <a href="{% url 'advanced' %}"
+                class="list-group-item {% if request.path_info == '/mon-compte/parametres-avances/' %}active{% endif %}">
+                <i class="glyphicon glyphicon-cog"></i> Paramètres avancés
+            </a>
+            <a href="{% url 'premium' %}" class="list-group-item {% if '/devenir-premium/' in request.path_info %}active{% endif %}">
+                <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
+            </a>
         </div>
     </div>
     {% endif %}
