@@ -565,7 +565,7 @@ class Enfant(BaseModel):
         if self.e_birthday:
             disp += u", %s ans" % get_age_from_date(self.e_birthday)
         if self.e_school:
-            disp += u", scolarisé à %s" % self.e_school
+            disp += u", scolarisé(e) à %s" % self.e_school
 
         return disp
 

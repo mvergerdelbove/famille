@@ -52,7 +52,7 @@ class BasePlanning(BaseModel):
     """
     A planning entry.
     """
-    DISPLAY_TPL = u"Les %s, %s à partir du %s"
+    DISPLAY_TPL = u"Le %s, %s à partir du %s"
     FREQUENCY = {
         "ponct": "Ponctuel",
         "hebdo": "Toutes les semaines",

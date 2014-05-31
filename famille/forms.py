@@ -229,7 +229,7 @@ class CriteriaForm(forms.ModelForm):
             "studies": u"Niveau d'étude",
             "enfant_malade": u"Garde d'enfant malade",
             "cuisine": "Cuisine",
-            "animaux": "Prends soin des animaux"
+            "animaux": "Prend soin des animaux"
         }
         fields = labels.keys()
         widgets = {
