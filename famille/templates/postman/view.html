@@ -53,7 +53,7 @@
 			{% if forloop.last %}
 				<form action="" method="post">{% csrf_token %}
 					<input type="hidden" {% if pm_messages|length > 1 and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
-					<span id="pm_buttons" class="btn-group col-md-6 col-md-offset-1 margin-top-little pull-right">
+					<span id="pm_buttons" class="btn-group margin-top-little pull-right">
 						<a class="btn btn-default" href="{{ next_url }}">
 							<span class="glyphicon glyphicon-arrow-left">
 						</a>
