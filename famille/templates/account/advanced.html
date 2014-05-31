@@ -4,7 +4,7 @@
 
 {% block mainContent %}
 <div class="col-md-offset-2 col-md-6">
-    <h4>Paramètres avancés</h4>
+    <h4 class="text-left">Paramètres avancés</h4>
         <form action="{% url 'advanced' %}" method="post" class="form form-horizontal margin-bottom-med">
             {% csrf_token %}
             <h2><span class="glyphicon glyphicon-eye-open"></span> Gérer ma visibilité</h2>
@@ -45,7 +45,7 @@
                 auprès de nos utilisateurs, gérez vous même votre visibilité.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-color btn-color btn-blue-min" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                 <a href="{% url 'delete_account'%}" class="btn btn-color btn-red-min">Confirmer</a>
             </div>
         </div>
