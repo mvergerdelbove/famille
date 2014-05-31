@@ -23,17 +23,27 @@
 			<li><a href="#profil" data-toggle="tab">Mon profil</a></li>
 			<li><a href="#planning" data-toggle="tab">Planning</a></li>
             {% endblock %}
+            <a class="btn btn-color btn-blue-min margin-left-little margin-top-min"
+               href="{% url 'profile' profil.instance|class_name|lower profil.instance.pk %}"
+               target="_blank">
+                <span class="glyphicon glyphicon-eye-open"></span> Voir à quoi ressemble mon profil
+            </a>
         </ul>
+        {% if user|plan == "basic" %}
+        <div class="row well col-md-11 margin-top-little">
+            <div class="col-md-9">
+                Pour être visible sur le site et entrer en contact avec les autres utilisateurs, devenez membre Premium.
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'premium' %}" class="btn btn-color btn-green-min">
+                <i class="glyphicon glyphicon-thumbs-up"></i> Devenir premium
+            </a>
+            </div>
+        </div>
+        {% endif %}
         <div class="tab-content margin-top-little col-md-11">
             <div class="tab-pane fade in active" id="compte">
                 <div class="panel-group" id="accordion">
-                    <p>
-                        <a class="btn btn-color btn-blue-min"
-                           href="{% url 'profile' profil.instance|class_name|lower profil.instance.pk %}"
-                           target="_blank">
-                            <span class="glyphicon glyphicon-eye-open"></span> Voir à quoi ressemble mon profil
-                        </a>
-                    </p>
                     {% block compte_extra %}{% endblock %}
                     <div class="panel panel-default favorite-panel margin-bottom-long">
                         <div class="panel-heading">
