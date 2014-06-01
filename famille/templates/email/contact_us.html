@@ -6,8 +6,8 @@
 Un utilisateur vous a contacté
 {% endblock %}
 
-
-<!-- <div>
+{% block content %}
+<div>
     {% if name %}
     <p>Nom ou raison social: {{ name }}</p>
     {% endif %}
@@ -16,18 +16,5 @@ Un utilisateur vous a contacté
     {% endif %}
     <p>Message envoyé</p><br/>
     <p>{{ message }}</p>
-</div> -->
-{% block content %}
-
-    {% if name %}
-    Nom ou raison social: {{ name }}
-    {% endif %}
-    {% if email %}
-    Contact / email: {{ email }}
-    {% endif %}
-    Message envoyé
-    {{ message }}
-
-
-
+</div>
 {% endblock %}
