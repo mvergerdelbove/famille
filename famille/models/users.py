@@ -237,6 +237,13 @@ class UserInfo(BaseModel):
         """
         return int(self.total_rating / 5.0 * 100)
 
+    @property
+    def is_social(self):
+        """
+        Return True if user is connected through social auth.
+        """
+        return self.user.social_auth.all().count()
+
     # FIXME: can be async
     def geolocate(self):
         """
