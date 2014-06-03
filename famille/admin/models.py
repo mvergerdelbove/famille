@@ -16,6 +16,7 @@ class BaseUserAdmin(admin.ModelAdmin):
     list_display_links = ('email', )
     exclude = ('geolocation', 'user')
     search_fields = ['first_name', 'name', 'email']
+    list_filter = ('newsletter', )
 
     def is_active(self, obj):
         img = '<img src="/static/admin/img/icon-%s.gif" alt="%s">'
