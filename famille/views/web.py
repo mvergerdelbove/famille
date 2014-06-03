@@ -98,6 +98,8 @@ def register(request, social=None, type=None):
             form = forms.RegistrationForm(request.POST)
             if form.is_valid():
                 form.save(request)
+            else:
+                return render(request, "registration/register.html", get_context(social=social, form=form))
         else:
             form = forms.RegistrationForm()
             return render(request, "registration/register.html", get_context(social=social, form=form))

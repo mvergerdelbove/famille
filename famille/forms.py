@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.core import validators
 from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
 
@@ -21,8 +22,11 @@ SCHEDULE_CHOICES = lazy(Schedule.get_choices, list)()
 WEEKDAY_CHOICES = lazy(Weekday.get_choices, list)()
 
 
+validate_email = validators.EmailValidator(message=u"Veuillez saisir un mail valide.")
+
+
 class RegistrationForm(forms.Form):
-    email = forms.CharField(label="Adresse mail")
+    email = forms.CharField(label="Adresse mail", validators=[validate_email])
     password = forms.CharField(
         label="Mot de passe", widget=forms.PasswordInput
     )
