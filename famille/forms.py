@@ -407,10 +407,6 @@ class BaseSearchForm(forms.Form):
         widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
     )
     # planning
-    plannings__schedule__id = LazyMultipleChoiceField(
-        label=u"Plage horaire", choices=SCHEDULE_CHOICES, required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
-    )
     plannings__weekday__id = LazyMultipleChoiceField(
         label=u"Jour(s) de la semaine", choices=WEEKDAY_CHOICES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
