@@ -621,6 +621,20 @@ class AdvancedForm(forms.ModelForm):
         }
         fields = labels.keys()
 
+    def __init__(self, *args, **kwargs):
+        """
+        Make sure the user has the right to edit visibility (premium).
+        """
+        super(AdvancedForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.is_premium:
+            self.fields['visibility_family'].widget.attrs['disabled'] = True
+            self.fields['visibility_prestataire'].widget.attrs['disabled'] = True
+            self.fields['visibility_global'].widget.attrs['disabled'] = True
+
+            self.clean_visibility_family = lambda: self.instance.visibility_family
+            self.clean_visibility_prestataire = lambda: self.instance.visibility_prestataire
+            self.clean_visibility_global = lambda: self.instance.visibility_global
+
 
 class FamilleAdvancedForm(AdvancedForm):
 

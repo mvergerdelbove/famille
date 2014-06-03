@@ -43,21 +43,6 @@
                         <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
                     </a>
                 {% endbuttons %}
-
-                <script>
-
-                {% if user|plan == "basic" %}
-                    window.onload = visible
-                    function visible()
-                    {
-                        document.getElementById("id_visibility_family").disabled=true;
-                        document.getElementById("id_visibility_prestataire").disabled=true;
-                        document.getElementById("id_visibility_global").disabled=true;
-                    }
-
-                {% endif %} 
-                </script>
-
             </form>
         </div>
     </article>
