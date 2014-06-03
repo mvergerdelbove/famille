@@ -23,10 +23,11 @@ WEEKDAY_CHOICES = lazy(Weekday.get_choices, list)()
 
 
 validate_email = validators.EmailValidator(message=u"Veuillez saisir un mail valide.")
+validate_email_length = validators.MaxLengthValidator(100)  # make sure there is no 500 error...
 
 
 class RegistrationForm(forms.Form):
-    email = forms.CharField(label="Adresse mail", validators=[validate_email])
+    email = forms.CharField(label="Adresse mail", validators=[validate_email, validate_email_length])
     password = forms.CharField(
         label="Mot de passe", widget=forms.PasswordInput
     )
