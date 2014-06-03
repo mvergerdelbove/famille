@@ -41,6 +41,11 @@ var constructAgeFilter = function(name, value) {
     }
 };
 
+var dateToIso = function (date) {
+    var parts = date.split("/");
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
+};
+
 module.exports = Backbone.View.extend({
     events: {
         "click .next": "displayNext",
@@ -79,6 +84,9 @@ module.exports = Backbone.View.extend({
                 value = $this.val(),
                 query = $this.data("api");
             if (value && name == "age") return constructAgeFilter(name, value);
+            if (value && name == "plannings__start_date") {
+                return constructFilter(name, query, dateToIso(value));
+            }
             if (value && query) return constructFilter(name, query, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });

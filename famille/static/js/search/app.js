@@ -41,6 +41,12 @@ App.prototype.initEvents = function(){
         $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
+    $("#id_plannings__start_date").datetimepicker({
+        language: 'fr',
+        format: "DD/MM/YYYY",
+        startDate: moment().startOf("day"),
+        pickTime: false
+    });
 
     // FIXME : this engender problems : the popover is just hidden but
     //         covers the possibly underlying buttons
