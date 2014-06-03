@@ -399,7 +399,7 @@ class Criteria(UserInfo):
         ("part", u"Garde partagée"),
         ("ecole", u"Sortie d'école"),
         ("vacances", u"Vacances scolaires"),
-        ("decal", u"Garde à horaires"),
+        ("decal", u"Garde à horaires décalés"),
         ("nuit", u"Garde de nuit"),
         ("urgences", u"Garde d'urgence"),
     )
