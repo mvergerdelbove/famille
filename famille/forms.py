@@ -56,7 +56,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         fields = (
-            'pseudo', 'name', 'first_name', 'email', 'street',
+            'name', 'first_name', 'email', 'street',
             'postal_code', 'city', 'country',
             'tel', 'tel_visible'
         )
@@ -69,7 +69,6 @@ class UserForm(forms.ModelForm):
             "country": "Pays",
             "tel": u"Téléphone",
             "tel_visible": u"J’accepte que mon téléphone soit visible pour les personnes souhaitant me contacter",
-            "pseudo": u"Pseudo"
         }
 
     def is_valid(self):

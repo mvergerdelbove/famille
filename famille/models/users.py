@@ -156,7 +156,6 @@ class UserInfo(BaseModel):
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100, unique=True)
-    pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
 
     street = models.CharField(blank=True, null=True, max_length=100)
     postal_code = models.CharField(blank=True, null=True, max_length=8)
@@ -332,10 +331,11 @@ class UserInfo(BaseModel):
     def get_pseudo(self):
         """
         Return the pseudo of a user.
+        Possible values:
+            - FirstName
+            - FirstName N. (first letter of name)
+            - firstpartofemailaddress (before @)
         """
-        if self.pseudo:
-            return self.pseudo
-
         pseudo = self.first_name
         if not pseudo:
             pseudo = self.email.split("@")[0]

@@ -223,16 +223,12 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.presta.get_pseudo(), "Joe")
         self.presta.name = "Jack"
         self.assertEqual(self.presta.get_pseudo(), "Joe J.")
-        self.presta.pseudo = "joejoe"
-        self.assertEqual(self.presta.get_pseudo(), "joejoe")
 
         self.assertEqual(self.famille.get_pseudo(), "a")
         self.famille.first_name = "Mick"
         self.assertEqual(self.famille.get_pseudo(), "Mick")
         self.famille.name = "Down"
         self.assertEqual(self.famille.get_pseudo(), "Mick D.")
-        self.famille.pseudo = "mickey68"
-        self.assertEqual(self.famille.get_pseudo(), "mickey68")
 
     def test_compute_user_visibility_filters(self):
         user = AnonymousUser()
@@ -432,9 +428,9 @@ class ReferenceTestCase(TestCase):
         self.assertEqual(r.get_famille_display(), "Coco")
 
     def test_get_famille_display_referenced_user(self):
-        f = models.Famille(pseudo="Mister T")
+        f = models.Famille(first_name="Mister", name="Toc")
         r = models.Reference(referenced_user=f)
-        self.assertEqual(r.get_famille_display(), "de Mister T (utilise notre site)")
+        self.assertEqual(r.get_famille_display(), "de Mister T. (utilise notre site)")
 
     def test_get_dates_display_bad_conf(self):
         r = models.Reference(name="Coco")
