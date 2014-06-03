@@ -141,7 +141,9 @@ module.exports = Backbone.View.extend({
         $container.html("");
         if (!data.length) {
             $noResults.show();
-             this.views = [];
+            this.views = [];
+            this.$(".total-search-results").html("0");
+            this.$(".plural-search-result").html("s");
         }
         else {
             $noResults.hide();
