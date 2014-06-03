@@ -14,7 +14,8 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
 class FamilleAdmin(admin.ModelAdmin):
     model = Famille
     form = forms.FamilleForm
-    list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
+    list_display = ('email', 'first_name', 'name', admin_display.pseudo_display, 'city', 'plan')
+    list_display_links = ('email', )
     exclude = ('geolocation', 'user')
     search_fields = ['first_name', 'name', 'email']
 
@@ -22,7 +23,8 @@ class FamilleAdmin(admin.ModelAdmin):
 class PrestataireAdmin(admin.ModelAdmin):
     model = Prestataire
     form = forms.PrestataireForm
-    list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
+    list_display = ('email', 'first_name', 'name', admin_display.pseudo_display, 'city', 'plan')
+    list_display_links = ('email', )
     exclude = ('geolocation', 'user')
     search_fields = ['first_name', 'name', 'email']
 
