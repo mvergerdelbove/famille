@@ -215,6 +215,15 @@ class SearchResource(object):
         context = {"result": bundle.obj, "user": bundle.request.user}
         return render_to_string(template, context)
 
+    def get_object_list(self, request):
+        """
+        Filter allowed object given the HTTP request.
+
+        :param request:           the given HTTP request
+        """
+        filters = compute_user_visibility_filters(request.user)
+        return super(SearchResource, self).get_object_list(request).filter(filters)
+
 
 class PrestataireResource(SearchResource, ModelResource):
 
@@ -273,15 +282,6 @@ class FamilleResource(SearchResource, ModelResource):
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
             plannings=ALL_WITH_RELATIONS, enfants=ALL_WITH_RELATIONS
         )
-
-    def get_object_list(self, request):
-        """
-        Filter allowed object given the HTTP request.
-
-        :param request:           the given HTTP request
-        """
-        filters = compute_user_visibility_filters(request.user)
-        return super(FamilleResource, self).get_object_list(request).filter(filters)
 
     def dehydrate_nb_enfants(self, bundle):
         """
