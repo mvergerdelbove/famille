@@ -52,7 +52,10 @@ var notifier = require("./notifier.js");
             data: {name: name, message: msg, email: email},
             headers: {'X-CSRFToken': $.cookie('csrftoken')}
         }).done(function () {
-            notifier.success("Votre message a bien été envoyé, nous vous répondrons dans les plus brefs délais.");
+            notifier.success({
+                duration: 10000,
+                message: "Votre message a bien été envoyé, nous vous répondrons dans les plus brefs délais."
+            });
         }).fail(function () {
             notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
         });
