@@ -43,6 +43,8 @@ class RangeWidget(widgets.TextInput):
     def render(self, name, value, attrs=None):
         attrs = attrs or {}
         value = value or [self.min_value, self.max_value]
+        value = [int(v) for v in value.split(",")] if isinstance(value, basestring) else value
+
         attrs["data-slider-value"] = str(value)
         attrs["data-slider-min"] = self.min_value
         attrs["data-slider-max"]= self.max_value

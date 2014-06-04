@@ -147,6 +147,7 @@ CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
 CONTACT_ADDRESS = u"1 Sentier de l'Arpent Rouge, 92190 Meudon"
 CONTACT_PHONE = "06 15 43 75 20"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
+TARIF_RANGE = (3, 20)
 
 ################################################################################
 #                         Plugins settings                                     #

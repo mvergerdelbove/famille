@@ -95,6 +95,9 @@ class RangeField(MultiValueField):
 
         return None
 
+    def clean(self, value):
+        return value
+
 
 class LazyMultipleChoiceField(MultipleChoiceField):
 
@@ -126,3 +129,12 @@ class CommaSeparatedMultipleChoiceField(MultipleChoiceField):
         """
         data = super(CommaSeparatedMultipleChoiceField, self).clean(data)
         return ",".join(data)
+
+
+class CommaSeparatedRangeField(RangeField):
+
+    def compress(self, data_list):
+        data = super(CommaSeparatedRangeField, self).compress(data_list)
+        if data:
+            return ",".join(data)
+        return None

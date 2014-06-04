@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.core import validators
@@ -13,7 +14,10 @@ from famille.models import (
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.models.utils import email_is_unique
-from famille.utils.fields import RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField
+from famille.utils.fields import (
+    RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField,
+    CommaSeparatedRangeField
+)
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
@@ -215,7 +219,14 @@ LANGUAGES = {
 }
 class CriteriaForm(forms.ModelForm):
     language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items(), required=False)
-
+    tarif = CommaSeparatedRangeField(
+        label=u"Tarif horaire (€/h)",
+        widget=RangeWidget(
+            min_value=settings.TARIF_RANGE[0],
+            max_value=settings.TARIF_RANGE[1],
+            attrs={"class": "form-control"}
+        )
+    )
     class Meta:
         labels = {
             "tarif": u"Tarif horaire (€/h)",
@@ -237,14 +248,6 @@ class CriteriaForm(forms.ModelForm):
         }
         fields = labels.keys()
         widgets = {
-            "tarif": forms.TextInput(
-                attrs={
-                    'type': 'text',
-                    'data-slider-min': '0',
-                    'data-slider-max': '80',
-                    'data-slider-step': '0.5'
-                }
-            ),
             "description": forms.Textarea(
                 attrs={
                     'rows': '5',
@@ -409,7 +412,11 @@ class BaseSearchForm(forms.Form):
     )
     tarif = RangeField(
         label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
+        widget=RangeWidget(
+            min_value=settings.TARIF_RANGE[0],
+            max_value=settings.TARIF_RANGE[1],
+            attrs={"class": "form-control"}
+        )
     )
     # planning
     plannings__start_date = forms.CharField(

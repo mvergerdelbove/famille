@@ -2,6 +2,7 @@
 from datetime import date
 import logging
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -458,7 +459,7 @@ class Criteria(UserInfo):
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
     enfant_malade = models.BooleanField(blank=True, default=False)
-    tarif = models.FloatField(blank=True, null=True, default=3.0)
+    tarif = models.CharField(blank=True, default="%s,%s" % settings.TARIF_RANGE, max_length=10)
     description = models.CharField(blank=True, null=True, max_length=400)
 
     class Meta:
