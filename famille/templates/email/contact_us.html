@@ -1,11 +1,15 @@
 {% extends "email/base.html" %}
- 
+
  {% load helpers %}
- 
+
  {% block title %}
  Un utilisateur vous a contacté
  {% endblock %}
- 
+
+ {% block title_header %}
+ Un utilisateur vous a contacté
+ {% endblock %}
+
  {% block content %}
  <div>
      {% if name %}
