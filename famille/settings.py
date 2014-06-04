@@ -142,8 +142,10 @@ for key in os.environ:
 
 NB_SEARCH_RESULTS = 5
 POSTAL_CODE_DISTANCE = 20.0
-CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
 NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
+CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
+CONTACT_ADDRESS = u"1 Sentier de l'Arpent Rouge, 92190 Meudon"
+CONTACT_PHONE = "06 15 43 75 20"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
 
 ################################################################################

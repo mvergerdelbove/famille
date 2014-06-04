@@ -1,11 +1,20 @@
 import re
 
+from django.conf import settings
+
 
 def get_context(**kwargs):
     """
     Minimum context configuration for all the templates.
     """
-    kwargs.update(site_title="Une vie de famille")
+    kwargs.update(
+        site_title="Une vie de famille",
+        contact={
+            "mail": settings.CONTACT_EMAIL,
+            "address": settings.CONTACT_ADDRESS,
+            "phone": settings.CONTACT_PHONE,
+        }
+    )
     return kwargs
 
 
