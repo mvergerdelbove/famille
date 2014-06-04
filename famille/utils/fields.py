@@ -40,11 +40,11 @@ class ContentTypeRestrictedFileField(FileField):
         content_type = file.content_type
         _, ext = os.path.splitext(file.name)
 
-        if self.content_types and content_type not in self.content_types:
-            raise forms.ValidationError(u'Format non supporté')
+        if self.content_types and content_type.lower() not in self.content_types:
+            raise forms.ValidationError(u'Format non supporté. Les formats valides sont: %s' % ", ".join(self.extensions))
 
-        if self.extensions and ext not in self.extensions:
-            raise forms.ValidationError(u'Format non supporté')
+        if self.extensions and ext.lower() not in self.extensions:
+            raise forms.ValidationError(u'Format non supporté. Les formats valides sont: %s' % ", ".join(self.extensions))
 
         if self.max_upload_size and file._size > self.max_upload_size:
             raise forms.ValidationError('Fichier trop volumineux (max %s)' % filesizeformat(self.max_upload_size))
