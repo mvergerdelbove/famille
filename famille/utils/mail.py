@@ -20,9 +20,11 @@ class Mailer(object):
         :param template_name:           the name of the template to render
         :param context:                 the context to render the template
         """
-        kwargs["message"] = render_to_string(template_name, context)
+        kwargs["body"] = render_to_string(template_name, context)
+        msg = mail.EmailMessage(**kwargs)
+        msg.content_subtype = "html"
         try:
-            return mail.send_mail(**kwargs)
+            return msg.send()
         except smtplib.SMTPException as e:
             return cls.on_failure(e)
 

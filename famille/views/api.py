@@ -148,7 +148,7 @@ def signal_user(request, userType, uid):
             "reason": reason, "user_to_signal": user_to_signal,
             "user": request.related_user
         }, subject=u"Un utilisateur a été signalé",
-        recipient_list=[settings.CONTACT_EMAIL, ],
+        to=[settings.CONTACT_EMAIL, ],
         from_email=settings.NOREPLY_EMAIL
     )
 
@@ -168,7 +168,7 @@ def contact_us(request):
         "email/contact_us.html", {
             "name": name, "message": message, "email": email
         }, subject=u"Un utilisateur vous a contacté",
-        recipient_list=[settings.CONTACT_EMAIL, ],
+        to=[settings.CONTACT_EMAIL, ],
         from_email=settings.NOREPLY_EMAIL
     )
 

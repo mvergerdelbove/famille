@@ -332,7 +332,7 @@ class UserInfo(BaseModel):
         if emails:
             send_mail_from_template_with_noreply(
                 "email/contact_favorites.html", message,
-                subject=message.get("subject", ""), recipient_list=emails
+                subject=message.get("subject", ""), to=emails
             )
 
     def get_pseudo(self):
@@ -382,7 +382,7 @@ class UserInfo(BaseModel):
         activate_url = request.build_absolute_uri(activate_url)
         send_mail_from_template_with_noreply(
             "email/verification.html", {"activate_url": activate_url},
-            subject=u"Email de vérification", recipient_list=[self.email, ]
+            subject=u"Email de vérification", to=[self.email]
         )
 
     @classmethod
