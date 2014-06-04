@@ -241,12 +241,12 @@ class ModelsTestCase(TestCase):
         f = models.compute_user_visibility_filters(self.user2)
         self.assertEqual(f.children, [('visibility_global', True), ('visibility_prestataire', True)])
 
-    @patch("django.core.mail.send_mail")
-    def test_send_verification_email(self, send_mail):
+    @patch("django.core.mail.message.EmailMessage.send")
+    def test_send_verification_email(self, send):
         req = HttpRequest()
         req.META = {"HTTP_HOST": "toto.com"}
         self.presta.send_verification_email(req)
-        self.assertTrue(send_mail.called)
+        self.assertTrue(send.called)
         self.assertEqual(Key.objects.filter(claimed_by=self.presta.user, claimed=None).count(), 1)
 
     def test_verify_user(self):
