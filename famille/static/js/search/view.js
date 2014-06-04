@@ -51,6 +51,7 @@ module.exports = Backbone.View.extend({
         "click .next": "displayNext",
         "click .previous": "displayPrevious",
         "click .favorite": "toggleFavorite",
+        "click .favorite i": "toggleFavorite",
         "click .choose-search": "switchSearch",
         "change .form-search .form-control": "doSearch",
         "click .form-search [type=checkbox]": "doSearch",

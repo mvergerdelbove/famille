@@ -2,8 +2,11 @@ var notifier = require("./notifier.js");
 
 
 module.exports = function(data) {
+    data.event.preventDefault();
+    data.event.stopPropagation();
+
     var $target = $(data.event.target),
-    $star = $(".glyphicon", $target),
+    $star = $target.hasClass("glyphicon") ? $target : $(".glyphicon", $target),
     resource_uri = $("[data-field=resource_uri]", $target.parents(data.container)).html(),
     action = ($star.hasClass("favorited")) ? "remove": "add";
 
