@@ -291,8 +291,7 @@ class PrestataireCompetenceForm(CriteriaForm):
         model = Prestataire
         labels = dict(
             CriteriaForm.Meta.labels, diploma=u"Diplôme",
-            resume="Joindre un CV", restrictions="Mes restrictions (assistant(e) maternel(le))",
-            description="Annonce"
+            resume="Joindre un CV", description="Annonce"
         )
         fields = labels.keys()
         widgets = {

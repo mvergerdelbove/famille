@@ -501,7 +501,6 @@ class Prestataire(Criteria):
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
         max_upload_size=2621440  # 2.5MB
     )
-    restrictions = models.CharField(max_length=40, choices=RESTRICTIONS.items(), null=True, blank=True)
 
     class Meta:
         app_label = 'famille'
