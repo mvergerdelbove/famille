@@ -222,7 +222,7 @@ class SearchResource(object):
         objects = []
         for o in queryset:
             o_tarif = [int(v) for v in o.tarif.split(",")]
-            if get_overlap(tarif, o_tarif) >= 0:
+            if get_overlap(tarif, o_tarif) > 0:
                 objects.append(o)
         return objects
 
