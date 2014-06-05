@@ -61,7 +61,7 @@ def search(request):
         template = "search/famille.html"
     else:
         FormClass = forms.PrestataireSearchForm
-        objects = Prestataire.objects.all()
+        objects = Prestataire.objects.filter(compute_user_visibility_filters(request.user))
         template = "search/prestataire.html"
 
     form = FormClass(data)
