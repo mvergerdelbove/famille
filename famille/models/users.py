@@ -472,6 +472,7 @@ class Prestataire(Criteria):
     """
     TYPES = (
         ("baby", "Baby-sitter"),
+        ("mamy", "Mamie-sitter"),
         ("nounou", "Nounou"),
         ("maternel", "Assistant(e) maternel(le)"),
         ("parental", "Assistant(e) parental(e)"),
