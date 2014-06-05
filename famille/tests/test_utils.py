@@ -39,6 +39,11 @@ class UtilsTestCase(TestCase):
         out = "famille", "123"
         self.assertEqual(utils.parse_resource_uri(_in), out)
 
+    def test_get_overlap(self):
+        self.assertEqual(utils.get_overlap([1,2], [3,4]), 0)
+        self.assertEqual(utils.get_overlap([1,2], [2,4]), 1)
+        self.assertEqual(utils.get_overlap([1,2], [1,4]), 2)
+        self.assertEqual(utils.get_overlap([1,4], [3,4]), 2)
 
 class GeolocationTestCase(TestCase):
 

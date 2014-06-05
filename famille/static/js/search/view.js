@@ -14,11 +14,7 @@ var constructFilter = function(name, query, value){
 };
 
 var constructTarifFilter = function (name, value) {
-    var min = value[0];
-    var max = value[1];
-    if(min !== max) {
-        return "tarif__gte="+ min +"&tarif__lte=" + max;
-    }
+    return "tarif__in="+ value[0] +"," + value[1];
 };
 
 
