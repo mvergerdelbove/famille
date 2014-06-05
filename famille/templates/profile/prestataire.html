@@ -14,9 +14,13 @@
 {% endblock %}
 
 {% block extra-header %}
+{% if profile.resume %}
 <a class="btn btn-color btn-brown-min btn-block" href="{% get_media_prefix %}{{ profile.resume }}" target="_blank">
     <span class="glyphicon glyphicon-file"></span> CV
 </a>
+{% else %}
+<em>Cet utilisateur n'a pas encore renseigné son CV</em>
+{% endif %}
 {% endblock %}
 
 {% block contentBlock1 %}  <!-- infos générales -->
