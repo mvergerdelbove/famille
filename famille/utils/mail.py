@@ -66,7 +66,7 @@ def decode_recipient_list(data):
     Decode a list of recipients.
     """
     data = data.split("---")
-    return [json.loads(base64.urlsafe_b64decode(r)) for r in data]
+    return [json.loads(base64.urlsafe_b64decode(str(r))) for r in data]
 
 
 def encode_recipient(recipient):

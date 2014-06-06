@@ -57,7 +57,7 @@ class JsonResponse(HttpResponse):
     This helper class is dedicated to simplifying sending Json back to the client
     '''
 
-    def __init__(self, content="{}", status=200, **kwargs):
+    def __init__(self, content={}, status=200, **kwargs):
         '''
         Constructs an HttpResponse with the provided content transformed as Json
         Is equivalent to:

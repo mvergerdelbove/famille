@@ -7,12 +7,12 @@ from django.views.decorators.http import require_POST, require_GET
 from famille import forms, models
 from famille.utils.http import require_JSON, require_related, login_required, JsonResponse
 from famille.utils.lookup import PostmanUserLookup
-from famille.utils.mail import send_mail_from_template
+from famille.utils.mail import send_mail_from_template, decode_recipient_list
 
 __all__ = [
     "contact_favorites", "plannings", "profile_pic",
     "submit_rating", "message_autocomplete", "signal_user",
-    "contact_us"
+    "contact_us", "get_recipients"
 ]
 
 
@@ -173,3 +173,23 @@ def contact_us(request):
     )
 
     return HttpResponse()
+
+
+@require_related
+@require_GET
+@login_required
+def get_recipients(request, data):
+    """
+    Retrieve the recipients of a message. The recipients are passed as GET parameter
+    but encoded (base64). This view returns the list of recipients.
+    """
+    try:
+        recipients = models.UserInfo.decode_users(data)
+    except (ValueError):
+        return JsonResponse(status=400)
+
+    data = [lookup.format_result(user) for user in recipients]
+
+    return JsonResponse({
+        "users": data
+    })
