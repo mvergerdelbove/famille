@@ -18,7 +18,10 @@ from famille.utils import (
     parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES,
     fields as extra_fields, payment
 )
-from famille.utils.mail import send_mail_from_template_with_noreply
+from famille.utils.mail import (
+    send_mail_from_template_with_noreply,
+    encode_recipient, decode_recipient_list
+)
 from famille.utils.python import pick, get_age_from_date
 
 
@@ -200,6 +203,27 @@ class UserInfo(BaseModel):
         user.save()
         return user
 
+    @classmethod
+    def decode_users(cls, data):
+        """
+        Decode a list of users. Uses mail.decode_recipient_list.
+
+        :param data:        the encoded data
+        """
+        try:
+            user_data = decode_recipient_list(data)
+        except (TypeError, ValueError):
+            raise ValueError("Wrong format")
+
+        users = []
+        for u in user_data:
+            try:
+                kls = Prestataire if u["type"] == "Prestataire" else Famille
+                users.append(kls.objects.get(pk=u["pk"]))
+            except (KeyError, kls.DoesNotExist):
+                raise ValueError("Wrong format")
+        return users
+
     @property
     def is_geolocated(self):
         """
@@ -244,6 +268,10 @@ class UserInfo(BaseModel):
         Return True if user is connected through social auth.
         """
         return self.user.social_auth.all().count()
+
+    @property
+    def encoded(self):
+        return encode_recipient(self)
 
     # FIXME: can be async
     def geolocate(self):

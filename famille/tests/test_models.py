@@ -1,5 +1,7 @@
 # -*- coding=utf-8 -*-
+import base64
 from datetime import datetime, timedelta
+import json
 import types
 
 from django.conf import settings
@@ -273,6 +275,18 @@ class ModelsTestCase(TestCase):
         bday = today - timedelta(days=360*10)
         e = models.Enfant(e_name="John", e_school="Best school in the World", e_birthday=bday)
         self.assertEqual(e.display, u"John, 9 ans, scolarisé à Best school in the World")
+
+    def test_decode_users_ok(self):
+        data = "---".join([self.famille.encoded, self.presta.encoded])
+        expected = [self.famille, self.presta]
+        self.assertEquals(UserInfo.decode_users(data), expected)
+
+    def test_decode_users_notok(self):
+        data = base64.urlsafe_b64encode(json.dumps({"type": "Prestataire", "pk": 118926}))
+        self.assertRaises(ValueError, UserInfo.decode_users, data)
+
+        data = "eaziouehazoenuazehazpoieybazioueh"
+        self.assertRaises(ValueError, UserInfo.decode_users, data)
 
 
 class GeolocationTestCase(TestCase):
