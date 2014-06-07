@@ -173,6 +173,11 @@ var ReferenceEditionView = Backbone.View.extend({
                 this.markInvalid(this.ui.email, msg);
                 valid = false;
             }
+            if (!data.referenced_user) {
+                msg = "Ce champs est requis.";
+                this.markInvalid(this.ui.referenced_user, msg);
+                valid = false;
+            }
         }
         if (!data.date_from) {
             msg = "Ce champs est requis";
