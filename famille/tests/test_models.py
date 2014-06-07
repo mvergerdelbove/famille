@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 import base64
+import collections
 from datetime import datetime, timedelta
 import json
 import types
@@ -147,13 +148,21 @@ class ModelsTestCase(TestCase):
 
         self.assertEqual(self.famille.favorites.all().count(), 0)
 
-    def test_get_favorites_data(self):
+    def test_get_favorites_data_presta(self):
         favs = self.famille.get_favorites_data()
-        self.assertIsInstance(favs, types.GeneratorType)
-        favs = list(favs)
-        self.assertEqual(len(favs), 1)
-        self.assertIsInstance(favs[0], models.Prestataire)
-        self.assertEqual(favs[0].description, self.presta.description)
+        self.assertIsInstance(favs, collections.OrderedDict)
+        self.assertIn("Prestataire", favs)
+        self.assertEqual(len(favs["Prestataire"]), 1)
+        self.assertIsInstance(favs["Prestataire"][0], models.Prestataire)
+        self.assertEqual(favs["Prestataire"][0].description, self.presta.description)
+
+    def test_get_favorites_data_famille(self):
+        favs = self.presta.get_favorites_data()
+        self.assertIsInstance(favs, collections.OrderedDict)
+        self.assertIn("Famille", favs)
+        self.assertEqual(len(favs["Famille"]), 1)
+        self.assertIsInstance(favs["Famille"][0], models.Famille)
+        self.assertEqual(favs["Famille"][0].description, self.famille.description)
 
     def test_get_resource_uri(self):
         out = "/api/v1/familles/%s" % self.famille.pk

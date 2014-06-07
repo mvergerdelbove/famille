@@ -1,4 +1,5 @@
 # -*- coding=utf-8 -*-
+from collections import OrderedDict
 from datetime import date
 import logging
 
@@ -337,7 +338,15 @@ class UserInfo(BaseModel):
         Retrieve the favorites data.
         """
         # FIXME: can become greedy in the future
-        return (favorite.get_user() for favorite in self.favorites.all())
+        favs = OrderedDict([
+            ("Prestataire", []),
+            ("Famille", [])
+        ])
+        for favorite in self.favorites.all():
+            fav = favorite.get_user()
+            favs[fav.__class__.__name__].append(fav)
+
+        return favs
 
     # FIXME: nothing to do here...
     def get_resource_uri(self):

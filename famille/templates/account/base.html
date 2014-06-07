@@ -55,42 +55,52 @@
                         </div>
                         <div id="favoris" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <div class="row margin-bottom-0">
-                                    <div class="col-md-4 col-md-offset-8">
-                                        <a href="#" class="btn btn-color btn-blue-min contact-all">
-                                            Contacter tous mes favoris
-                                        </a>
-                                    </div>
-                                </div>
-                                {% for favorite in related.get_favorites_data %}
-                                <div class="favorite-row row">
-                                    <div class="col-md-8">
-                                        <h4 class="favorite-name">{{ favorite.get_pseudo }}</h4>
-                                        <p>
-                                            {% if favorite.description %}
-                                            {{ favorite.description }}
-                                            {% else %}
-                                            <em>Cet utilisateur n'a pas encore rempli sa description.</em>
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="btn-group">
-                                            <a class="btn btn-default btn-xs" target="_blank"
-                                               href="{% url 'postman_write' %}?r={{ favorite.encoded|urlencode }}">
-                                                Contacter
-                                            </a>
-                                            <button type="button" class="btn btn-default btn-xs remove">
-                                                Supprimer
-                                            </button>
+                                {% for fav_type, favs in related.get_favorites_data.items %}
+                                <div class="fav-container-{{ fav_type.lower }}">
+                                    <div class="row margin-bottom-0">
+                                        <div class="col-md-4">
+                                            <h4>{{ fav_type }}s</h4>
                                         </div>
-                                        <span class="hidden favorite-pk">{{ favorite.pk }}</span>
-                                        <span class="hidden favorite-type">{{ favorite|class_name }}</span>
-                                        <span class="hidden favorite-uri">{{ favorite.get_resource_uri }}</span>
-                                        <span class="hidden favorite-encoded">{{ favorite.encoded|urlencode }}</span>
+                                        <div class="col-md-4 col-md-offset-4">
+                                            <a href="#" class="btn btn-color btn-blue-min contact-all"
+                                               data-fav-type="{{ fav_type.lower }}">
+                                                Contacter tous mes favoris ({{ fav_type.lower }})
+                                            </a>
+                                        </div>
                                     </div>
+                                    {% for favorite in favs %}
+                                    <div class="favorite-row row">
+                                        <div class="col-md-8">
+                                            <h5 class="favorite-name">{{ favorite.get_pseudo }}</h5>
+                                            <p>
+                                                {% if favorite.description %}
+                                                {{ favorite.description }}
+                                                {% else %}
+                                                <em>Cet utilisateur n'a pas encore rempli sa description.</em>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="btn-group">
+                                                <a class="btn btn-default btn-xs" target="_blank"
+                                                   href="{% url 'postman_write' %}?r={{ favorite.encoded|urlencode }}">
+                                                    Contacter
+                                                </a>
+                                                <button type="button" class="btn btn-default btn-xs remove">
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                            <span class="hidden favorite-pk">{{ favorite.pk }}</span>
+                                            <span class="hidden favorite-type">{{ favorite|class_name }}</span>
+                                            <span class="hidden favorite-uri">{{ favorite.get_resource_uri }}</span>
+                                            <span class="hidden favorite-encoded">{{ favorite.encoded|urlencode }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% empty %}
+                                {% endfor %}
+
+                                {% comment %}
                                 <div class="row favorite-empty-row">
                                     <div class="col-md-6 col-md-offset-3">
                                         Vous n'avez pas encore de favoris !
@@ -99,7 +109,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                {% endfor %}
+                                {% endcomment %}
                             </div>
                         </div>
                     </div>

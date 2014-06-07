@@ -71,7 +71,11 @@ var MainView = Backbone.View.extend({
     contactAll: function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var favs = _.map(this.$(".favorite-encoded"), function (el) {return $(el).text()});
+        var favType = $(e.target).data("fav-type");
+        var favs = _.map(
+            this.$(".fav-container-"+ favType +" .favorite-encoded"),
+            function (el) {return $(el).text();}
+        );
         var uri = "/messages/write/?r=" + favs.join("---");
         window.open(uri, "_blank");
     }
