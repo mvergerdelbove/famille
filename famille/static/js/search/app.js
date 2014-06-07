@@ -33,7 +33,6 @@ App.prototype.initialize = function(){
 };
 
 App.prototype.initEvents = function(){
-    $("select").select2();
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
     if ($("#id_tarif").length) {

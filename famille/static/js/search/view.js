@@ -189,16 +189,13 @@ module.exports = Backbone.View.extend({
         var postalCode = this.$(".form-control[name=pc]")[0];
         this.$("#id_tarif").slider('disable');
         this.attachDisabledPopover(this.$(".slider-disabled"));
-        _.each(this.$(".form-control,[type=checkbox]", ".form-search"), function (el) {
+        var $els = this.$(".form-control,[type=checkbox]", ".form-search");
+        $els.add(this.$sortSelect);
+        _.each($els, function (el) {
             if (el === postalCode) return;
 
             var $el = $(el);
-            if (el.tagName == "SELECT") {
-                $el.select2("readonly", true);
-            }
-            else {
-                $el.prop("disabled", "disabled");
-            }
+            $el.prop("disabled", "disabled");
             this.attachDisabledPopover($el);
         }, this);
     },
@@ -208,9 +205,9 @@ module.exports = Backbone.View.extend({
      */
     attachDisabledPopover: function ($el) {
         $el.attr("data-toggle", "popover");
-        if ($el.attr("type") === "checkbox") {
-            $el = $el.parent();
-        }
+        //if ($el.attr("type") === "checkbox") {
+        $el = $el.parent();
+            //}
         $el.popover({
             placement: "bottom",
             trigger: "click",
