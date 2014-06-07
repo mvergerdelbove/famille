@@ -1,5 +1,6 @@
 var Shared = require("./shared.js");
 var Router = require("./router.js");
+var FavoriteView = require("./views/favorites.js");
 var PlanningView = require("./views/planning.js");
 var ProfilePic = require("./views/picture.js");
 var ReferenceView = require("./views/references.js");
@@ -52,6 +53,11 @@ var templateOutsideReference = '\
 
     function App () {
         this.router = new Router();
+        this.favorites = new FavoriteView({
+            el: $(".favorite-panel"),
+            modalEl: $("#modal-contact-favorite"),
+            router: this.router
+        });
         this.plannings = new PlanningView({
             el: $("#planning"),
             router: this.router
