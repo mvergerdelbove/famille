@@ -65,7 +65,7 @@
                                 {% for favorite in related.get_favorites_data %}
                                 <div class="favorite-row row">
                                     <div class="col-md-8">
-                                        <h4 class="favorite-name">{{ favorite.first_name }} {{ favorite.name }}</h4>
+                                        <h4 class="favorite-name">{{ favorite.get_pseudo }}</h4>
                                         <p>{{ favorite.description }}</p>
                                     </div>
                                     <div class="col-md-4">
