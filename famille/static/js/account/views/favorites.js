@@ -22,10 +22,6 @@ var FavoriteView = Backbone.View.extend({
         this.router = options.router;
     },
 
-    contactFavorite: function(e){
-        this.trigger("fav:contact", [this.getFavoriteData()]);
-    },
-
     getFavoriteData: function(){
         return {
             object_type: this.$(".favorite-type").text(),
@@ -48,16 +44,12 @@ var FavoriteView = Backbone.View.extend({
 
 var MainView = Backbone.View.extend({
     events: {
-        "click .contact-all": "contactFavorites"
+        "click .contact-all": "contactAll"
     },
 
     initialize: function(options){
         var self = this;
         this.router = options.router;
-        this.modal = new ModalView({
-            el: options.modalEl,
-            router: this.router
-        });
         this.views = _.map(this.$(".favorite-row"), function(el){
             var view = new FavoriteView({
                 el: el,
@@ -71,68 +63,17 @@ var MainView = Backbone.View.extend({
         this.listenTo(this.router, "contact:error", this.contactError);
     },
 
-    contactFavorites: function(e){
-        var data = _.map(this.views, function (view) {
-            return view.getFavoriteData();
-        });
-        this.fireModal(data);
-    },
-
-    fireModal: function (data) {
-        this.modal.render(data);
-    },
-
     removeFavorite: function(view){
         this.views = _.without(this.views, view);
         notifier.info("Favori supprimé avec succès.");
     },
 
-    contactSuccess: function () {
-        notifier.success("Votre message a été envoyé avec succès.");
-    },
-
-    contactError: function () {
-        notifier.error("Une erreur est survenue, veuillez réessayer ultérieurement.");
-    }
-});
-
-var ModalView = Backbone.View.extend({
-    events: {
-        "click .send-contact": "sendContact"
-    },
-    subtitleTemplate: modalSubtitleTemplate,
-    bodyTemplate: modalBodyTemplate,
-
-    initialize: function (options) {
-        this.router = options.router;
-    },
-
-    render: function(data){
-        this.data = data;
-        var names = _.map(data, function(d){return d.name;});
-        var subtitle = this.subtitleTemplate({
-            data: data,
-            names: names
-        });
-        var body = this.bodyTemplate({});
-
-        this.$(".modal-body").html(body);
-        this.$(".modal-subtitle").html(subtitle);
-        this.$el.modal("toggle");
-    },
-
-    sendContact: function(e){
-        this.router.sendContact({
-            favorites: this.data,
-            message: this.getContactData()
-        });
-    },
-
-    getContactData: function(){
-        return {
-            subject: this.$("#subject").val(),
-            content: this.$("#content").val()
-        };
+    contactAll: function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var favs = _.map(this.$(".favorite-encoded"), function (el) {return $(el).text()});
+        var uri = "/messages/write/?r=" + favs.join("---");
+        window.open(uri, "_blank");
     }
 });
 
