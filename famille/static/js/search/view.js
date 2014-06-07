@@ -209,6 +209,13 @@ module.exports = Backbone.View.extend({
             if ($(el).attr("name") === "tarif") return;
 
             var $el = $(el);
+            if (el.tagName === "SELECT" && !$el.attr("multiple")) {
+                // place an element in front of it
+                $el.wrap('<div style="display:inline-block; position:relative;"></div>');
+                $el.after('<div class="popover-mask" style="position:absolute; left:0; right:0; top:0; bottom:0;"></div>');
+            }
+
+            // disable everything
             $el.prop("disabled", "disabled");
             this.attachDisabledPopover($el);
         }, this);
