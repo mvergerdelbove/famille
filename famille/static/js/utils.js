@@ -29,8 +29,16 @@ function queryString () {
     return query_string;
 }
 
+// requires moment
+function dateIsGreaterThan(d1, d2) {
+    d2 = (d2) ? moment(d2, "DD/MM/YYYY") : moment();
+    d1 = moment(d1, "DD/MM/YYYY");
+    return d1.isAfter(d2);
+}
+
 
 module.exports = {
     djangoUriParts: djangoUriParts,
-    queryString: queryString()
+    queryString: queryString(),
+    dateIsGreaterThan: dateIsGreaterThan
 }
