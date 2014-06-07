@@ -69,6 +69,19 @@ module.exports = Backbone.View.extend({
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
         this.$sortSelect = this.$("#search-sort");
+        // disable popovers on click outside of them
+        $('body').on('click', function (e) {
+            $('[data-toggle=popover]').each(function () {
+                var $el = $(this)
+                $el = $el.attr("data-trigger") ? $el : $el.parent();
+
+                if (!$el.is(e.target) && $el.has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    if ($el.data('bs.popover') && $el.data('bs.popover').tip().hasClass('in')) {
+                        $el.popover('toggle');
+                    }
+                }
+            });
+        });
         if (!this.isAuthenticated()) {
             this.disableForm();
         }
@@ -193,6 +206,7 @@ module.exports = Backbone.View.extend({
         $els.add(this.$sortSelect);
         _.each($els, function (el) {
             if (el === postalCode) return;
+            if ($el.hasClass("slider")) return;
 
             var $el = $(el);
             $el.prop("disabled", "disabled");
@@ -205,9 +219,7 @@ module.exports = Backbone.View.extend({
      */
     attachDisabledPopover: function ($el) {
         $el.attr("data-toggle", "popover");
-        //if ($el.attr("type") === "checkbox") {
         $el = $el.parent();
-            //}
         $el.popover({
             placement: "bottom",
             trigger: "click",
