@@ -206,7 +206,7 @@ module.exports = Backbone.View.extend({
         $els.add(this.$sortSelect);
         _.each($els, function (el) {
             if (el === postalCode) return;
-            if ($el.hasClass("slider")) return;
+            if ($(el).attr("name") === "tarif") return;
 
             var $el = $(el);
             $el.prop("disabled", "disabled");
