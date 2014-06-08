@@ -42,7 +42,7 @@
                         <button class="btn btn-color btn-brown-min favorite {% if profile == related_user %}disabled {% endif %}">
                             <i class="glyphicon glyphicon-star {% if favorited %}favorited{% endif %}"></i> Favori
                         </button>
-                        <a class="btn btn-color btn-brown-min {% if profile == related_user %}disabled {% endif %}" href="{% if profile == related_user %}#{% else %}{% url 'postman_write' %}{% endif %}" target="_blank">
+                        <a class="btn btn-color btn-brown-min {% if profile == related_user %}disabled {% endif %}" href="{% if profile == related_user %}#{% else %}{% url 'postman_write' %}?r={{ profile.encoded|urlencode }}{% endif %}" target="_blank">
                             <span class="glyphicon glyphicon-user"></span> Contacter
                         </a>
                         {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
