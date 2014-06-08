@@ -2,9 +2,6 @@ var utils = require("../utils.js");
 
 
 module.exports = (function ($) {
-    var path = location.pathname.match(/\/messages\/([a-z]+)\//)[1];
-    $("#" + path + "Link").addClass("active");
-
     // init select2
     var $recipients = $("#id_recipients");
     var emptyTerm = "________";

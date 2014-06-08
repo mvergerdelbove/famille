@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block script %}
+{{ block.super }}
 <script src="{% static "lib/select2/select2.min.js" %}"></script>
 <script src="{% static "js/build/messages.js" %}"></script>
 {% endblock %}

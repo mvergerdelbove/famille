@@ -53,3 +53,10 @@
     </div>
     {% endwith %}
 {% endblock %}
+
+{% block script %}
+<script>
+    var path = location.pathname.match(/\/messages\/([a-z]+)\//)[1];
+    $("#" + path + "Link").addClass("active");
+</script>
+{% endblock %}
