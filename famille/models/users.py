@@ -356,23 +356,6 @@ class UserInfo(BaseModel):
         """
         return "/api/v1/%ss/%s" % (self.__class__.__name__.lower(), self.pk)
 
-    # FIXME: cannot test it, cannot mock...
-    def send_mail_to_favorites(self, message, favorites):
-        favs_to_contact = map(lambda fav: pick(fav, "object_type", "object_id"), favorites)
-        favs = self.favorites.all()
-        favs = (fav for fav in favs if {"object_type": fav.object_type, "object_id": str(fav.object_id)} in favs_to_contact)
-
-        # get emails
-        emails = (fav.get_user().email for fav in favs)
-        # remove possible None
-        emails = filter(None, emails)
-
-        if emails:
-            send_mail_from_template_with_noreply(
-                "email/contact_favorites.html", message,
-                subject=message.get("subject", ""), to=emails
-            )
-
     def get_pseudo(self):
         """
         Return the pseudo of a user.

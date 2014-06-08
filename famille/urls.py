@@ -59,7 +59,6 @@ urlpatterns = patterns(
         email_subject_template_name="password_reset/recovery_email_subject.txt"
     ), name='password_reset_recover'),
     # api
-    url(r'^contact-favorites/$', 'famille.views.contact_favorites', name="contact_favorites"),
     url(r'^plannings/$', 'famille.views.plannings', name="plannings"),
     url(r'^profile-pic/$', 'famille.views.profile_pic', name="profile_pic"),
     url(r'^submit-rating/(?P<type>[a-z]+)/(?P<uid>\d+)/$', "famille.views.submit_rating", name="submit_rating"),

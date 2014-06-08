@@ -10,25 +10,10 @@ from famille.utils.lookup import PostmanUserLookup
 from famille.utils.mail import send_mail_from_template, decode_recipient_list
 
 __all__ = [
-    "contact_favorites", "plannings", "profile_pic",
+    "plannings", "profile_pic",
     "submit_rating", "message_autocomplete", "signal_user",
     "contact_us", "get_recipients"
 ]
-
-
-@require_related
-@require_POST
-@require_JSON
-@login_required
-def contact_favorites(request):
-    """
-    Contact favorites using mailer.
-    """
-    favorites = request.json["favorites"]
-    message = request.json["message"]
-
-    request.related_user.send_mail_to_favorites(message, favorites)
-    return HttpResponse()
 
 
 @require_related
