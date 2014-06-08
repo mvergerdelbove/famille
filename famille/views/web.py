@@ -14,7 +14,8 @@ from famille import forms
 from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
     has_user_related, FamilleRatings, PrestataireRatings,
-    compute_user_visibility_filters, DownloadableFile
+    compute_user_visibility_filters, DownloadableFile,
+    check_plan_expiration
 )
 from famille.resources import PrestataireResource, FamilleResource
 from famille.utils import get_context, get_result_template_from_user, payment
@@ -116,6 +117,7 @@ def register(request, social=None, type=None):
 @login_required
 @require_related
 def account(request):
+    check_plan_expiration(related=request.related_user)
     url_hash = ""
     if request.method == "POST":
         account_forms = forms.AccountFormManager(instance=request.related_user, data=request.POST, files=request.FILES)

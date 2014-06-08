@@ -1,7 +1,7 @@
 # -*- coding=utf-8 -*-
 import base64
 import collections
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 import types
 
@@ -17,7 +17,10 @@ from verification.models import KeyGroup, Key
 
 from famille import models, errors
 from famille.models import utils, planning
-from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
+from famille.models.users import (
+    UserInfo, FamilleFavorite, PrestataireFavorite,
+    Geolocation, check_plan_expiration
+)
 from famille.utils import payment
 
 
@@ -296,6 +299,48 @@ class ModelsTestCase(TestCase):
 
         data = "eaziouehazoenuazehazpoieybazioueh"
         self.assertRaises(ValueError, UserInfo.decode_users, data)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_basic(self, send):
+        self.famille.plan = "basic"
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertFalse(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_no_exp(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = None
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertIsNone(f.plan_expires_at)
+        self.assertTrue(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_expired(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = datetime(2000, 1, 1)
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertIsNone(f.plan_expires_at)
+        self.assertTrue(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_not_expired(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = datetime(2500, 1, 1)
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "premium")
+        self.assertEquals(f.plan_expires_at.replace(tzinfo=None), datetime(2500, 1, 1))
+        self.assertFalse(send.called)
 
 
 class GeolocationTestCase(TestCase):

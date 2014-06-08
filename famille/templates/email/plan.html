@@ -1,0 +1,17 @@
+{% extends "email/base.html" %}
+
+{% block title %}
+Votre plan premium vient d'expirer
+{% endblock %}
+
+{% block title_header %}
+Votre plan premium vient d'expirer
+{% endblock %}
+
+{% block content %}
+Bonjour,<br/><br/>
+Votre plan premium vient d'expirer sur <em>Une vie de famille</em>. Pour le réactiver, rendez-vous sur <a href="{% url 'premium' %}">Devenir premium</a><br/><br/>
+
+A bientôt sur www.uneviedefamille.fr<br/><br/>
+L’équipe d’Une vie de famille.
+{% endblock %}

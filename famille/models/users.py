@@ -1,10 +1,11 @@
 # -*- coding=utf-8 -*-
 from collections import OrderedDict
-from datetime import date
+from datetime import date, datetime
 import logging
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -30,7 +31,8 @@ __all__ = [
     "Famille", "Prestataire", "Enfant", "Criteria",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
-    "compute_user_visibility_filters", "get_user_pseudo"
+    "compute_user_visibility_filters", "get_user_pseudo",
+    "check_plan_expiration"
 ]
 
 
@@ -707,6 +709,28 @@ FAVORITE_CLASSES = {
 }
 
 
+def check_plan_expiration(sender=None, request=None, user=None, related=None, **kwargs):
+    """
+    Verify user plan expiration upon user login.
+    This will be connected to the user_logged_in signal.
+
+    It will downgrade the user plan if:
+        - the user plan has no expiration date
+        - the user plan has expired
+    And will send an email to the user.
+    """
+    if related or has_user_related(user):
+        related = related or get_user_related(user)
+        if related.is_premium and (not related.plan_expires_at or related.plan_expires_at < datetime.now()):
+            related.plan = "basic"
+            related.plan_expires_at = None
+            related.save()
+            send_mail_from_template_with_noreply(
+                "email/plan.html", {},
+                subject=u"Votre plan premium vient d'expirer", to=[related.email]
+            )
+
 # signals
 payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")
 key_claimed.connect(UserInfo.verify_user, dispatch_uid="famille.verify")
+user_logged_in.connect(check_plan_expiration, dispatch_uid="famille.check_plan")
