@@ -18,7 +18,7 @@
  {% endblock %}
 
 {% block subtitleBlock %}
-{{ result.get_type.upper }} - {{ result.city }}
+{{ result.get_type.upper }} - {{ result.city|default_if_none:"" }}
 {% endblock %}
 
 {% block resultContent %}

@@ -19,7 +19,7 @@
 
 {% block subtitleBlock %}
 {% with nb_enfants=result.enfants.all.count %}
-{% if nb_enfants %}{{ nb_enfants }} enfant{% if nb_enfants > 1 %}s{% endif %} - {% endif %}{{ result.city }}
+{% if nb_enfants %}{{ nb_enfants }} enfant{% if nb_enfants > 1 %}s{% endif %} - {% endif %}{{ result.city|default_if_none:"" }}
 {% endwith %}
 {% endblock %}
 

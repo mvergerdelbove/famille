@@ -551,7 +551,7 @@ class Prestataire(Criteria):
         Return the prestataire type, depending on if he
         selected "Other".
         """
-        return self.get_type_display() if self.type != "other" else self.other_type
+        return (self.get_type_display() if self.type != "other" else self.other_type) or ""
 
 
 class Famille(Criteria):
