@@ -621,3 +621,7 @@ table .mea{}
 .favorited {
     color: rgb(255, 235, 0);
 }
+
+.text-white > .popover {
+    color: black;
+}

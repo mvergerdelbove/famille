@@ -4,6 +4,7 @@
 {% block title %}Une vie de famille - Tout sur la garde d'enfants{% endblock %}
 
 {% block content %}
+{% with plan=request.user|plan auth=user.is_authenticated %}
 <div class="row little-margin tool-page">
     <div class="col-md-2 side-bar">
         <ul class="nav nav-stacked" data-spy="affix" data-offset-top="0">
@@ -30,9 +31,17 @@
                             </div>
                             <div class="col-md-12 col-xs-2">
                                 <div class="row link-tool">
-                                    <p class="text-white"><a href="{{ tool.file_content.url }}" target="_blank">
-                                        <span class="glyphicon glyphicon-eye-open"></span> Consulter
-                                    </a></p>
+                                    <p class="text-white">
+                                        {% if not auth %}
+                                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
+                                        {% elif plan == 'premium' %}
+                                        <a href="{{ tool.file_content.url }}" target="_blank">
+                                            <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                                        </a>
+                                        {% else %}
+                                        {% include 'helpers/popover_logged.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -43,11 +52,14 @@
         {% endfor %}
     </section>
 </div>
+{% endwith %}
 {% endblock %}
 
 {% block script %}
 <script>
 (function ($) {
+    $('[data-toggle="popover"]').popover();
+
     if (location.hash) {
         $(".nav-stacked li:has(a[href="+ location.hash +"])").addClass("active");
     }
