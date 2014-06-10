@@ -101,9 +101,6 @@
                   Nous contacter<br/>
                   <small>Merci de nous laisser votre message. Nous vous répondrons dans les plus brefs délais.</small>
               </h4>
-              <p>Mail: {{ contact.mail }}</p>
-              <p>Siège social: {{ contact.address }}</p>
-              <p>Numéro de téléphone: {{ contact.phone }}</p>
           </div>
           <div class="modal-body">
               <form>
@@ -117,13 +114,19 @@
                   </div>
                   <div class="form-group">
                       <label for="contact-messageContent">Contenu du message</label>
-                      <textarea rows="10" name="messageContent" id="contact-messageContent" class="form-control"></textarea>
+                      <textarea rows="5" name="messageContent" id="contact-messageContent" class="form-control"></textarea>
                   </div>
               </form>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
               <button type="button" class="btn btn-primary send-contact-message">Envoyer</button>
+              <hr>
+              
+              <p class="text-center text-light">UNE VIE DE FAMILLE &reg; 2014, Tous droits réservés</p>
+              <p class="text-center text-light">Mail: {{ contact.mail }}</p>
+              <p class="text-center text-light">Siège social: {{ contact.address }}</p>
+              <p class="text-center text-light">Numéro de téléphone: {{ contact.phone }}</p>
           </div>
       </div>
   </div>

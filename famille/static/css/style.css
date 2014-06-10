@@ -218,19 +218,19 @@ tr td .title-red{
 }
 
 .text-white, .text-white a, .text-white p a{
-<<<<<<< HEAD
   color: #FFFFFF;
 }
 
 .text-dark, .text-dark a, .text-dark p a{
   color: #000000;
-=======
-    color: #FFFFFF
->>>>>>> master
 }
 
 .text-dark :hover, .text-dark a :hover, .text-dark p a :hover{
   color: #000000;
+}
+
+.text-light, .text-light a, .text-light p a{
+  color: #BABABA;
 }
 
 .text-white :hover, .text-white a:hover, .text-white p a :hover{
