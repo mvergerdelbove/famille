@@ -4,6 +4,7 @@
 {% block title %}Une vie de famille - Tout sur la garde d'enfants{% endblock %}
 
 {% block content %}
+{% with plan=request.user|plan auth=user.is_authenticated %}
 <div class="row little-margin tool-page">
     <div class="col-md-2 side-bar">
         <ul class="nav nav-stacked" data-spy="affix" data-offset-top="0">
@@ -19,20 +20,24 @@
                 <header class="tool-category"><h3>{{ kinds|key:kind }}</h3></header>
                 <div class="list-group">
                     {% for tool in tool_file_list %}
-                        <div class="col-md-3 margin-left-little margin-top-little border-tool">
-                            <div class="col-md-12">
-                                <div class="row heading-tool">
-                                    <h4 class="list-group-item-heading">{{ tool.name }}</h4>
+                        <div class="row">
+                            <div class="col-md-10 margin-left-little margin-top-little border-tool">
+                                <div class="col-md-7">
+                                    <h4 class="list-group-item-heading text-left">{{ tool.name }}</h4>
                                     <p class="list-group-item-text">
                                         {{ tool.description }}
                                     </p>
                                 </div>
-                            </div>
-                            <div class="col-md-12 col-xs-2">
-                                <div class="row link-tool">
-                                    <p class="text-white"><a href="{{ tool.file_content.url }}" target="_blank">
-                                        <span class="glyphicon glyphicon-eye-open"></span> Consulter
-                                    </a></p>
+                                <div class="col-md-2">
+                                    <div class="btn btn-color btn-green-min text-white margin-top-little" >
+                                        {% if not auth %}
+                                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
+                                        {% else %}
+                                        <a href="{{ tool.file_content.url }}" target="_blank">
+                                            <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                                        </a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -43,11 +48,14 @@
         {% endfor %}
     </section>
 </div>
+{% endwith %}
 {% endblock %}
 
 {% block script %}
 <script>
 (function ($) {
+    $('[data-toggle="popover"]').popover();
+
     if (location.hash) {
         $(".nav-stacked li:has(a[href="+ location.hash +"])").addClass("active");
     }

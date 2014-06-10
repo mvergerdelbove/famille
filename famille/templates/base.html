@@ -101,6 +101,9 @@
                   Nous contacter<br/>
                   <small>Merci de nous laisser votre message. Nous vous répondrons dans les plus brefs délais.</small>
               </h4>
+              <p>Mail: {{ contact.mail }}</p>
+              <p>Siège social: {{ contact.address }}</p>
+              <p>Numéro de téléphone: {{ contact.phone }}</p>
           </div>
           <div class="modal-body">
               <form>
@@ -120,7 +123,7 @@
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-              <button type="button" class="btn btn-primary send-contact-message" data-dismiss="modal">Envoyer</button>
+              <button type="button" class="btn btn-primary send-contact-message">Envoyer</button>
           </div>
       </div>
   </div>

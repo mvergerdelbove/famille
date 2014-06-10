@@ -55,7 +55,8 @@
 {% endblock %}
 
 {% block script %}
-<script src="{% static "lib/select2/select2.js" %}"></script>
-<script src="{% static "js/build/messages.js" %}"></script>
-{% block extraScript %}{% endblock %}
+<script>
+    var path = location.pathname.match(/\/messages\/([a-z]+)\//)[1];
+    $("#" + path + "Link").addClass("active");
+</script>
 {% endblock %}

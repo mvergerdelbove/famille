@@ -1,4 +1,5 @@
 var notifier = require("../../notifier");
+var utils = require("../../utils");
 
 function getDataFromEl(form){
     form = $(form);
@@ -172,6 +173,11 @@ var ReferenceEditionView = Backbone.View.extend({
                 this.markInvalid(this.ui.email, msg);
                 valid = false;
             }
+            if (!data.referenced_user) {
+                msg = "Ce champs est requis.";
+                this.markInvalid(this.ui.referenced_user, msg);
+                valid = false;
+            }
         }
         if (!data.date_from) {
             msg = "Ce champs est requis";
@@ -182,6 +188,11 @@ var ReferenceEditionView = Backbone.View.extend({
             msg = "Ce champs est requis.";
             this.markInvalid(this.ui.date_to, msg);
             valid = false;
+        }
+        if (utils.dateIsGreaterThan(data.date_from, data.date_to)) {
+             msg = "Veuillez saisir une date inférieure à la date de fin.";
+             this.markInvalid(this.ui.date_from, msg);
+             valid = false;
         }
         if (!data.missions) {
             msg = "Ce champs est requis.";

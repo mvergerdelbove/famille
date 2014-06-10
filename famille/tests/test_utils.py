@@ -1,3 +1,4 @@
+import base64
 from datetime import date, datetime, timedelta
 import json
 
@@ -39,6 +40,11 @@ class UtilsTestCase(TestCase):
         out = "famille", "123"
         self.assertEqual(utils.parse_resource_uri(_in), out)
 
+    def test_get_overlap(self):
+        self.assertEqual(utils.get_overlap([1,2], [3,4]), 0)
+        self.assertEqual(utils.get_overlap([1,2], [2,4]), 1)
+        self.assertEqual(utils.get_overlap([1,2], [1,4]), 2)
+        self.assertEqual(utils.get_overlap([1,4], [3,4]), 2)
 
 class GeolocationTestCase(TestCase):
 
@@ -362,6 +368,15 @@ class MailTestCase(TestCase):
         m = Message(sender=self.user)
         rating = mail.email_moderation(m)
         self.assertTrue(rating)
+
+    def test_encode_recipient(self):
+        expected = {"type": "Prestataire", "pk": self.presta.pk}
+        self.assertEqual(json.loads(base64.urlsafe_b64decode(mail.encode_recipient(self.presta))), expected)
+
+    def test_decode_recipient_list(self):
+        data = [{"type": "Prestataire", "pk": 1}, {"type": "Famille", "pk": 2}]
+        encoded = "---".join([base64.urlsafe_b64encode(json.dumps(d)) for d in data])
+        self.assertEqual(mail.decode_recipient_list(encoded), data)
 
 
 class LookupTestCase(TestCase):

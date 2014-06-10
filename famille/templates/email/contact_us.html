@@ -1,33 +1,24 @@
 {% extends "email/base.html" %}
 
-{% load helpers %}
+ {% load helpers %}
 
-{% block title %}
-Un utilisateur vous a contacté
-{% endblock %}
+ {% block title %}
+ Un utilisateur vous a contacté
+ {% endblock %}
 
+ {% block title_header %}
+ Un utilisateur vous a contacté
+ {% endblock %}
 
-<!-- <div>
-    {% if name %}
-    <p>Nom ou raison social: {{ name }}</p>
-    {% endif %}
-    {% if email %}
-    <p>Contact / email: {{ email }}</p>
-    {% endif %}
-    <p>Message envoyé</p><br/>
-    <p>{{ message }}</p>
-</div> -->
-{% block content %}
-
-    {% if name %}
-    Nom ou raison social: {{ name }}
-    {% endif %}
-    {% if email %}
-    Contact / email: {{ email }}
-    {% endif %}
-    Message envoyé
-    {{ message }}
-
-
-
-{% endblock %}
+ {% block content %}
+ <div>
+     {% if name %}
+     <p>Nom ou raison sociale: {{ name }}</p>
+     {% endif %}
+     {% if email %}
+     <p>Contact / email: {{ email }}</p>
+     {% endif %}
+     <p>Message envoyé</p><br/>
+     <p>{{ message }}</p>
+ </div>
+ {% endblock %}

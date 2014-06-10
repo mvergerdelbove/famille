@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 from datetime import date, timedelta
 import logging
 
@@ -49,7 +50,7 @@ PRODUCTS = {
         {
             "amount": "5.00",
             "item_title": "Forfait ",
-            "item_frequence": "pour toute l'annee",
+            "item_frequence": u"pour toute l'année",
             "item_name": "Abonnement Illimite pendant un an",
             "item_number": PREMIUM_IDS["12p"],
             "button_type": PayPalPaymentsForm.BUY

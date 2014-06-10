@@ -1,8 +1,11 @@
 # -*- coding=utf-8 -*-
-from datetime import date
+from collections import OrderedDict
+from datetime import date, datetime
 import logging
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -17,7 +20,10 @@ from famille.utils import (
     parse_resource_uri, geolocation, IMAGE_TYPES, DOCUMENT_TYPES,
     fields as extra_fields, payment
 )
-from famille.utils.mail import send_mail_from_template_with_noreply
+from famille.utils.mail import (
+    send_mail_from_template_with_noreply,
+    encode_recipient, decode_recipient_list
+)
 from famille.utils.python import pick, get_age_from_date
 
 
@@ -25,7 +31,8 @@ __all__ = [
     "Famille", "Prestataire", "Enfant", "Criteria",
     "get_user_related", "Reference", "UserInfo",
     "has_user_related", "user_is_located", "Geolocation",
-    "compute_user_visibility_filters", "get_user_pseudo"
+    "compute_user_visibility_filters", "get_user_pseudo",
+    "check_plan_expiration"
 ]
 
 
@@ -156,7 +163,6 @@ class UserInfo(BaseModel):
     name = models.CharField(blank=True, max_length=50)
     first_name = models.CharField(blank=True, max_length=50)
     email = models.EmailField(max_length=100, unique=True)
-    pseudo = models.CharField(blank=True, null=True, max_length=60, unique=True)
 
     street = models.CharField(blank=True, null=True, max_length=100)
     postal_code = models.CharField(blank=True, null=True, max_length=8)
@@ -200,6 +206,27 @@ class UserInfo(BaseModel):
         user.save()
         return user
 
+    @classmethod
+    def decode_users(cls, data):
+        """
+        Decode a list of users. Uses mail.decode_recipient_list.
+
+        :param data:        the encoded data
+        """
+        try:
+            user_data = decode_recipient_list(data)
+        except (TypeError, ValueError):
+            raise ValueError("Wrong format")
+
+        users = []
+        for u in user_data:
+            try:
+                kls = Prestataire if u["type"] == "Prestataire" else Famille
+                users.append(kls.objects.get(pk=u["pk"]))
+            except (KeyError, kls.DoesNotExist):
+                raise ValueError("Wrong format")
+        return users
+
     @property
     def is_geolocated(self):
         """
@@ -237,6 +264,17 @@ class UserInfo(BaseModel):
         Return the total rating percent.
         """
         return int(self.total_rating / 5.0 * 100)
+
+    @property
+    def is_social(self):
+        """
+        Return True if user is connected through social auth.
+        """
+        return self.user.social_auth.all().count()
+
+    @property
+    def encoded(self):
+        return encode_recipient(self)
 
     # FIXME: can be async
     def geolocate(self):
@@ -302,7 +340,15 @@ class UserInfo(BaseModel):
         Retrieve the favorites data.
         """
         # FIXME: can become greedy in the future
-        return (favorite.get_user() for favorite in self.favorites.all())
+        favs = OrderedDict([
+            ("Prestataire", []),
+            ("Famille", [])
+        ])
+        for favorite in self.favorites.all():
+            fav = favorite.get_user()
+            favs[fav.__class__.__name__].append(fav)
+
+        return favs
 
     # FIXME: nothing to do here...
     def get_resource_uri(self):
@@ -312,30 +358,14 @@ class UserInfo(BaseModel):
         """
         return "/api/v1/%ss/%s" % (self.__class__.__name__.lower(), self.pk)
 
-    # FIXME: cannot test it, cannot mock...
-    def send_mail_to_favorites(self, message, favorites):
-        favs_to_contact = map(lambda fav: pick(fav, "object_type", "object_id"), favorites)
-        favs = self.favorites.all()
-        favs = (fav for fav in favs if {"object_type": fav.object_type, "object_id": str(fav.object_id)} in favs_to_contact)
-
-        # get emails
-        emails = (fav.get_user().email for fav in favs)
-        # remove possible None
-        emails = filter(None, emails)
-
-        if emails:
-            send_mail_from_template_with_noreply(
-                "email/contact_favorites.html", message,
-                subject=message.get("subject", ""), recipient_list=emails
-            )
-
     def get_pseudo(self):
         """
         Return the pseudo of a user.
+        Possible values:
+            - FirstName
+            - FirstName N. (first letter of name)
+            - firstpartofemailaddress (before @)
         """
-        if self.pseudo:
-            return self.pseudo
-
         pseudo = self.first_name
         if not pseudo:
             pseudo = self.email.split("@")[0]
@@ -375,7 +405,7 @@ class UserInfo(BaseModel):
         activate_url = request.build_absolute_uri(activate_url)
         send_mail_from_template_with_noreply(
             "email/verification.html", {"activate_url": activate_url},
-            subject=u"Email de vérification", recipient_list=[self.email, ]
+            subject=u"Email de vérification", to=[self.email]
         )
 
     @classmethod
@@ -399,7 +429,7 @@ class Criteria(UserInfo):
         ("part", u"Garde partagée"),
         ("ecole", u"Sortie d'école"),
         ("vacances", u"Vacances scolaires"),
-        ("decal", u"Garde à horaires"),
+        ("decal", u"Garde à horaires décalés"),
         ("nuit", u"Garde de nuit"),
         ("urgences", u"Garde d'urgence"),
     )
@@ -451,7 +481,7 @@ class Criteria(UserInfo):
     psc1 = models.BooleanField(blank=True, default=False)
     permis = models.BooleanField(blank=True, default=False)
     enfant_malade = models.BooleanField(blank=True, default=False)
-    tarif = models.FloatField(blank=True, null=True, default=3.0)
+    tarif = models.CharField(blank=True, default="%s,%s" % settings.TARIF_RANGE, max_length=10)
     description = models.CharField(blank=True, null=True, max_length=400)
 
     class Meta:
@@ -464,6 +494,7 @@ class Prestataire(Criteria):
     """
     TYPES = (
         ("baby", "Baby-sitter"),
+        ("mamy", "Mamie-sitter"),
         ("nounou", "Nounou"),
         ("maternel", "Assistant(e) maternel(le)"),
         ("parental", "Assistant(e) parental(e)"),
@@ -493,7 +524,6 @@ class Prestataire(Criteria):
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
         max_upload_size=2621440  # 2.5MB
     )
-    restrictions = models.CharField(max_length=40, choices=RESTRICTIONS.items(), null=True, blank=True)
 
     class Meta:
         app_label = 'famille'
@@ -506,7 +536,7 @@ class Prestataire(Criteria):
         Return the prestataire type, depending on if he
         selected "Other".
         """
-        return self.get_type_display() if self.type != "other" else self.other_type
+        return (self.get_type_display() if self.type != "other" else self.other_type) or ""
 
 
 class Famille(Criteria):
@@ -565,7 +595,7 @@ class Enfant(BaseModel):
         if self.e_birthday:
             disp += u", %s ans" % get_age_from_date(self.e_birthday)
         if self.e_school:
-            disp += u", scolarisé(e) à %s" % self.e_school
+            disp += u", scolarisé à %s" % self.e_school
 
         return disp
 
@@ -679,6 +709,28 @@ FAVORITE_CLASSES = {
 }
 
 
+def check_plan_expiration(sender=None, request=None, user=None, related=None, **kwargs):
+    """
+    Verify user plan expiration upon user login.
+    This will be connected to the user_logged_in signal.
+
+    It will downgrade the user plan if:
+        - the user plan has no expiration date
+        - the user plan has expired
+    And will send an email to the user.
+    """
+    if related or has_user_related(user):
+        related = related or get_user_related(user)
+        if related.is_premium and (not related.plan_expires_at or related.plan_expires_at < datetime.now()):
+            related.plan = "basic"
+            related.plan_expires_at = None
+            related.save()
+            send_mail_from_template_with_noreply(
+                "email/plan.html", {},
+                subject=u"Votre plan premium vient d'expirer", to=[related.email]
+            )
+
 # signals
 payment_was_successful.connect(payment.signer.premium_signup, dispatch_uid="famille.premium")
 key_claimed.connect(UserInfo.verify_user, dispatch_uid="famille.verify")
+user_logged_in.connect(check_plan_expiration, dispatch_uid="famille.check_plan")

@@ -1,7 +1,9 @@
 # -*- coding=utf-8 -*-
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.core import validators
 from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
 
@@ -12,7 +14,10 @@ from famille.models import (
 )
 from famille.models.planning import Schedule, Weekday, BasePlanning
 from famille.models.utils import email_is_unique
-from famille.utils.fields import RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField
+from famille.utils.fields import (
+    RangeField, LazyMultipleChoiceField, CommaSeparatedMultipleChoiceField,
+    CommaSeparatedRangeField
+)
 from famille.utils.forms import ForeignKeyForm, ForeignKeyApiForm
 from famille.utils.widgets import RatingWidget, RangeWidget
 
@@ -21,8 +26,12 @@ SCHEDULE_CHOICES = lazy(Schedule.get_choices, list)()
 WEEKDAY_CHOICES = lazy(Weekday.get_choices, list)()
 
 
+validate_email = validators.EmailValidator(message=u"Veuillez saisir un mail valide.")
+validate_email_length = validators.MaxLengthValidator(100)  # make sure there is no 500 error...
+
+
 class RegistrationForm(forms.Form):
-    email = forms.CharField(label="Adresse mail")
+    email = forms.CharField(label="Adresse mail", validators=[validate_email, validate_email_length])
     password = forms.CharField(
         label="Mot de passe", widget=forms.PasswordInput
     )
@@ -56,7 +65,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         fields = (
-            'pseudo', 'name', 'first_name', 'email', 'street',
+            'name', 'first_name', 'email', 'street',
             'postal_code', 'city', 'country',
             'tel', 'tel_visible'
         )
@@ -69,7 +78,6 @@ class UserForm(forms.ModelForm):
             "country": "Pays",
             "tel": u"Téléphone",
             "tel_visible": u"J’accepte que mon téléphone soit visible pour les personnes souhaitant me contacter",
-            "pseudo": u"Pseudo"
         }
 
     def is_valid(self):
@@ -211,7 +219,14 @@ LANGUAGES = {
 }
 class CriteriaForm(forms.ModelForm):
     language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES.items(), required=False)
-
+    tarif = CommaSeparatedRangeField(
+        label=u"Tarif horaire (€/h)",
+        widget=RangeWidget(
+            min_value=settings.TARIF_RANGE[0],
+            max_value=settings.TARIF_RANGE[1],
+            attrs={"class": "form-control"}
+        )
+    )
     class Meta:
         labels = {
             "tarif": u"Tarif horaire (€/h)",
@@ -233,14 +248,6 @@ class CriteriaForm(forms.ModelForm):
         }
         fields = labels.keys()
         widgets = {
-            "tarif": forms.TextInput(
-                attrs={
-                    'type': 'text',
-                    'data-slider-min': '0',
-                    'data-slider-max': '80',
-                    'data-slider-step': '0.5'
-                }
-            ),
             "description": forms.Textarea(
                 attrs={
                     'rows': '5',
@@ -284,8 +291,7 @@ class PrestataireCompetenceForm(CriteriaForm):
         model = Prestataire
         labels = dict(
             CriteriaForm.Meta.labels, diploma=u"Diplôme",
-            resume="Joindre un CV", restrictions="Mes restrictions (assistant(e) maternel(le))",
-            description="Annonce"
+            resume="Joindre un CV", description="Annonce"
         )
         fields = labels.keys()
         widgets = {
@@ -405,12 +411,19 @@ class BaseSearchForm(forms.Form):
     )
     tarif = RangeField(
         label=u"Tarif horaire (€/h)",
-        widget=RangeWidget(min_value=3, max_value=20, attrs={"class": "form-control"})
+        widget=RangeWidget(
+            min_value=settings.TARIF_RANGE[0],
+            max_value=settings.TARIF_RANGE[1],
+            attrs={"class": "form-control"}
+        )
     )
     # planning
-    plannings__schedule__id = LazyMultipleChoiceField(
-        label=u"Plage horaire", choices=SCHEDULE_CHOICES, required=False,
-        widget=forms.SelectMultiple(attrs={"data-api": "in"})
+    plannings__start_date = forms.CharField(
+        label=u'À partir de', required=False,
+        widget=forms.DateInput(
+            attrs={'type':'datetime', "class": "form-control", "data-api": "gte"},
+            format="%d/%m/%Y"
+        )
     )
     plannings__weekday__id = LazyMultipleChoiceField(
         label=u"Jour(s) de la semaine", choices=WEEKDAY_CHOICES, required=False,
@@ -613,6 +626,20 @@ class AdvancedForm(forms.ModelForm):
             "newsletter": u"Je m'abonne à la newsletter",
         }
         fields = labels.keys()
+
+    def __init__(self, *args, **kwargs):
+        """
+        Make sure the user has the right to edit visibility (premium).
+        """
+        super(AdvancedForm, self).__init__(*args, **kwargs)
+        if self.instance and not self.instance.is_premium:
+            self.fields['visibility_family'].widget.attrs['disabled'] = True
+            self.fields['visibility_prestataire'].widget.attrs['disabled'] = True
+            self.fields['visibility_global'].widget.attrs['disabled'] = True
+
+            self.clean_visibility_family = lambda: self.instance.visibility_family
+            self.clean_visibility_prestataire = lambda: self.instance.visibility_prestataire
+            self.clean_visibility_global = lambda: self.instance.visibility_global
 
 
 class FamilleAdvancedForm(AdvancedForm):

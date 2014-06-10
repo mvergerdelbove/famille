@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 from django.forms import widgets
 from django.forms.util import flatatt
 from django.utils.html import format_html
@@ -43,8 +44,11 @@ class RangeWidget(widgets.TextInput):
     def render(self, name, value, attrs=None):
         attrs = attrs or {}
         value = value or [self.min_value, self.max_value]
+        value = [int(v) for v in value.split(",")] if isinstance(value, basestring) else value
+
         attrs["data-slider-value"] = str(value)
         attrs["data-slider-min"] = self.min_value
         attrs["data-slider-max"]= self.max_value
+        attrs["data-slider-tooltip-template"]= u"de {0} à {1} €"
 
         return super(RangeWidget, self).render(name, value, attrs)

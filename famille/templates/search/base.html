@@ -158,28 +158,27 @@
 {% endblock %}
 
 {% block script %}
-{% if user.is_authenticated %}
 <script>
+    {% if not user.is_authenticated %}
+    $('#authentificate').modal({
+      show: true
+    });
+    {% else %}
+    $("select").select2();
     window._auth = true;
+    {% if user|plan == "basic" %}
+    $('#be-premium').modal({
+      show: true
+    });
+    {% endif %}
+    {% endif %}
 </script>
-{% endif %}
-
-{% if not user.is_authenticated %}
-<script>
-$('#authentificate').modal({
-  show: true
-})
-</script>
-{% elif user|plan == "basic" %}
-<script>
-$('#be-premium').modal({
-  show: true
-})
-</script>
-{% endif %}
 
 <script src="{% static "lib/backbone/backbone-min.js" %}"></script>
+<script src="{% static "lib/moment/min/moment.min.js" %}"></script>
 <script src="{% static "lib/select2/select2.min.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/src/js/bootstrap-datetimepicker.js" %}"></script>
+<script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
 <script src="{% static "js/build/search.js" %}"></script>
 {% endblock %}

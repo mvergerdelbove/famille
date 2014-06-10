@@ -2,7 +2,6 @@
 module.exports = Backbone.Router.extend({
     serverRoutes: {
         toggleFavorite: "/favorite/",
-        contactFavorite: "/contact-favorites/",
         plannings: "/plannings/",
         profilePic: "/profile-pic/"
     },
@@ -17,21 +16,6 @@ module.exports = Backbone.Router.extend({
             headers: {'X-CSRFToken': $.cookie('csrftoken')}
         });
         $.ajax(options);
-    },
-
-    sendContact: function(data){
-        var self = this;
-        $.ajax({
-            type: "post",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            url: this.serverRoutes.contactFavorite,
-            headers: {'X-CSRFToken': $.cookie('csrftoken')}
-        }).done(function(){
-            self.trigger("contact:success");
-        }).fail(function(){
-            self.trigger("contact:error");
-        });
     },
 
     savePlannings: function (data) {

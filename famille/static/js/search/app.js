@@ -33,7 +33,6 @@ App.prototype.initialize = function(){
 };
 
 App.prototype.initEvents = function(){
-    $("select").select2();
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
     if ($("#id_tarif").length) {
@@ -41,16 +40,12 @@ App.prototype.initEvents = function(){
         $(".slider").removeAttr("style").css("width", "70%");
     }
     $(".has-success").removeClass("has-success");
-
-    // FIXME : this engender problems : the popover is just hidden but
-    //         covers the possibly underlying buttons
-
-    // $('body').on('click', function (e) {
-//         if ($(e.target).data('toggle') !== 'popover'
-//             && $(e.target).parents('.popover.in').length === 0) {
-//             $('[data-toggle="popover"]').popover('hide');
-//         }
-//     });
+    $("#id_plannings__start_date").datetimepicker({
+        language: 'fr',
+        format: "DD/MM/YYYY",
+        startDate: moment().startOf("day"),
+        pickTime: false
+    });
 };
 
 App.prototype.initSlider = function($el){

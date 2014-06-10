@@ -42,11 +42,11 @@
                         <button class="btn btn-color btn-brown-min favorite {% if profile == related_user %}disabled {% endif %}">
                             <i class="glyphicon glyphicon-star {% if favorited %}favorited{% endif %}"></i> Favori
                         </button>
-                        <a class="btn btn-color btn-brown-min" href="{% url 'postman_write' %}" target="_blank">
+                        <a class="btn btn-color btn-brown-min {% if profile == related_user %}disabled {% endif %}" href="{% if profile == related_user %}#{% else %}{% url 'postman_write' %}?r={{ profile.encoded|urlencode }}{% endif %}" target="_blank">
                             <span class="glyphicon glyphicon-user"></span> Contacter
                         </a>
                         {% include 'helpers/rating.html' with rating_form=rating_form profile=profile only %}
-                        {% include 'helpers/signal_modal.html' with profile=profile only %}
+                        {% include 'helpers/signal_modal.html' with profile=profile related_user=related_user only %}
                     </div>
         </div>  <!-- end page header -->
     </div>  <!-- end row header -->
@@ -100,9 +100,9 @@
                     <div class="row">
                         <img src="{% static profile|badge_icon:'menage' %}" width="60px">
                     </div>
-                    <div class="row">    
+                    <div class="row">
                         J'accepte de faire du ménage
-                    </div>    
+                    </div>
                 </div>
                 <div class="col-md-3 text-center">
                     <div class="row">

@@ -7,28 +7,13 @@ from django.views.decorators.http import require_POST, require_GET
 from famille import forms, models
 from famille.utils.http import require_JSON, require_related, login_required, JsonResponse
 from famille.utils.lookup import PostmanUserLookup
-from famille.utils.mail import send_mail_from_template
+from famille.utils.mail import send_mail_from_template, decode_recipient_list
 
 __all__ = [
-    "contact_favorites", "plannings", "profile_pic",
+    "plannings", "profile_pic",
     "submit_rating", "message_autocomplete", "signal_user",
-    "contact_us"
+    "contact_us", "get_recipients"
 ]
-
-
-@require_related
-@require_POST
-@require_JSON
-@login_required
-def contact_favorites(request):
-    """
-    Contact favorites using mailer.
-    """
-    favorites = request.json["favorites"]
-    message = request.json["message"]
-
-    request.related_user.send_mail_to_favorites(message, favorites)
-    return HttpResponse()
 
 
 @require_related
@@ -148,7 +133,7 @@ def signal_user(request, userType, uid):
             "reason": reason, "user_to_signal": user_to_signal,
             "user": request.related_user
         }, subject=u"Un utilisateur a été signalé",
-        recipient_list=[settings.CONTACT_EMAIL, ],
+        to=[settings.CONTACT_EMAIL, ],
         from_email=settings.NOREPLY_EMAIL
     )
 
@@ -168,8 +153,28 @@ def contact_us(request):
         "email/contact_us.html", {
             "name": name, "message": message, "email": email
         }, subject=u"Un utilisateur vous a contacté",
-        recipient_list=[settings.CONTACT_EMAIL, ],
+        to=[settings.CONTACT_EMAIL, ],
         from_email=settings.NOREPLY_EMAIL
     )
 
     return HttpResponse()
+
+
+@require_related
+@require_GET
+@login_required
+def get_recipients(request, data):
+    """
+    Retrieve the recipients of a message. The recipients are passed as GET parameter
+    but encoded (base64). This view returns the list of recipients.
+    """
+    try:
+        recipients = models.UserInfo.decode_users(data)
+    except (ValueError):
+        return JsonResponse(status=400)
+
+    data = [lookup.format_result(user) for user in recipients]
+
+    return JsonResponse({
+        "users": data
+    })

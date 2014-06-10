@@ -6,12 +6,14 @@
      <ul class="dropdown-menu" role="menu">
         <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/google/{{ type }}/"
                class="social-link">Google</a></li>
+        {% comment %}
         <!-- TODO: create apps on those networks -->
         <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/linkedin/{{ type }}/"
                class="social-link">LinkedIn</a></li>
-        <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/facebook/{{ type }}/" 
+        <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/facebook/{{ type }}/"
                class="social-link">Facebook</a></li>
-        <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/twitter/{{ type }}/" 
+        <li><a href="{% url 'social:begin' 'google' %}?next=/{{ action }}/twitter/{{ type }}/"
                class="social-link">Twitter</a></li>
+        {% endcomment %}
     </ul>
 </div>

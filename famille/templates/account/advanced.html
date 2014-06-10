@@ -31,33 +31,25 @@
                 </div>
                 <h2><span class="glyphicon glyphicon-envelope"></span> Newsletter</h2>
                 {% bootstrap_field form.newsletter %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-color btn-green-min">Valider</button>
+                {% endbuttons %}
+
                 <h2>Informations sensibles</h2>
-                <div class="form-group margin-bottom-little">
-                    <a href="{% url 'password_change' %}" class="btn btn-color btn-blue-min">
+                {% if not form.instance.is_social %}
+                <div class="form-group col-md-8">
+                    <a href="{% url 'password_change' %}" class="form-control btn btn-color btn-blue-min">
                         <i class="glyphicon glyphicon-pencil"></i> Changer mon mot de passe
                     </a>
                 </div>
-                {% buttons %}
-                    <button type="submit" class="btn btn-color btn-green-min">Valider</button>
-                    <a data-toggle="modal" data-target="#accountDeletion" class="btn btn-color btn-red-min pull-right">
+                {% endif %}
+                <div class="form-group col-md-8">
+                    <a data-toggle="modal"
+                       data-target="#accountDeletion"
+                       class="btn btn-color btn-red-min pull-right form-control">
                         <i class="glyphicon glyphicon-trash"></i> Supprimer mon compte
                     </a>
-                {% endbuttons %}
-
-                <script>
-
-                {% if user|plan == "basic" %}
-                    window.onload = visible
-                    function visible()
-                    {
-                        document.getElementById("id_visibility_family").disabled=true;
-                        document.getElementById("id_visibility_prestataire").disabled=true;
-                        document.getElementById("id_visibility_global").disabled=true;
-                    }
-
-                {% endif %} 
-                </script>
-
+                </div>
             </form>
         </div>
     </article>

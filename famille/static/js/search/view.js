@@ -14,11 +14,7 @@ var constructFilter = function(name, query, value){
 };
 
 var constructTarifFilter = function (name, value) {
-    var min = value[0];
-    var max = value[1];
-    if(min !== max) {
-        return "tarif__gte="+ min +"&tarif__lte=" + max;
-    }
+    return "tarif__in="+ value[0] +"," + value[1];
 };
 
 
@@ -41,11 +37,17 @@ var constructAgeFilter = function(name, value) {
     }
 };
 
+var dateToIso = function (date) {
+    var parts = date.split("/");
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
+};
+
 module.exports = Backbone.View.extend({
     events: {
         "click .next": "displayNext",
         "click .previous": "displayPrevious",
         "click .favorite": "toggleFavorite",
+        "click .favorite i": "toggleFavorite",
         "click .choose-search": "switchSearch",
         "change .form-search .form-control": "doSearch",
         "click .form-search [type=checkbox]": "doSearch",
@@ -67,6 +69,19 @@ module.exports = Backbone.View.extend({
         this.$distanceInput = this.$("#id_distance");
         this.$distanceButtonGroup = this.$(".btn-group-distance");
         this.$sortSelect = this.$("#search-sort");
+        // disable popovers on click outside of them
+        $('body').on('click', function (e) {
+            $('[data-toggle=popover]').each(function () {
+                var $el = $(this)
+                $el = $el.attr("data-trigger") ? $el : $el.parent();
+
+                if (!$el.is(e.target) && $el.has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    if ($el.data('bs.popover') && $el.data('bs.popover').tip().hasClass('in')) {
+                        $el.popover('toggle');
+                    }
+                }
+            });
+        });
         if (!this.isAuthenticated()) {
             this.disableForm();
         }
@@ -79,6 +94,9 @@ module.exports = Backbone.View.extend({
                 value = $this.val(),
                 query = $this.data("api");
             if (value && name == "age") return constructAgeFilter(name, value);
+            if (value && name == "plannings__start_date") {
+                return constructFilter(name, query, dateToIso(value));
+            }
             if (value && query) return constructFilter(name, query, value);
             if (value && name == "tarif") return constructTarifFilter(name, $this.slider("getValue"));
         });
@@ -141,7 +159,9 @@ module.exports = Backbone.View.extend({
         $container.html("");
         if (!data.length) {
             $noResults.show();
-             this.views = [];
+            this.views = [];
+            this.$(".total-search-results").html("0");
+            this.$(".plural-search-result").html("s");
         }
         else {
             $noResults.hide();
@@ -182,16 +202,21 @@ module.exports = Backbone.View.extend({
         var postalCode = this.$(".form-control[name=pc]")[0];
         this.$("#id_tarif").slider('disable');
         this.attachDisabledPopover(this.$(".slider-disabled"));
-        _.each(this.$(".form-control,[type=checkbox]", ".form-search"), function (el) {
+        var $els = this.$(".form-control,[type=checkbox]", ".form-search");
+        $els.add(this.$sortSelect);
+        _.each($els, function (el) {
             if (el === postalCode) return;
+            if ($(el).attr("name") === "tarif") return;
 
             var $el = $(el);
-            if (el.tagName == "SELECT") {
-                $el.select2("readonly", true);
+            if (el.tagName === "SELECT" && !$el.attr("multiple")) {
+                // place an element in front of it
+                $el.wrap('<div style="display:inline-block; position:relative;"></div>');
+                $el.after('<div class="popover-mask" style="position:absolute; left:0; right:0; top:0; bottom:0;"></div>');
             }
-            else {
-                $el.prop("disabled", "disabled");
-            }
+
+            // disable everything
+            $el.prop("disabled", "disabled");
             this.attachDisabledPopover($el);
         }, this);
     },
@@ -201,9 +226,7 @@ module.exports = Backbone.View.extend({
      */
     attachDisabledPopover: function ($el) {
         $el.attr("data-toggle", "popover");
-        if ($el.attr("type") === "checkbox") {
-            $el = $el.parent();
-        }
+        $el = $el.parent();
         $el.popover({
             placement: "bottom",
             trigger: "click",

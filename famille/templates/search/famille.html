@@ -7,8 +7,16 @@
     {% bootstrap_field search_form.enfants__school %}
     {% bootstrap_field search_form.n_enfants %}
     {% bootstrap_field search_form.type_attente_famille %}
+    <div class="form-group">
+        {% bootstrap_label search_form.plannings__start_date.label_tag label_class="col-sm-5" %}
+        <div class="col-md-7 input-group date">
+            {{ search_form.plannings__start_date }}
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div>
     {% bootstrap_field search_form.plannings__weekday__id %}
-    {% bootstrap_field search_form.plannings__schedule__id %}
     {% bootstrap_field search_form.plannings__frequency %}
 {% else %}
     {{ block.super }}

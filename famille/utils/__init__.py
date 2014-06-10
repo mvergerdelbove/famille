@@ -1,11 +1,20 @@
 import re
 
+from django.conf import settings
+
 
 def get_context(**kwargs):
     """
     Minimum context configuration for all the templates.
     """
-    kwargs.update(site_title="Une vie de famille")
+    kwargs.update(
+        site_title="Une vie de famille",
+        contact={
+            "mail": settings.CONTACT_EMAIL,
+            "address": settings.CONTACT_ADDRESS,
+            "phone": settings.CONTACT_PHONE,
+        }
+    )
     return kwargs
 
 
@@ -35,6 +44,15 @@ def parse_resource_uri(resource_uri):
         raise ValueError("Value %s is not a resource uri." % resource_uri)
 
     return match.group(1), match.group(2)
+
+
+def get_overlap(a, b):
+    """
+    Retrieve the overlap of two intervals
+    (number of values common to both intervals).
+    a and b are supposed to be lists of 2 elements.
+    """
+    return max(-1, min(a[1], b[1]) - max(a[0], b[0]) + 1)
 
 
 IMAGE_TYPES = {

@@ -11,20 +11,29 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
     form = forms.TinyMCEForm
 
 
-class FamilleAdmin(admin.ModelAdmin):
+class BaseUserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'first_name', 'name', admin_display.pseudo_display, 'city', 'plan', 'is_active')
+    list_display_links = ('email', )
+    exclude = ('geolocation', 'user')
+    search_fields = ['first_name', 'name', 'email']
+    list_filter = ('newsletter', )
+
+    def is_active(self, obj):
+        img = '<img src="/static/admin/img/icon-%s.gif" alt="%s">'
+        params = ("yes", "True") if obj.user.is_active else ("no", "False")
+        return img % params
+    is_active.short_description = 'Actif'
+    is_active.allow_tags = True
+
+
+class FamilleAdmin(BaseUserAdmin):
     model = Famille
     form = forms.FamilleForm
-    list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
-    exclude = ('geolocation', 'user')
-    search_fields = ['first_name', 'name', 'email']
 
 
-class PrestataireAdmin(admin.ModelAdmin):
+class PrestataireAdmin(BaseUserAdmin):
     model = Prestataire
     form = forms.PrestataireForm
-    list_display = ('first_name', 'name', 'email', admin_display.pseudo_display, 'city', 'plan')
-    exclude = ('geolocation', 'user')
-    search_fields = ['first_name', 'name', 'email']
 
 
 class DownloadableFileAdmin(admin.ModelAdmin):

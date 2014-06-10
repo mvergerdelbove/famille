@@ -3,6 +3,7 @@ from collections import defaultdict
 from django.conf import settings
 from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +14,8 @@ from famille import forms
 from famille.models import (
     Famille, Prestataire, get_user_related, UserInfo,
     has_user_related, FamilleRatings, PrestataireRatings,
-    compute_user_visibility_filters, DownloadableFile
+    compute_user_visibility_filters, DownloadableFile,
+    check_plan_expiration
 )
 from famille.resources import PrestataireResource, FamilleResource
 from famille.utils import get_context, get_result_template_from_user, payment
@@ -61,17 +63,16 @@ def search(request):
         template = "search/famille.html"
     else:
         FormClass = forms.PrestataireSearchForm
-        objects = Prestataire.objects.all()
+        objects = Prestataire.objects.filter(compute_user_visibility_filters(request.user))
         template = "search/prestataire.html"
 
-    form = FormClass(data)
-    if not form.is_valid():
-        form = FormClass()
+    form = FormClass({"pc": data.get("postal_code")})
 
     if not settings.ALLOW_BASIC_PLAN_IN_SEARCH:
         objects = objects.filter(plan=UserInfo.PLANS["premium"])
 
-    # TODO: do location filtering, together with geolocation stuff ?
+    if data.get("postal_code"):
+        objects = objects.filter(Q(postal_code=data["postal_code"]) | Q(city=data["postal_code"]))
     objects = objects.order_by("-updated_at")
     total_search_results = objects.count()
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
@@ -98,6 +99,8 @@ def register(request, social=None, type=None):
             form = forms.RegistrationForm(request.POST)
             if form.is_valid():
                 form.save(request)
+            else:
+                return render(request, "registration/register.html", get_context(social=social, form=form))
         else:
             form = forms.RegistrationForm()
             return render(request, "registration/register.html", get_context(social=social, form=form))
@@ -114,6 +117,7 @@ def register(request, social=None, type=None):
 @login_required
 @require_related
 def account(request):
+    check_plan_expiration(related=request.related_user)
     url_hash = ""
     if request.method == "POST":
         account_forms = forms.AccountFormManager(instance=request.related_user, data=request.POST, files=request.FILES)

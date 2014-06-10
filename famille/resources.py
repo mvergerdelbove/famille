@@ -10,7 +10,7 @@ from tastypie.exceptions import InvalidSortError
 
 from famille import models, forms, errors
 from famille.models import planning, compute_user_visibility_filters
-from famille.utils import get_result_template_from_user
+from famille.utils import get_result_template_from_user, get_overlap
 from famille.utils.python import pick, without
 from famille.utils.geolocation import is_close_enough, geolocate
 
@@ -125,6 +125,7 @@ class SearchResource(object):
         self.__request = request
         nb_enfants = request.GET.get("n_enfants__length")
         language = applicable_filters.pop("language__in", None)
+        applicable_filters.pop("tarif__in", None)  # we remove it since processed in filters_post_sorting
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
         qs = qs.distinct()  # for enfants__school filtering, can return duplicates
 
@@ -145,8 +146,12 @@ class SearchResource(object):
         """
         distance = self.__request.GET.get("distance__iexact")
         postal_code = self.__request.GET.get("pc__iexact")
+        tarif = self.__request.GET.get("tarif__in")
         user = self.__request.user
         del self.__request
+
+        if tarif and len(tarif.split(",")) == 2:
+           object_list = self.filter_tarif(tarif.split(","), object_list)
 
         if postal_code:
             return self.filter_postal_code(postal_code, object_list)
@@ -168,7 +173,6 @@ class SearchResource(object):
         distance = float(distance)  # distance in km
         condition = lambda o: not o.is_geolocated or is_close_enough(geoloc, o.geolocation, distance)
         return [o for o in queryset if condition(o)]
-
 
     def filter_postal_code(self, postal_code, queryset):
         """
@@ -206,6 +210,22 @@ class SearchResource(object):
         """
         raise NotImplementedError()
 
+    def filter_tarif(self, tarif, queryset):
+        """
+        Filter the queryset by the tarif. Compute the
+        intersection of intervals.
+
+        :param tarif:          the tarif interval
+        :param queryset:       the initial queryset
+        """
+        tarif = [int(v) for v in tarif]
+        objects = []
+        for o in queryset:
+            o_tarif = [int(v) for v in o.tarif.split(",")]
+            if get_overlap(tarif, o_tarif) > 0:
+                objects.append(o)
+        return objects
+
     def dehydrate_template(self, bundle):
         """
         Dehydrate the template using the bundle.
@@ -214,6 +234,15 @@ class SearchResource(object):
         template = get_result_template_from_user(bundle.request, search_type)
         context = {"result": bundle.obj, "user": bundle.request.user}
         return render_to_string(template, context)
+
+    def get_object_list(self, request):
+        """
+        Filter allowed object given the HTTP request.
+
+        :param request:           the given HTTP request
+        """
+        filters = compute_user_visibility_filters(request.user)
+        return super(SearchResource, self).get_object_list(request).filter(filters)
 
 
 class PrestataireResource(SearchResource, ModelResource):
@@ -273,15 +302,6 @@ class FamilleResource(SearchResource, ModelResource):
             [(key, ALL) for key in forms.FamilleSearchForm.base_fields.iterkeys()],
             plannings=ALL_WITH_RELATIONS, enfants=ALL_WITH_RELATIONS
         )
-
-    def get_object_list(self, request):
-        """
-        Filter allowed object given the HTTP request.
-
-        :param request:           the given HTTP request
-        """
-        filters = compute_user_visibility_filters(request.user)
-        return super(FamilleResource, self).get_object_list(request).filter(filters)
 
     def dehydrate_nb_enfants(self, bundle):
         """

@@ -1,7 +1,11 @@
-<button class="btn btn-color btn-brown-min btn-block signal-result" data-toggle="modal"
-        data-target="#signal-{{ profile.pk }}">
+<button class="btn btn-color btn-brown-min btn-block signal-result {% if profile == related_user %}disabled {% endif %}"
+        {% if profile != related_user %}
+        data-toggle="modal"
+        data-target="#signal-{{ profile.pk }}"
+        {% endif %}>
     <span class="glyphicon glyphicon-bell"></span> Signaler
 </button>
+{% if profile != related_user %}
 <div class="modal fade" id="signal-{{ profile.pk }}">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -44,3 +48,4 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+{% endif %}

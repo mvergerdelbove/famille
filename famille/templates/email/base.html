@@ -1,18 +1,19 @@
-<!-- <!doctype html>
-<html>
-    <head></head>
-    <body>
-        <header>
-            <h1>{% block title %}{% endblock %}</h1>
-        </header>
-        <section>
-            {% block content %}
-            {% endblock %}
-        </section>
-        <footer></footer>
-    </body>
-</html> -->
-
-{% block title %}{% endblock %}
-{% block content %}
-{% endblock %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html>
+     <head>
+         <title>{% block title %}{% endblock %} - Une vie de famille</title>
+         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+         {% block head %}{% endblock head %}
+     </head>
+     <body>
+         <div>
+             <h1>{% block title_header %}Une vie de famille{% endblock %}</h1>
+         </div>
+         <div>
+             {% block content %}
+             {% endblock %}
+         </div>
+         <div></div> <!-- TODO: make sure we write the unsuscribe link -->
+     </body>
+ </html>

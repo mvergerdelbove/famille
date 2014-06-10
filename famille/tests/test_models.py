@@ -1,5 +1,8 @@
 # -*- coding=utf-8 -*-
-from datetime import datetime, timedelta
+import base64
+import collections
+from datetime import datetime, timedelta, date
+import json
 import types
 
 from django.conf import settings
@@ -14,7 +17,10 @@ from verification.models import KeyGroup, Key
 
 from famille import models, errors
 from famille.models import utils, planning
-from famille.models.users import UserInfo, FamilleFavorite, PrestataireFavorite, Geolocation
+from famille.models.users import (
+    UserInfo, FamilleFavorite, PrestataireFavorite,
+    Geolocation, check_plan_expiration
+)
 from famille.utils import payment
 
 
@@ -145,13 +151,21 @@ class ModelsTestCase(TestCase):
 
         self.assertEqual(self.famille.favorites.all().count(), 0)
 
-    def test_get_favorites_data(self):
+    def test_get_favorites_data_presta(self):
         favs = self.famille.get_favorites_data()
-        self.assertIsInstance(favs, types.GeneratorType)
-        favs = list(favs)
-        self.assertEqual(len(favs), 1)
-        self.assertIsInstance(favs[0], models.Prestataire)
-        self.assertEqual(favs[0].description, self.presta.description)
+        self.assertIsInstance(favs, collections.OrderedDict)
+        self.assertIn("Prestataire", favs)
+        self.assertEqual(len(favs["Prestataire"]), 1)
+        self.assertIsInstance(favs["Prestataire"][0], models.Prestataire)
+        self.assertEqual(favs["Prestataire"][0].description, self.presta.description)
+
+    def test_get_favorites_data_famille(self):
+        favs = self.presta.get_favorites_data()
+        self.assertIsInstance(favs, collections.OrderedDict)
+        self.assertIn("Famille", favs)
+        self.assertEqual(len(favs["Famille"]), 1)
+        self.assertIsInstance(favs["Famille"][0], models.Famille)
+        self.assertEqual(favs["Famille"][0].description, self.famille.description)
 
     def test_get_resource_uri(self):
         out = "/api/v1/familles/%s" % self.famille.pk
@@ -223,16 +237,12 @@ class ModelsTestCase(TestCase):
         self.assertEqual(self.presta.get_pseudo(), "Joe")
         self.presta.name = "Jack"
         self.assertEqual(self.presta.get_pseudo(), "Joe J.")
-        self.presta.pseudo = "joejoe"
-        self.assertEqual(self.presta.get_pseudo(), "joejoe")
 
         self.assertEqual(self.famille.get_pseudo(), "a")
         self.famille.first_name = "Mick"
         self.assertEqual(self.famille.get_pseudo(), "Mick")
         self.famille.name = "Down"
         self.assertEqual(self.famille.get_pseudo(), "Mick D.")
-        self.famille.pseudo = "mickey68"
-        self.assertEqual(self.famille.get_pseudo(), "mickey68")
 
     def test_compute_user_visibility_filters(self):
         user = AnonymousUser()
@@ -245,12 +255,12 @@ class ModelsTestCase(TestCase):
         f = models.compute_user_visibility_filters(self.user2)
         self.assertEqual(f.children, [('visibility_global', True), ('visibility_prestataire', True)])
 
-    @patch("django.core.mail.send_mail")
-    def test_send_verification_email(self, send_mail):
+    @patch("django.core.mail.message.EmailMessage.send")
+    def test_send_verification_email(self, send):
         req = HttpRequest()
         req.META = {"HTTP_HOST": "toto.com"}
         self.presta.send_verification_email(req)
-        self.assertTrue(send_mail.called)
+        self.assertTrue(send.called)
         self.assertEqual(Key.objects.filter(claimed_by=self.presta.user, claimed=None).count(), 1)
 
     def test_verify_user(self):
@@ -277,6 +287,60 @@ class ModelsTestCase(TestCase):
         bday = today - timedelta(days=360*10)
         e = models.Enfant(e_name="John", e_school="Best school in the World", e_birthday=bday)
         self.assertEqual(e.display, u"John, 9 ans, scolarisé à Best school in the World")
+
+    def test_decode_users_ok(self):
+        data = "---".join([self.famille.encoded, self.presta.encoded])
+        expected = [self.famille, self.presta]
+        self.assertEquals(UserInfo.decode_users(data), expected)
+
+    def test_decode_users_notok(self):
+        data = base64.urlsafe_b64encode(json.dumps({"type": "Prestataire", "pk": 118926}))
+        self.assertRaises(ValueError, UserInfo.decode_users, data)
+
+        data = "eaziouehazoenuazehazpoieybazioueh"
+        self.assertRaises(ValueError, UserInfo.decode_users, data)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_basic(self, send):
+        self.famille.plan = "basic"
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertFalse(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_no_exp(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = None
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertIsNone(f.plan_expires_at)
+        self.assertTrue(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_expired(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = datetime(2000, 1, 1)
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "basic")
+        self.assertIsNone(f.plan_expires_at)
+        self.assertTrue(send.called)
+
+    @patch("django.core.mail.EmailMessage.send")
+    def test_check_plan_expiration_not_expired(self, send):
+        self.famille.plan = "premium"
+        self.famille.plan_expires_at = datetime(2500, 1, 1)
+        self.famille.save()
+        check_plan_expiration(None, None, self.famille.user)
+        f = models.Famille.objects.get(pk=self.famille.pk)
+        self.assertEquals(f.plan, "premium")
+        self.assertEquals(f.plan_expires_at.replace(tzinfo=None), datetime(2500, 1, 1))
+        self.assertFalse(send.called)
 
 
 class GeolocationTestCase(TestCase):
@@ -432,9 +496,9 @@ class ReferenceTestCase(TestCase):
         self.assertEqual(r.get_famille_display(), "Coco")
 
     def test_get_famille_display_referenced_user(self):
-        f = models.Famille(pseudo="Mister T")
+        f = models.Famille(first_name="Mister", name="Toc")
         r = models.Reference(referenced_user=f)
-        self.assertEqual(r.get_famille_display(), "de Mister T (utilise notre site)")
+        self.assertEqual(r.get_famille_display(), "de Mister T. (utilise notre site)")
 
     def test_get_dates_display_bad_conf(self):
         r = models.Reference(name="Coco")

@@ -1,6 +1,8 @@
 # -*- coding=utf-8 -*-
+import base64
 from functools import partial
 import logging
+import json
 import smtplib
 
 from django.conf import settings
@@ -20,9 +22,11 @@ class Mailer(object):
         :param template_name:           the name of the template to render
         :param context:                 the context to render the template
         """
-        kwargs["message"] = render_to_string(template_name, context)
+        kwargs["body"] = render_to_string(template_name, context)
+        msg = mail.EmailMessage(**kwargs)
+        msg.content_subtype = "html"
         try:
-            return mail.send_mail(**kwargs)
+            return msg.send()
         except smtplib.SMTPException as e:
             return cls.on_failure(e)
 
@@ -55,3 +59,22 @@ def email_moderation(message):
         return (False, u"Vous devez avoir un compte premium pour accéder à cette fonctionnalité.")
 
     return True
+
+
+def decode_recipient_list(data):
+    """
+    Decode a list of recipients.
+    """
+    data = data.split("---")
+    return [json.loads(base64.urlsafe_b64decode(str(r))) for r in data]
+
+
+def encode_recipient(recipient):
+    """
+    Encode a recipient using b64.
+    """
+    data = {
+        "type": recipient.__class__.__name__,
+        "pk": recipient.pk
+    }
+    return base64.urlsafe_b64encode(json.dumps(data))

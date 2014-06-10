@@ -38,6 +38,7 @@ class PostmanUserLookup(object):
         return model_class.objects.filter(
             plan=model_class.PLANS["premium"]  # can only send messages to premium user
         ).filter(
-            Q(name__icontains=query) | Q(email__istartswith=query) |
-            Q(first_name__icontains=query) | Q(pseudo__istartswith=query)
+            Q(name__icontains=query) |
+            Q(email__istartswith=query) |
+            Q(first_name__icontains=query)
         ).order_by('name')
