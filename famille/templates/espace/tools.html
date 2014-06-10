@@ -22,22 +22,22 @@
                     {% for tool in tool_file_list %}
                         <div class="row">
                             <div class="col-md-10 margin-left-little margin-top-little border-tool">
-                                <div class="col-md-9 ">
-                                    <h4 class="list-group-item-heading">{{ tool.name }}</h4>
+                                <div class="col-md-7">
+                                    <h4 class="list-group-item-heading text-left">{{ tool.name }}</h4>
                                     <p class="list-group-item-text">
                                         {{ tool.description }}
                                     </p>
                                 </div>
-                            </div>
-                            <div class="col-md-3 col-xs-2">
-                                <div class="btn btn-color btn-green-min text-white margin-top-little" >
-                                    {% if not auth %}
-                                    {% include 'helpers/popover_visitor.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
-                                    {% else %}
-                                    <a href="{{ tool.file_content.url }}" target="_blank">
-                                        <span class="glyphicon glyphicon-eye-open"></span> Consulter
-                                    </a>
-                                    {% endif %}
+                                <div class="col-md-2">
+                                    <div class="btn btn-color btn-green-min text-white margin-top-little" >
+                                        {% if not auth %}
+                                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
+                                        {% else %}
+                                        <a href="{{ tool.file_content.url }}" target="_blank">
+                                            <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                                        </a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
