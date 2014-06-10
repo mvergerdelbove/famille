@@ -221,6 +221,10 @@ tr td .title-red{
   color: #FFFFFF;
 }
 
+.weight-normal{
+  font-weight: normal;
+}
+
 .text-dark, .text-dark a, .text-dark p a{
   color: #000000;
 }
