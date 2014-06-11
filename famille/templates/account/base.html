@@ -57,6 +57,7 @@
                             <div class="panel-body">
                                 {% for fav_type, favs in related.get_favorites_data.items %}
                                 <div class="fav-container-{{ fav_type.lower }}">
+                                    {% if favs %}
                                     <div class="row margin-bottom-0">
                                         <div class="col-md-4">
                                             <h4>{{ fav_type }}s</h4>
@@ -68,6 +69,7 @@
                                             </a>
                                         </div>
                                     </div>
+                                    {% endif %}
                                     {% for favorite in favs %}
                                     <div class="favorite-row row">
                                         <div class="col-md-8">
