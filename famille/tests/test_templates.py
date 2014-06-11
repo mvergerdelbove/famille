@@ -26,6 +26,6 @@ class TemplateTagsTestCase(TestCase):
 
     def test_get_languages_display(self):
         self.assertEqual(users.get_languages_display(None), "--")
-        self.assertEqual(users.get_languages_display("1"), "Anglais")
-        self.assertEqual(users.get_languages_display("1,2"), "Anglais, Allemand")
-        self.assertEqual(users.get_languages_display("1,829162,2"), "Anglais, Allemand")
+        self.assertEqual(users.get_languages_display("0"), "Anglais")
+        self.assertEqual(users.get_languages_display("0,2"), "Anglais, Chinois")
+        self.assertEqual(users.get_languages_display("0,829162,2"), "Anglais, Chinois")
