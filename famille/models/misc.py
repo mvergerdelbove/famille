@@ -24,6 +24,7 @@ class DownloadableFile(models.Model):
         verbose_name="Fichier", max_upload_size=2621440  # 2.5MB
     )
     file_type = models.CharField(max_length=10, choices=KINDS.items(), verbose_name="Type de fichier")
+    index = models.IntegerField(null=True, blank=True, default=0)
 
     class Meta:
         app_label = 'famille'
