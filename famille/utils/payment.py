@@ -23,25 +23,25 @@ PRODUCTS = {
     "famille": [
         {
             "amount": "10.00",
-            "item_title": "Decouverte",
+            "item_title": u"Découverte",
             "item_frequence": "/mois",
-            "item_name": "Abonnement Illimite pendant 1 mois",
+            "item_name": u"Abonnement Illimité pendant 1 mois",
             "item_number": PREMIUM_IDS["1f"],
             "button_type": PayPalPaymentsForm.BUY
         },
         {
             "amount": "7.00",
-            "item_title": "Liberte",
+            "item_title": u"Liberté",
             "item_frequence": "/mois",
-            "item_name": "Abonnement Illimite pendant 3 mois",
+            "item_name": u"Abonnement Illimité pendant 3 mois",
             "item_number": PREMIUM_IDS["3f"],
             "button_type": PayPalPaymentsForm.SUBSCRIBE
         },
         {
             "amount": "5.00",
-            "item_title": "Serenite",
+            "item_title": u"Serenité",
             "item_frequence": "/mois",
-            "item_name": "Abonnement Illimite pendant 1 an",
+            "item_name": u"Abonnement Illimité pendant 1 an",
             "item_number": PREMIUM_IDS["12f"],
             "button_type": PayPalPaymentsForm.SUBSCRIBE
         }
@@ -49,9 +49,9 @@ PRODUCTS = {
     "prestataire": [
         {
             "amount": "5.00",
-            "item_title": "Forfait ",
+            "item_title": "Forfait",
             "item_frequence": u"pour toute l'année",
-            "item_name": "Abonnement Illimite pendant un an",
+            "item_name": u"Abonnement Illimité pendant un an",
             "item_number": PREMIUM_IDS["12p"],
             "button_type": PayPalPaymentsForm.BUY
         }
