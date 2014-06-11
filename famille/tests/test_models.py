@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
 from django.http.request import HttpRequest
 from django.test import TestCase
+from django.utils.timezone import utc
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
 from verification.models import KeyGroup, Key
@@ -187,6 +188,15 @@ class ModelsTestCase(TestCase):
         user = models.UserInfo.create_user(self.user3, "famille")
         self.assertIsInstance(user, models.Famille)
         self.assertEqual(user.email, self.user3.email)
+
+    def test_create_user_free_plan(self):
+        user = models.UserInfo.create_user(self.user3, "famille")
+        self.assertTrue(user.is_premium)
+        self.assertEqual(user.plan_expires_at, models.Famille.FREE_PLAN_EXPIRATION)
+
+        models.Famille.FREE_PLAN_LIMIT = datetime(2013, 7, 1, tzinfo=utc)
+        user = models.UserInfo.create_user(self.user2, "famille")
+        self.assertFalse(user.is_premium)
 
     def test_profile_access_is_authorized(self):
         request = MagicMock()

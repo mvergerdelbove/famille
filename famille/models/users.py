@@ -9,6 +9,7 @@ from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.timezone import utc
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.ipn.signals import payment_was_successful
 from verification.models import Key, KeyGroup
@@ -153,6 +154,9 @@ class UserInfo(BaseModel):
     The common user info that a Famille and
     a Prestataire need.
     """
+    FREE_PLAN_LIMIT = datetime(2014, 7, 1, tzinfo=utc)
+    FREE_PLAN_EXPIRATION = None
+
     PLANS = {
         "premium": "premium",
         "basic": "basic"
@@ -193,7 +197,7 @@ class UserInfo(BaseModel):
         return self.name
 
     @classmethod
-    def create_user(self, dj_user, type):
+    def create_user(cls, dj_user, type):
         """
         Create a user from data. It distinguishes between
         Famille and Prestataire types.
@@ -203,6 +207,10 @@ class UserInfo(BaseModel):
         """
         UserType = Prestataire if type == "prestataire" else Famille
         user = UserType(user=dj_user, email=dj_user.email)
+        if datetime.now(utc) <= cls.FREE_PLAN_LIMIT:
+            user.plan = cls.PLANS["premium"]
+            user.plan_expires_at = cls.FREE_PLAN_EXPIRATION
+
         user.save()
         return user
 
@@ -492,6 +500,7 @@ class Prestataire(Criteria):
     """
     The Prestataire user.
     """
+    FREE_PLAN_EXPIRATION = datetime(2015, 7, 1, tzinfo=utc)
     TYPES = (
         ("baby", "Baby-sitter"),
         ("mamy", "Mamie-sitter"),
@@ -543,6 +552,7 @@ class Famille(Criteria):
     """
     The Famille user.
     """
+    FREE_PLAN_EXPIRATION = datetime(2014, 9, 1, tzinfo=utc)
     TYPE_FAMILLE = {
         "mono": u"Famille monoparentale",
         "foyer": u"Famille Mère/Père au foyer",
@@ -724,7 +734,7 @@ def check_plan_expiration(sender=None, request=None, user=None, related=None, **
         if related.is_premium:
             if related.plan_expires_at:
                 expires = related.plan_expires_at
-                now = datetime.utcnow() if expires.tzinfo else datetime.now()
+                now = datetime.now(utc) if expires.tzinfo else datetime.now()
                 if expires >= now:
                     return
 
