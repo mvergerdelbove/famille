@@ -207,9 +207,10 @@ class UserInfo(BaseModel):
         """
         UserType = Prestataire if type == "prestataire" else Famille
         user = UserType(user=dj_user, email=dj_user.email)
-        if datetime.now(utc) <= cls.FREE_PLAN_LIMIT:
+        import pdb; pdb.set_trace()
+        if datetime.now(utc) <= UserType.FREE_PLAN_LIMIT:
             user.plan = cls.PLANS["premium"]
-            user.plan_expires_at = cls.FREE_PLAN_EXPIRATION
+            user.plan_expires_at = UserType.FREE_PLAN_EXPIRATION
 
         user.save()
         return user
