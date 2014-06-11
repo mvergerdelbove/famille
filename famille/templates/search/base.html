@@ -52,7 +52,7 @@
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Poursuivre sans être Premium</button>
-              <a href='{% url 'register' %}' type="button" class="btn btn-color btn-blue-min">Devenir Premium</a>
+              <a href='{% url 'premium' %}' type="button" class="btn btn-color btn-blue-min">Devenir Premium</a>
           </div>
       </div>
   </div>
@@ -158,6 +158,9 @@
 {% endblock %}
 
 {% block script %}
+<script src="{% static "lib/backbone/backbone-min.js" %}"></script>
+<script src="{% static "lib/moment/min/moment.min.js" %}"></script>
+<script src="{% static "lib/select2/select2.min.js" %}"></script>
 <script>
     {% if not user.is_authenticated %}
     $('#authentificate').modal({
@@ -173,10 +176,6 @@
     {% endif %}
     {% endif %}
 </script>
-
-<script src="{% static "lib/backbone/backbone-min.js" %}"></script>
-<script src="{% static "lib/moment/min/moment.min.js" %}"></script>
-<script src="{% static "lib/select2/select2.min.js" %}"></script>
 <script src="{% static "lib/bootstrap3-datetimepicker/src/js/bootstrap-datetimepicker.js" %}"></script>
 <script src="{% static "lib/bootstrap3-datetimepicker/src/js/locales/bootstrap-datetimepicker.fr.js" %}"></script>
 <script src="{% static "lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" %}"></script>
