@@ -721,7 +721,13 @@ def check_plan_expiration(sender=None, request=None, user=None, related=None, **
     """
     if related or has_user_related(user):
         related = related or get_user_related(user)
-        if related.is_premium and (not related.plan_expires_at or related.plan_expires_at < datetime.now()):
+        if related.is_premium:
+            if related.plan_expires_at:
+                expires = related.plan_expires_at
+                now = datetime.utcnow() if expires.tzinfo else datetime.now()
+                if expires >= now:
+                    return
+
             related.plan = "basic"
             related.plan_expires_at = None
             related.save()
