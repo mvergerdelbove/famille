@@ -257,7 +257,7 @@ def tools(request):
     Display the tools (DownloadableFile objects) to the user.
     """
     tool_files = defaultdict(list)
-    for tool in DownloadableFile.objects.all():
+    for tool in DownloadableFile.objects.all().order_by("file_type", "index"):
         tool_files[tool.file_type].append(tool)
 
     return render(

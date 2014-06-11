@@ -8,18 +8,18 @@
 <div class="row little-margin tool-page">
     <div class="col-md-2 side-bar">
         <ul class="nav nav-stacked" data-spy="affix" data-offset-top="0">
-            {% for kind, kind_name in kinds.items %}
+            {% for kind, kind_name in kinds %}
             <li class="link"><a href="#{{ kind }}">{{ kind_name }}</a></li>
             {% endfor %}
         </ul>
     </div>
     <section class="col-md-10 margin-top-little">
-        {% for kind, tool_file_list in tool_files.items %}
+        {% for kind, kind_name in kinds %}
         <div class="row">
             <article id="{{ kind }}">
-                <header class="tool-category"><h3>{{ kinds|key:kind }}</h3></header>
+                <header class="tool-category"><h3>{{ kind_name }}</h3></header>
                 <div class="list-group">
-                    {% for tool in tool_file_list %}
+                    {% for tool in tool_files|key:kind %}
                         <div class="row">
                             <div class="col-md-10 margin-left-little margin-top-little border-tool">
                                 <div class="col-md-7">
