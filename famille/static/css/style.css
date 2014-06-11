@@ -642,6 +642,10 @@ table .mea{}
     color: rgb(255, 235, 0);
 }
 
-.text-white > .popover {
+.text-white > .popover, .text-blue > .popover {
     color: black;
+}
+
+a.text-white {
+    color: white;
 }
