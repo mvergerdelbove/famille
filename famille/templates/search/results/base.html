@@ -20,17 +20,6 @@
                         {% endif %}
                     </div>
                     {% block belowPic %}{% endblock %}
-                    <div class="row margin-top-0">
-                        <div class="col-md-3 title-blue nav-title">{{ result.total_rating|floatformat:"2" }}</div>
-                        <div class="col-md-9">
-                            <div class="progress link tooltip-link" data-toggle="tooltip"
-                                 data-original-title="{{ result.nb_ratings }} évaluation{% if result.nb_ratings != 1%}s{% endif%}">
-                                <div class="progress-bar btn-blue-min"
-                                     style="width:{{ result.total_rating_percent }}%;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-7">
                     <div class="row">
