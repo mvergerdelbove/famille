@@ -171,7 +171,7 @@ class SearchResource(object):
         :param queryset:        the queryset
         """
         distance = float(distance)  # distance in km
-        condition = lambda o: not o.is_geolocated or is_close_enough(geoloc, o.geolocation, distance)
+        condition = lambda o: o.is_geolocated and is_close_enough(geoloc, o.geolocation, distance)
         return [o for o in queryset if condition(o)]
 
     def filter_postal_code(self, postal_code, queryset):
