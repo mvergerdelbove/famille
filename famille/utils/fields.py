@@ -96,7 +96,7 @@ class RangeField(MultiValueField):
         return None
 
     def clean(self, value):
-        return value
+        return value[1:-1] if value.startswith("[") else value
 
 
 class LazyMultipleChoiceField(MultipleChoiceField):
