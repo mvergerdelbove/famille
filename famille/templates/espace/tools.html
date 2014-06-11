@@ -29,15 +29,20 @@
                                     </p>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="btn btn-color btn-green-min text-white margin-top-little" >
                                         {% if not auth %}
-                                        {% include 'helpers/popover_visitor.html' with icon="glyphicon-eye-open" wording="Consulter" simple="ok" only %}
+                                        <button class="btn btn-color btn-green-min text-white margin-top-little"
+                                                data-toggle="popover" data-trigger="click"
+                                                data-title="Fonctionalité indisponible"
+                                                data-content="<p>Inscrivez-vous gratuitement pour accéder à plus de fonctionnalités.</p><p><a href='{% url 'register' %}' class='btn btn-color btn-green-min'>M'inscrire gratuitement</a></p>"
+                                                data-placement="bottom" data-html="true">
+                                            <span class="glyphicon glyphicon-eye-open"></span> Consulter
+                                        </button>
                                         {% else %}
-                                        <a href="{{ tool.file_content.url }}" target="_blank">
+                                        <a href="{{ tool.file_content.url }}" target="_blank"
+                                           class="btn btn-color btn-green-min text-white margin-top-little">
                                             <span class="glyphicon glyphicon-eye-open"></span> Consulter
                                         </a>
                                         {% endif %}
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -55,6 +60,16 @@
 <script>
 (function ($) {
     $('[data-toggle="popover"]').popover();
+
+    $('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
 
     if (location.hash) {
         $(".nav-stacked li:has(a[href="+ location.hash +"])").addClass("active");

@@ -642,7 +642,7 @@ table .mea{}
     color: rgb(255, 235, 0);
 }
 
-.text-white > .popover, .text-blue > .popover {
+.text-white > .popover, .text-blue > .popover, .text-white > .popover:hover, .text-blue > .popover:hover  {
     color: black;
 }
 
