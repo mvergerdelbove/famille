@@ -1,5 +1,15 @@
 {% load url from future %}
+{% extends "email/base.html" %}
 
+{% block title %}
+réinitialisation de mot de passe
+{% endblock %}
+
+{% block title_header %}
+Une vie de famille - réinitialisation de mot de passe
+{% endblock %}
+
+{% block content %}
 <p>Bonjour,</p>
 
 
@@ -24,4 +34,4 @@
 <p>
     L'équipe d'une vie de famille.
 </p>
-<!--TODO: image -->
+{% endblock %}
