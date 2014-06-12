@@ -1,6 +1,7 @@
 <!-- Social connect button -->
 <div class="btn-group {{ class }}">
-     <button type="button" class="btn btn-default btn-primary dropdown-toggle" data-toggle="dropdown">
+     <button type="button" class="btn btn-default btn-primary dropdown-toggle" data-toggle="dropdown"
+             {% if data_checkbox %}data-checkbox="{{ data_checkbox }}"{% endif %}>
          Se connecter avec les réseaux sociaux <span class="caret"></span>
      </button>
      <ul class="dropdown-menu" role="menu">

@@ -9,4 +9,17 @@
                .replace("{type}", type);
         });
     });
+
+    $(".cgu-checkbox").click(function () {
+        var toggable = $(this).data("toggle");
+        $(toggable).toggleClass("hide");
+    });
+
+    $(".btn-register").click(function (e) {
+        var checkbox = $(this).data("checkbox");
+        if (!$(checkbox).is(':checked')) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
 })(jQuery);
