@@ -96,6 +96,7 @@ class RangeField(MultiValueField):
         return None
 
     def clean(self, value):
+        value = value or ""
         return value[1:-1] if value.startswith("[") else value
 
 
