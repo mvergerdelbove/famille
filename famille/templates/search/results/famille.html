@@ -39,7 +39,7 @@
                                     <img src="{% static result|badge_icon_garde:'nuit'%}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="J'accepte les gardes partagées">
+                                     data-toggle="tooltip" data-original-title="Je recherche une garde partagée">
                                     <img src="{% static result|badge_icon_garde:'part'%}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
-                                     data-original-title="horaires décalés (tôt le matin ou tard le soir)">
+                                     data-original-title="Je recherche quelqu’un pour garder mes enfants sur des horaires décalés (tôt le matin, tard le soir).">
                                     <img class="none" src="{% static result|badge_icon_garde:'decal' %}" width="90%;">
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
-                                     data-original-title="J'ai un nourisson (0 à 1 an)">
+                                     data-original-title="Je cherche quelqu’un qui a de l’expérience avec les bébés">
                                     {% if result.experience_type != 'zero' %}
                                     <img src="{% static 'img/badges/bebe.png' %}" width="90%;">
                                     {% else %}
@@ -72,12 +72,12 @@
                                     {% endif %}
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="J'ai mon permis">
+                                     data-toggle="tooltip" data-original-title="Je recherche quelqu’un qui possède un permis voiture">
                                     <img src="{% static result|badge_icon:'permis' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
-                                     data-original-title="Je cherche quelqu'un acceptant de garder les enfants malades">
+                                     data-original-title="Je cherche quelqu’un qui a déjà gardé des enfants handicapés">
                                     <img class="none"
                                          src="{% static result|badge_icon:'enfant_malade' %}" width="90%;">
                                 </div>
@@ -92,24 +92,24 @@
                             <div class="col-md-3 categorie title-green nav-title">Les p'tits plus</div>
                             <div class="col-md-9">
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="Repassage">
+                                     data-toggle="tooltip" data-original-title="Je recherche quelqu’un qui accepte le repassage">
                                     <img src="{% static result|badge_icon:'repassage' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="Ménage">
+                                     data-toggle="tooltip" data-original-title="Je recherche quelqu’un qui accepte le ménage">
                                     <img src="{% static result|badge_icon:'menage' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="Je ne fume pas">
+                                     data-toggle="tooltip" data-original-title="Je recherche quelqu’un qui ne fume pas">
                                     <img src="{% static result|badge_icon:'non_fumeur' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
-                                     data-toggle="tooltip" data-original-title="Cuisine">
+                                     data-toggle="tooltip" data-original-title="Je recherche quelqu’un qui sait cuisiner">
                                     <img src="{% static result|badge_icon:'cuisine' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
-                                     data-original-title="Mes enfants ont besoin d'aide dans leur devoirs">
+                                     data-original-title="Je recherche quelqu’un qui peut aider mes enfants dans leurs devoirs">
                                     <img class=none"" src="{% static result|badge_icon:'devoirs' %}" width="90%;">
                                 </div>
                             </div>
