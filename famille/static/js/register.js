@@ -12,7 +12,9 @@
 
     $(".cgu-checkbox").click(function () {
         var toggable = $(this).data("toggle");
-        $(toggable).toggleClass("hide");
+        var $el = $(toggable);
+        if ($el.attr("disabled")) $el.removeAttr("disabled");
+        else $el.attr("disabled", "disabled");
     });
 
     $(".btn-register").click(function (e) {

@@ -39,8 +39,8 @@
 {% endblock %}
 
 {% block submit %}
-    <input type="submit" value="Connexion" data-checkbox="#cguBox"
-           class="btn btn-green-min btn-color btn-register hide cgu-toggle"/>
+    <input type="submit" value="Connexion" data-checkbox="#cguBox" disabled
+           class="btn btn-green-min btn-color btn-register cgu-toggle"/>
 {% endblock %}
 
 {% block cgu2 %}
@@ -56,7 +56,7 @@
 
 {% block social_auth %}
     {% buttons %}
-        {% with action="register" type="famille" class="col-md-offset-2 btn-register hide cgu-social-toggle" data_checkbox="#cguSocialBox" %}
+        {% with action="register" type="famille" class="col-md-offset-2" btn_class="btn-register cgu-social-toggle" data_checkbox="#cguSocialBox" disabled="ok" %}
             {% include 'helpers/social_auth.html' %}
         {% endwith %}
     {% endbuttons %}
