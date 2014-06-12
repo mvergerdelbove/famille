@@ -147,7 +147,7 @@ NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
 CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
 DEFAULT_FROM_EMAIL = NOREPLY_EMAIL
 CONTACT_ADDRESS = u"1 Sentier de l'Arpent Rouge, 92190 Meudon"
-CONTACT_PHONE = "06 15 43 75 20"
+CONTACT_PHONE = "07 62 83 83 39"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
 TARIF_RANGE = (3, 20)
 
