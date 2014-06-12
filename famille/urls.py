@@ -4,14 +4,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import TemplateView
-from password_reset.views import Recover
 from postman.views import WriteView, ReplyView
 from tastypie.api import Api
 
 from famille import resources
 from famille.forms import CustomAuthenticationForm
 from famille.utils.mail import email_moderation
-from famille.views.web import ClaimSuccessView
+from famille.views.web import ClaimSuccessView, Recover
 
 
 admin.autodiscover()

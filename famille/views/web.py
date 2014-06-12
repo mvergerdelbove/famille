@@ -2,12 +2,17 @@ from collections import defaultdict
 
 from django.conf import settings
 from django.contrib.auth import logout
+from django.contrib.sites.models import RequestSite
+from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
+from password_reset.utils import get_username
+from password_reset.views import Recover as PasswordResetRecover
 from verification.views import ClaimSuccessView as VerificationClaimSuccessView
 
 from famille import forms
@@ -18,7 +23,7 @@ from famille.models import (
     check_plan_expiration
 )
 from famille.resources import PrestataireResource, FamilleResource
-from famille.utils import get_context, get_result_template_from_user, payment
+from famille.utils import get_context, get_result_template_from_user, payment, mail
 from famille.utils.http import require_related, login_required, assert_POST
 
 
@@ -285,3 +290,24 @@ class ClaimSuccessView(VerificationClaimSuccessView):
 
     def get_queryset(self):
         return self.model.objects.all()
+
+
+class Recover(PasswordResetRecover):
+
+    # FIXME: override it in order to send HTML emails
+    def send_notification(self):
+        context = {
+            'site': RequestSite(self.request),
+            'user': self.user,
+            'username': get_username(self.user),
+            'token': signing.dumps(self.user.pk, salt=self.salt),
+            'secure': self.request.is_secure(),
+        }
+        subject = loader.render_to_string(
+            self.email_subject_template_name, context
+        ).strip()
+
+        mail.send_mail_from_template_with_noreply(
+            self.email_template_name, context,
+            subject=subject, to=[self.user.email]
+        )
