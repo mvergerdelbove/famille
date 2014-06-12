@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 from collections import defaultdict
 
 from django.conf import settings
@@ -280,6 +281,10 @@ def delete_account(request):
     """
     request.user.is_active = False
     request.user.save()
+    mail.send_mail_from_template_with_contact(
+        "email/deactivation.html", {},
+        subject=u"Désactivation de compte", to=[request.related_user.email]
+    )
     logout(request)
     return HttpResponseRedirect('/')
 
