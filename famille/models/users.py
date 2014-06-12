@@ -442,13 +442,14 @@ class Criteria(UserInfo):
         ("urgences", u"Garde d'urgence"),
     )
     DIPLOMA = {
-        "etat": u"Diplôme d’Etat D’assistante maternelle",
+        "mat": u"Agrément d’Assistante Maternelle",
         "bep": u"BEP carrières sanitaires et sociales",
         "cap": u"CAP Petite enfance",
         "comp": u"Un certificat de compétence professionnelle petite enfance",
         "qual": u"Un certificat de qualification professionnelle petite enfance",
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
         "bafa": u"Bafa",
+        "other": u"Autre",
     }
     STUDIES = (
         ("brevet", u"Brevet"),
