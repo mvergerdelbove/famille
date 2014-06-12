@@ -95,7 +95,8 @@
 	    {% endfor %}
         <div class="form-group">
             <em>
-                En créant mon compte, j'accepte les
+                <input type="checkbox" class="cgu-checkbox" id="cguFamilleBox" name="cgu" data-toggle=".cgu-famille-toggle"/>
+                J'accepte les
                 <a target="_blank" href="{% get_media_prefix %}miscellaneous/CGU.pdf">
                     conditions générales d'utilisation
                 </a>
@@ -103,7 +104,7 @@
             </em>
         </div>
 	    {% buttons %}
-            {% with action="register" type="famille" %}
+            {% with action="register" type="famille" btn_class="btn-register cgu-famille-toggle" data_checkbox="#cguFamilleBox" disabled="ok"%}
                 {% include 'helpers/social_auth.html' %}
             {% endwith %}
 	    {% endbuttons %}
@@ -111,7 +112,7 @@
 	  <div class="modal-footer">
 	    <input type="hidden" name="type" value="famille"/>
             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-color btn-green-min">Valider</button>
+            <button type="submit" class="btn btn-color btn-green-min btn-register cgu-famille-toggle" data-checkbox="#cguPrestaBox">Valider</button>
 	  </div>
 	</form>
       </div><!-- /.modal-content -->
@@ -131,7 +132,8 @@
 	    {% endfor %}
         <div class="form-group">
             <em>
-                En créant mon compte, j'accepte les
+                <input type="checkbox" class="cgu-checkbox" id="cguPrestaBox" name="cgu" data-toggle=".cgu-presta-toggle"/>
+                J'accepte les
                 <a target="_blank" href="{% get_media_prefix %}miscellaneous/CGU.pdf">
                     conditions générales d'utilisation
                 </a>
@@ -139,7 +141,7 @@
             </em>
         </div>
 	    {% buttons %}
-            {% with action="register" type="prestataire" %}
+            {% with action="register" type="prestataire" btn_class="btn-register cgu-presta-toggle" data_checkbox="#cguPrestaBox" disabled="ok"%}
                 {% include 'helpers/social_auth.html' %}
             {% endwith %}
 	    {% endbuttons %}
@@ -147,11 +149,15 @@
 	  <div class="modal-footer">
 	    <input type="hidden" name="type" value="prestataire"/>
             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-color btn-green-min">Valider</button>
+            <button type="submit" class="btn btn-color btn-green-min btn-register cgu-presta-toggle" data-checkbox="#cguPrestaBox">Valider</button>
 	  </div>
 	</form>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 </aside>
+{% endblock %}
+
+{% block script %}
+<script src="{% static "js/register.js" %}"></script>
 {% endblock %}
