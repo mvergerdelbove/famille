@@ -21,7 +21,8 @@ class ResourcesTestCase(TestCase):
             "email": "a@gmail.com",
             "tel": "0612131415",
             "auth": True,
-            "template": "toto"
+            "template": "toto",
+            "resource_uri": ""
         }
 
     def tearDown(self):
