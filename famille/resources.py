@@ -95,6 +95,10 @@ class EnfantResource(ModelResource):
 
 
 class SearchResource(object):
+    FIELD_ACCESS_NOT_LOGGED = [
+        "first_name", "name", "city", "country", "description", "template", "resource_uri"
+    ]
+    FIELD_DENIED_BASIC = ["email", "tel"]
 
     class Meta:
         allowed_methods = ["get", ]
@@ -226,6 +230,22 @@ class SearchResource(object):
                 objects.append(o)
         return objects
 
+    def dehydrate(self, bundle):
+        """
+        Make sur the user does not see the fields he has no
+        right to.
+
+        :param bundle:        the bundle to trim
+        """
+        if not hasattr(bundle, "request") or not models.has_user_related(bundle.request.user):
+            bundle.data = pick(bundle.data, *self.FIELD_ACCESS_NOT_LOGGED)
+        else:
+            user = models.get_user_related(bundle.request.user)
+            if not user.is_premium:
+                bundle.data = without(bundle.data, *self.FIELD_DENIED_BASIC)
+
+        return bundle
+
     def dehydrate_template(self, bundle):
         """
         Dehydrate the template using the bundle.
@@ -276,12 +296,6 @@ class PrestataireResource(SearchResource, ModelResource):
 
 
 class FamilleResource(SearchResource, ModelResource):
-    # TODO: refine this
-    FIELD_ACCESS_NOT_LOGGED = [
-        "first_name", "name", "city", "country", "description", "template"
-    ]
-    FIELD_DENIED_BASIC = ["email", "tel"]
-
     plannings = fields.ToManyField(FamillePlanningResource, "planning", full=True, null=True)
     enfants = fields.ToManyField(EnfantResource, "enfants", full=True, null=True)
     rating = fields.FloatField(attribute="total_rating")
@@ -308,22 +322,6 @@ class FamilleResource(SearchResource, ModelResource):
         Dehydrate the number of childrens.
         """
         return bundle.obj.enfants.count()
-
-    def dehydrate(self, bundle):
-        """
-        Make sur the user does not see the fields he has no
-        right to.
-
-        :param bundle:        the bundle to trim
-        """
-        if not hasattr(bundle, "request") or not models.has_user_related(bundle.request.user):
-            bundle.data = pick(bundle.data, *self.FIELD_ACCESS_NOT_LOGGED)
-        else:
-            user = models.get_user_related(bundle.request.user)
-            if not user.is_premium:
-                bundle.data = without(bundle.data, *self.FIELD_DENIED_BASIC)
-
-        return bundle
 
     def filter_nb_enfants(self, nb_enfants, queryset):
         """
