@@ -151,6 +151,9 @@ CONTACT_PHONE = "07 62 83 83 39"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
 TARIF_RANGE = (3, 20)
 
+# API proxifying
+os.environ['http_proxy'] = os.environ['QUOTAGUARD_URL']
+
 ################################################################################
 #                         Plugins settings                                     #
 ################################################################################

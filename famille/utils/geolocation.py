@@ -1,11 +1,16 @@
+import logging
 from math import acos, cos, sin, radians
+import traceback
 
-from pygeocoder import Geocoder
+from geopy import geocoders, exc as geopy_exc
 
 from famille import errors
 
 
 EARTH_RADIUS =  6371.0  # in km
+
+
+geocoder = geocoders.GoogleV3(scheme="http")
 
 
 def geolocate(address):
@@ -16,8 +21,10 @@ def geolocate(address):
     :param address:         the address to geolocalize
     """
     try:
-        return Geocoder.geocode(address)[0].coordinates
-    except (IndexError, AttributeError):
+        _, (lat, lon) = geocoder.geocode(address)
+        return lat, lon
+    except geopy_exc.GeopyError:
+        logging.critical("Cannot geolocate address due to API error: %s", traceback.format_exc())
         raise errors.GeolocationError("Address '%s' cannot be geolocated" % address)
 
 

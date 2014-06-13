@@ -9,6 +9,7 @@ from django.http import HttpResponseBadRequest, Http404
 from django.http.request import QueryDict, HttpRequest
 from django.test import TestCase
 from django.utils.timezone import utc
+from geopy import exc as geopy_exc
 from mock import MagicMock, patch
 from paypal.standard.ipn.models import PayPalIPN
 from postman.models import Message
@@ -67,11 +68,9 @@ class GeolocationTestCase(TestCase):
         self.assertTrue(geolocation.is_close_enough(origin, to, 1.4))  # ~ 1.373 km
         self.assertFalse(geolocation.is_close_enough(origin, to, 1.3))  # ~ 1.373 km
 
-    @patch("pygeocoder.Geocoder.geocode")
+    @patch("geopy.geocoders.GoogleV3.geocode")
     def test_geolocate(self, mock):
-        mock.return_value = []
-        self.assertRaises(errors.GeolocationError, geolocation.geolocate, "")
-        mock.return_value = [1]
+        mock.side_effect = geopy_exc.GeopyError
         self.assertRaises(errors.GeolocationError, geolocation.geolocate, "")
 
 
