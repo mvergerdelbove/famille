@@ -5,7 +5,6 @@ famille
 
 A Django-based website.
 
-
 Quick start
 ===========
 
