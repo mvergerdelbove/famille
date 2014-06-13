@@ -186,6 +186,7 @@ class UserInfo(BaseModel):
     visibility_family = models.BooleanField(default=True, blank=True)
     visibility_prestataire = models.BooleanField(default=True, blank=True)
     visibility_global = models.BooleanField(default=True, blank=True)
+    is_test = models.BooleanField(default=False, blank=True)
 
     class Meta:
         abstract = True
