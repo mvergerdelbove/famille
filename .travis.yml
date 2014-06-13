@@ -11,5 +11,6 @@ before_script:
 script: make test
 deploy:
   provider: heroku
+  on: production
   api_key:
     secure: PSQreLsvN7MlLobSp8sRIPeYBSEvHMCJXD8eiuXUH4Dy1Jc+60ApKweB1eQcHWo2yV3FK2a6kQlprgAWlXvFoZFpUmeh3ypfWSaLz5pHRwYgIzkEYWN66cGGzZODL2sW9lIz3ihcRyV9/srFRUuXl3iy3MUryMkAtX2AZRUQ4tk=
