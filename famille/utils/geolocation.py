@@ -5,12 +5,10 @@ import traceback
 from geopy import geocoders, exc as geopy_exc
 
 from famille import errors
+from famille.utils.http import use_proxy
 
 
 EARTH_RADIUS =  6371.0  # in km
-
-
-geocoder = geocoders.GoogleV3(scheme="http")
 
 
 def geolocate(address):
@@ -21,7 +19,9 @@ def geolocate(address):
     :param address:         the address to geolocalize
     """
     try:
-        _, (lat, lon) = geocoder.geocode(address)
+        with use_proxy():
+            geocoder = geocoders.GoogleV3(scheme="http")
+            _, (lat, lon) = geocoder.geocode(address)
         return lat, lon
     except geopy_exc.GeopyError:
         logging.critical("Cannot geolocate address due to API error: %s", traceback.format_exc())
