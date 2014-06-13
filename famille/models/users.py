@@ -302,10 +302,11 @@ class UserInfo(BaseModel):
             self.country or "France"  # FIXME: this will obviously only work in France
         )
 
-        if not self.geolocation:
-            self.geolocation = Geolocation()
+        # make sure the one to one field is set when having a pk
+        g = Geolocation() if not self.geolocation else self.geolocation
+        g.geolocate(address)
 
-        self.geolocation.geolocate(address)
+        self.geolocation = g
         self.save()
 
     def manage_geolocation(self, changed_data):
