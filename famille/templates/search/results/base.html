@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <div class="row">
-                        <img src="../../static/img/pola.png" width="100%;">
+                        <img src="{% static "img/pola.png" %}" width="100%;">
                         {% if result.profile_pic %}
                         <img class="profil-pict" src="{% get_media_prefix %}{{ result.profile_pic }}"
                              width="50%;" alt="Photo de profil">
