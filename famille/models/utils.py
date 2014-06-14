@@ -48,7 +48,7 @@ def convert_user(user, NewClass):
         new_user.save()
         transaction.savepoint_commit(sid)
     except IntegrityError:
-        transaction.savepoint_rollback()
+        transaction.savepoint_rollback(sid)
         raise
 
     return new_user
