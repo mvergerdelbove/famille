@@ -442,13 +442,23 @@ class UtilsTestCase(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create_user("a", "a@gmail.com", "a")
-        self.famille = models.Famille(user=self.user1, email="a@gmail.com")
+        self.famille = models.Famille(
+            user=self.user1, email="a@gmail.com", city="Paris",
+            type_presta="baby", animaux=True
+        )
         self.famille.save()
         self.user2 = User.objects.create_user("b", "b@gmail.com", "b")
-        self.presta = models.Prestataire(user=self.user2, description="Une description", email="b@gmail.com")
+        self.presta = models.Prestataire(
+            user=self.user2, description="Une description", email="b@gmail.com",
+            city="Mulhouse", type="nounou", permis=True
+        )
         self.presta.save()
         self.user3 = User.objects.create_user("d", "d@gmail.com", "d")
         self.presta2 = models.Prestataire(user=self.user3, description="Une description", email="d@gmail.com")
+
+    def tearDown(self):
+        models.Prestataire.objects.all().delete()
+        models.Famille.objects.all().delete()
 
     def test_email_is_unique_no_model(self):
         self.assertFalse(utils.email_is_unique("a@gmail.com"))
@@ -459,6 +469,26 @@ class UtilsTestCase(TestCase):
         self.assertTrue(utils.email_is_unique("d@gmail.com", self.presta2))
         self.assertFalse(utils.email_is_unique("a@gmail.com", self.presta2))
         self.assertFalse(utils.email_is_unique("b@gmail.com", self.presta2))
+
+    def test_convert_user_to_presta(self):
+        new_presta = utils.convert_user(self.famille, models.Prestataire)
+        self.assertTrue(new_presta.pk)
+        self.assertEqual(new_presta.city, "Paris")
+        self.assertEqual(new_presta.email, "a@gmail.com")
+        self.assertEqual(new_presta.user, self.user1)
+        self.assertEqual(new_presta.type, "baby")
+        self.assertTrue(new_presta.animaux)
+        self.assertIsNone(models.Famille.objects.filter(email="a@gmail.com").first())
+
+    def test_convert_user_to_famille(self):
+        new_famille = utils.convert_user(self.presta, models.Famille)
+        self.assertTrue(new_famille.pk)
+        self.assertEqual(new_famille.city, "Mulhouse")
+        self.assertEqual(new_famille.email, "b@gmail.com")
+        self.assertEqual(new_famille.user, self.user2)
+        self.assertEqual(new_famille.type_presta, "nounou")
+        self.assertTrue(new_famille.permis)
+        self.assertIsNone(models.Prestataire.objects.filter(email="b@gmail.com").first())
 
 
 class PlanningTestCase(TestCase):

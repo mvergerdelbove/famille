@@ -528,7 +528,7 @@ class Prestataire(Criteria):
 
     birthday = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=70, null=True, blank=True)
-    type = models.CharField(max_length=40, choices=TYPES)
+    type = models.CharField(max_length=40, choices=TYPES, null=True, blank=False)
     other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
     language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
     resume = extra_fields.ContentTypeRestrictedFileField(
