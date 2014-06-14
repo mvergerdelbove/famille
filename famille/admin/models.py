@@ -14,7 +14,7 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
 class BaseUserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'name', admin_display.pseudo_display, 'city', 'plan', 'is_active')
     list_display_links = ('email', )
-    exclude = ('geolocation', 'user')
+    exclude = ('geolocation', )
     search_fields = ['first_name', 'name', 'email']
     list_filter = ('newsletter', )
 
