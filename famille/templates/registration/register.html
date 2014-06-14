@@ -15,7 +15,7 @@
     <div class="form-group">
         <div class="radio col-md-2 col-md-offset-2">
             <label>
-                <input type="radio" name="type" id="id_type_famille" value="famille" checked>
+                <input type="radio" name="type" id="id_type_famille" value="famille">
                 Famille
             </label>
         </div>
@@ -40,7 +40,7 @@
 
 {% block submit %}
     <input type="submit" value="Connexion" data-checkbox="#cguBox" disabled
-           class="btn btn-green-min btn-color btn-register cgu-toggle"/>
+           class="btn btn-green-min btn-color btn-register btn-register-normal cgu-toggle"/>
 {% endblock %}
 
 {% block cgu2 %}
@@ -56,7 +56,7 @@
 
 {% block social_auth %}
     {% buttons %}
-        {% with action="register" type="famille" class="col-md-offset-2" btn_class="btn-register cgu-social-toggle" data_checkbox="#cguSocialBox" disabled="ok" %}
+        {% with action="register" type="famille" class="col-md-offset-2" btn_class="btn-register btn-register-social cgu-social-toggle" data_checkbox="#cguSocialBox" disabled="ok" %}
             {% include 'helpers/social_auth.html' %}
         {% endwith %}
     {% endbuttons %}
