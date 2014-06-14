@@ -37,8 +37,7 @@
     });
 
     function assertTypeChecked(name) {
-        // TODO: verify that this works on home page
-        if (!$("[type=checkbox][name="+ name +"]").length) return true;
+        if (!$("[type=radio][name="+ name +"]").length) return true;
         return $("[name="+ name +"]:checked").length !== 0;
     }
 
