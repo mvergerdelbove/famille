@@ -151,7 +151,7 @@ CONTACT_PHONE = "07 62 83 83 39"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
 TARIF_RANGE = (3, 20)
 if globals().get("ADMIN"):
-    ADMINS = (ADMIN, ADMIN)
+    ADMINS = ((ADMIN, ADMIN), )
 
 ################################################################################
 #                         Plugins settings                                     #
