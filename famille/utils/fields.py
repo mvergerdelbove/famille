@@ -58,7 +58,6 @@ def upload_to_timestamp(basedir):
 
     :param basedir:        the basedir in which to save the file
     """
-    basedir = "media/%s" % basedir  # FIXME: this is ugly but no time...
     def wrapped(instance, filename):
         _, ext = os.path.splitext(filename)
         time_filename = "%s%s" % (generate_timestamp(), ext)
