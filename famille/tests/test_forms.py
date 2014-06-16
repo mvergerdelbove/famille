@@ -212,8 +212,8 @@ class FieldsTestCase(TestCase):
     def test_upload_to_timestamp(self):
         func = fields.upload_to_timestamp("folder")
         filename = func(None, "myfile.txt")
-        self.assertTrue(filename.startswith("folder/"))
-        p = re.compile("folder/\d+\.txt")
+        self.assertTrue(filename.startswith("media/folder/"))
+        p = re.compile("media/folder/\d+\.txt")
         self.assertTrue(p.match(filename))
 
 
