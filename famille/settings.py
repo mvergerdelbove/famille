@@ -146,6 +146,7 @@ POSTAL_CODE_DISTANCE = 20.0
 NOREPLY_EMAIL = "ne-pas-repondre@uneviedefamille.fr"
 CONTACT_EMAIL = "contact.uneviedefamille@gmail.com"
 DEFAULT_FROM_EMAIL = NOREPLY_EMAIL
+SERVER_EMAIL = "admin@uneviedefamille.fr"
 CONTACT_ADDRESS = u"1 Sentier de l'Arpent Rouge, 92190 Meudon"
 CONTACT_PHONE = "07 62 83 83 39"
 ALLOW_BASIC_PLAN_IN_SEARCH = False
