@@ -1,6 +1,6 @@
 {% extends "profile/base.html" %}
-
 {% load static %}
+{% load helpers %}
 
 {% block subtitle %}
     <h2>
@@ -29,7 +29,7 @@
         <p><a class="label-profil"> Type de garde:</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
     </div>
     <div class="form-group">
-        <p><a class="label-profil"> Tarif:</a> {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+        <p><a class="label-profil"> Tarif:</a> {{ profile.tarif|display_tarif }} €/h</p>
     </div>
 {% endblock %}
 

@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 from django import template
 
 from famille.forms import RatingFamilleForm, RatingPrestataireForm
@@ -112,3 +113,16 @@ def get_rating_form(profile, request_user):
             rating = RatingClass(user=profile, by=related_user.simple_id)
             return RatingFormClass(instance=rating)
     return None
+
+
+@register.filter(name='display_tarif')
+def display_tarif(tarif):
+    """
+    Display the tarif range.
+
+    :param tarif:       comma separated range of tarif
+    """
+    if not tarif:
+        return "--"
+
+    return u"de %s à %s" % tuple(tarif.split(","))

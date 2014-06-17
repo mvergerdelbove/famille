@@ -1,4 +1,5 @@
 {% extends "profile/base.html" %}
+{% load helpers %}
 
 {% block subtitle %}
 {% with nb_enfants=profile.enfants.all.count %}
@@ -21,7 +22,7 @@
         <p><a class="label-profil"> Type de garde :</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
     </div>
     <div class="form-group">
-        <p><a class="label-profil"> Tarif souhaité :</a> {% if profile.tarif %}{{ profile.tarif|floatformat:"0" }}{% else %}--{% endif %} €/h</p>
+        <p><a class="label-profil"> Tarif souhaité :</a> {{ profile.tarif|display_tarif }} €/h</p>
     </div>
 {% endblock %}
 
