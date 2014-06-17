@@ -1,6 +1,6 @@
 from django import template
 
-from famille.forms import LANGUAGES_DICT
+from famille import data
 
 
 register = template.Library()
@@ -60,7 +60,7 @@ def get_language_display(value):
     """
     Retrieve the language display test from integer.
     """
-    return LANGUAGES_DICT.get(value, u"")
+    return data.LANGUAGES_DICT.get(value, u"")
 
 
 @register.filter(name='languages_display')
