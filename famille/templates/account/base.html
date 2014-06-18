@@ -45,7 +45,7 @@
             <div class="tab-pane fade in active" id="compte">
                 <div class="panel-group" id="accordion">
                     {% block compte_extra %}{% endblock %}
-                    <div class="panel panel-default favorite-panel margin-bottom-long">
+                    <div class="panel panel-default favorite-panel">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#favoris">
@@ -265,7 +265,7 @@
     </div>
     {% endblock %}
     {% if user.is_authenticated %}  <!--Keep this for premium-->
-    <div class="col-md-offset-1 col-md-3 margin-top-r">
+    <div class="col-md-offset-1 col-md-3 margin-top-r margin-bottom-med">
         <div class="list-group">
             <a href="{% url 'account' %}"
                 class="list-group-item {% if request.path_info == '/mon-compte/' %}active{% endif %}">
