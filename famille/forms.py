@@ -233,7 +233,7 @@ class CriteriaForm(forms.ModelForm):
             "experience_type": u"Type d’expérience",
             "experience_year": u"Nombre d’années d’experiences",
             "studies": u"Niveau d'étude",
-            "enfant_malade": u"Garde d'enfant malade",
+            "enfant_malade": u"Garde d'enfants handicapés",
             "cuisine": "Cuisine",
             "animaux": "Prend soin des animaux"
         }
