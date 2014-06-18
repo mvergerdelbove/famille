@@ -1,6 +1,9 @@
 {% extends "profile/base.html" %}
 {% load static %}
+{% load staticfiles %}
+{% load static %}
 {% load helpers %}
+{% load users %}
 
 {% block subtitle %}
     <h2>
@@ -35,7 +38,87 @@
 
 {% block block3Title %}<span class="glyphicon glyphicon-check"></span> Mes compétences{% endblock %}
 
-{% block block4Title %}<span class="glyphicon glyphicon-plus"></span> Mes p'tits plus{% endblock %}
+{% block contentBlock4 %}  <!-- petits plus -->
+            <h5  class="title-profil"><span class="glyphicon glyphicon-plus"></span> Mes p'tits plus</h5>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'repassage' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'accepte de faire du repassage
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'menage' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'accepte de faire du ménage
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'non_fumeur' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je ne fume pas
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'cuisine' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je sais cuisiner
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-little">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'enfant_malade' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je m'occupe d'enfants handicapés
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'animaux' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Je m'occupe de vos animaux
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'psc1' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Formation aux premiers secours
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'aide vos enfants dans leur devoirs
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-little">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img class=none"" src="{% static profile|badge_icon:'permis' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        J'ai une voiture
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
 
 {% block block5Title %}Plus de détails sur moi{% endblock %}
 
