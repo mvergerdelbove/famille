@@ -57,3 +57,16 @@ TYPES_GARDE = (
 )
 
 TYPES_GARDE_DICT = dict(TYPES_GARDE)
+
+DIPLOMA = (
+    ("0", u"Agrément d’Assistante Maternelle"),
+    ("1", u"BEP carrières sanitaires et sociales"),
+    ("2", u"CAP Petite enfance"),
+    ("3", u"Un certificat de compétence professionnelle petite enfance"),
+    ("4", u"Un certificat de qualification professionnelle petite enfance"),
+    ("5", u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)"),
+    ("6", u"Bafa"),
+    ("7", u"Autre diplôme lié à la garde d'enfance"),
+)
+
+DIPLOMA_DICT = dict(DIPLOMA)

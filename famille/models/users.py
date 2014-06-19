@@ -432,16 +432,6 @@ class UserInfo(BaseModel):
 
 
 class Criteria(UserInfo):
-    DIPLOMA = {
-        "mat": u"Agrément d’Assistante Maternelle",
-        "bep": u"BEP carrières sanitaires et sociales",
-        "cap": u"CAP Petite enfance",
-        "comp": u"Un certificat de compétence professionnelle petite enfance",
-        "qual": u"Un certificat de qualification professionnelle petite enfance",
-        "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
-        "bafa": u"Bafa",
-        "other": u"Autre diplôme lié à la garde d'enfance",
-    }
     STUDIES = (
         ("brevet", u"Brevet"),
         ("bac", u"Bac"),
@@ -469,7 +459,7 @@ class Criteria(UserInfo):
 
     type_garde = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
-    diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
+    diploma = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
     experience_year = models.CharField(blank=True, null=True, max_length=10, choices=EXP_YEARS)
     menage = models.BooleanField(blank=True, default=False)
