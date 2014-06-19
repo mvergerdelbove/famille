@@ -440,7 +440,7 @@ class Criteria(UserInfo):
         "qual": u"Un certificat de qualification professionnelle petite enfance",
         "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
         "bafa": u"Bafa",
-        "other": u"Autre",
+        "other": u"Autre diplôme lié à la garde d'enfance",
     }
     STUDIES = (
         ("brevet", u"Brevet"),
