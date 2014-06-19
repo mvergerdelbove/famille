@@ -29,3 +29,9 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(users.get_multi_display("0", "language"), "Anglais")
         self.assertEqual(users.get_multi_display("0,2", "language"), "Anglais, Chinois")
         self.assertEqual(users.get_multi_display("0,829162,2", "language"), "Anglais, Chinois")
+
+    def test_contains(self):
+        self.assertTrue(helpers.contains("toto", None))
+        self.assertFalse(helpers.contains(None, "toto"))
+        self.assertFalse(helpers.contains("zjioze", "t"))
+        self.assertTrue(helpers.contains("zjioze", "z"))

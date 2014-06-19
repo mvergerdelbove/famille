@@ -73,7 +73,7 @@
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
                                      data-original-title="Je sais m'occuper d'un nourisson (0 à 1 an)">
-                                    {% if result.experience_type != 'zero' %}
+                                    {% if result.experience_type|contains:'1' %}
                                     <img src="{% static 'img/badges/bebe.png' %}" width="90%;">
                                     {% else %}
                                     <img src="{% static 'img/badges/no-bebe.png' %}" width="90%;">

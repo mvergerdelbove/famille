@@ -126,3 +126,13 @@ def display_tarif(tarif):
         return "--"
 
     return u"de %s à %s" % tuple(tarif.split(","))
+
+
+@register.filter(name="contains")
+def contains(value, arg):
+    """
+    Returns True if arg in value.
+    """
+    value = value or ""
+    arg = arg or ""
+    return arg in value
