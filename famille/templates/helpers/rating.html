@@ -14,14 +14,23 @@
     {% endblock %}
     <div class="hide rating-form">
         <form class="form-horizontal form-rating">
-            {% for field in rating_form %}
-                <div class="form-group">
-                    {% if field.html_name != "by" %}
-                        {% bootstrap_label field.label_tag %}
-                    {% endif %}
-                    {{ field|safe }}
-                </div>
-            {% endfor %}
+            <div class="form-group">
+                {% bootstrap_label rating_form.c.label_tag %}
+                {{ rating_form.c|safe }}
+            </div>
+            <div class="form-group">
+                {% bootstrap_label rating_form.a.label_tag %}
+                {{ rating_form.a|safe }}
+            </div>
+            <div class="form-group">
+                {% bootstrap_label rating_form.b.label_tag %}
+                {{ rating_form.b|safe }}
+            </div>
+            <div class="form-group">
+                {% bootstrap_label rating_form.d.label_tag %}
+                {{ rating_form.d|safe }}
+            </div>
+            {{ rating_form.by|safe }}
             <button type="button" class="btn btn-color btn-green-min submit-rating">Valider</button>
         </form>
     </div>

@@ -579,17 +579,17 @@ class RatingBaseForm(forms.ModelForm):
 
     class Meta:
         labels = {
-            "reliability": u"Fiabilité",
-            "amability": u"Amabilité / Relationnel",
-            "serious": u"Sérieux",
-            "ponctuality": u"Ponctualité"
+            "a": u"Fiabilité",
+            "b": u"Relationnel",
+            "c": u"Professionnalisme",
+            "d": u"Flexibilité"
         }
         fields = labels.keys()
         widgets = {
-            "reliability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "amability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "serious": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "ponctuality": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"})
+            "a": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "b": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "c": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "d": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"})
         }
 
 
