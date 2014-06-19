@@ -100,6 +100,8 @@ class SearchResource(object):
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
 
+    commaseparated_fields = ["type_garde", "diploma"]
+
     class Meta:
         allowed_methods = ["get", ]
 
@@ -127,9 +129,11 @@ class SearchResource(object):
         :param applicable_filters:     a dict of resource filters
         """
         self.__request = request
+        commaseparated_filters = {}
         nb_enfants = request.GET.get("n_enfants__length")
         language = applicable_filters.pop("language__in", None)
-        type_garde = applicable_filters.pop("type_garde__in", None)
+        for f in self.commaseparated_fields:
+            commaseparated_filters[f] = applicable_filters.pop("%s__in" % f, None)
         applicable_filters.pop("tarif__in", None)  # we remove it since processed in filters_post_sorting
 
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
@@ -144,8 +148,9 @@ class SearchResource(object):
         if language:
             qs = self.filter_language(language, qs)
 
-        if type_garde:
-            qs = self._filter_commaseparated_field("type_garde", type_garde, qs)
+        for f, value in commaseparated_filters.iteritems():
+            if value:
+                qs = self._filter_commaseparated_field(f, value, qs)
 
         return qs
 
