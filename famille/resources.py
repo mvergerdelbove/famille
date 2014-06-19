@@ -129,7 +129,9 @@ class SearchResource(object):
         self.__request = request
         nb_enfants = request.GET.get("n_enfants__length")
         language = applicable_filters.pop("language__in", None)
+        type_garde = applicable_filters.pop("type_garde__in", None)
         applicable_filters.pop("tarif__in", None)  # we remove it since processed in filters_post_sorting
+
         qs = super(SearchResource, self).apply_filters(request, applicable_filters)
         qs = qs.distinct()  # for enfants__school filtering, can return duplicates
 
@@ -141,6 +143,9 @@ class SearchResource(object):
 
         if language:
             qs = self.filter_language(language, qs)
+
+        if type_garde:
+            qs = self._filter_commaseparated_field("type_garde", type_garde, qs)
 
         return qs
 
@@ -264,6 +269,20 @@ class SearchResource(object):
         filters = compute_user_visibility_filters(request.user)
         return super(SearchResource, self).get_object_list(request).filter(filters)
 
+    def _filter_commaseparated_field(self, field, values, queryset):
+        """
+        Filter the queryset by a comma separated field. This is
+        useful for type_garde and language fields for instance.
+
+        :param field:          the name of the field
+        :param values:         the desired values
+        :param queryset:       the initial queryset
+        """
+        field_query = "%s__icontains" % field
+        filters = map(lambda v: Q(**{field_query: v}), values)
+        filters = reduce(operator.or_, filters, Q())
+        return queryset.filter(filters)
+
 
 class PrestataireResource(SearchResource, ModelResource):
 
@@ -290,9 +309,7 @@ class PrestataireResource(SearchResource, ModelResource):
         :param language:       the desired languages
         :param queryset:       the initial queryset
         """
-        filters = map(lambda l: Q(language__icontains=l), language)
-        filters = reduce(operator.or_, filters, Q())
-        return queryset.filter(filters)
+        return self._filter_commaseparated_field("language", language, queryset)
 
 
 class FamilleResource(SearchResource, ModelResource):
