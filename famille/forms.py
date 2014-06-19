@@ -234,8 +234,8 @@ class CriteriaForm(forms.ModelForm):
             "experience_year": u"Nombre d’années d’experiences",
             "studies": u"Niveau d'étude",
             "enfant_malade": u"Garde d'enfants handicapés",
-            "cuisine": "Cuisine",
-            "animaux": "Prend soin des animaux"
+            "cuisine": u"Cuisine",
+            "animaux": u"Prend soin des animaux"
         }
         fields = labels.keys()
         widgets = {
@@ -243,21 +243,23 @@ class CriteriaForm(forms.ModelForm):
                 attrs={
                     'rows': '5',
                 }
-            )
+            ),
         }
 
 
 class FamilleCriteriaForm(CriteriaForm):
+    type_garde = CommaSeparatedMultipleChoiceField(choices=data.TYPES_GARDE, required=False)
     class Meta(CriteriaForm.Meta):
         model = Famille
         labels = dict(
-            CriteriaForm.Meta.labels, type_presta="Type de prestataire",
-            type_garde="Type de garde"
+            CriteriaForm.Meta.labels, type_presta="Type de prestataire", type_garde="Type de garde"
         )
         fields = labels.keys()
 
 
 class PrestataireForm(UserForm):
+    type_garde = CommaSeparatedMultipleChoiceField(choices=data.TYPES_GARDE, required=False)
+
     class Meta(UserForm.Meta):
         model = Prestataire
         fields = UserForm.Meta.fields + ("type", "birthday", "other_type", "nationality", "type_garde")
@@ -429,7 +431,7 @@ class BaseSearchForm(forms.Form):
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
+        label="Type de garde", choices=data.TYPES_GARDE, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
 

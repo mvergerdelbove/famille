@@ -432,17 +432,6 @@ class UserInfo(BaseModel):
 
 
 class Criteria(UserInfo):
-    TYPES_GARDE = (
-        ("plein", u"Garde à temps plein"),
-        ("partiel", u"Garde à temps partiel"),
-        ("soir", u"Garde en soirée"),
-        ("part", u"Garde partagée"),
-        ("ecole", u"Sortie d'école"),
-        ("vacances", u"Vacances scolaires"),
-        ("decal", u"Garde à horaires décalés"),
-        ("nuit", u"Garde de nuit"),
-        ("urgences", u"Garde d'urgence"),
-    )
     DIPLOMA = {
         "mat": u"Agrément d’Assistante Maternelle",
         "bep": u"BEP carrières sanitaires et sociales",
@@ -478,7 +467,7 @@ class Criteria(UserInfo):
         ("six+", u"Plus de 6 ans"),
     )
 
-    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE)
+    type_garde = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
     diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
     experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
@@ -494,6 +483,7 @@ class Criteria(UserInfo):
     enfant_malade = models.BooleanField(blank=True, default=False)
     tarif = models.CharField(blank=True, default="%s,%s" % settings.TARIF_RANGE, max_length=10)
     description = models.CharField(blank=True, null=True, max_length=400)
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         abstract = True
@@ -530,7 +520,6 @@ class Prestataire(Criteria):
     nationality = models.CharField(max_length=70, null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES, null=True, blank=False)
     other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
-    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
     resume = extra_fields.ContentTypeRestrictedFileField(
         upload_to=extra_fields.upload_to_timestamp("resume"), blank=True, null=True,
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
@@ -579,7 +568,6 @@ class Famille(Criteria):
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
     type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
-    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         app_label = 'famille'
