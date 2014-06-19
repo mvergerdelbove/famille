@@ -74,9 +74,9 @@
         <div class="col-md-12">
             {% block contentBlock3 %}  <!-- mes besoins -->
             <h5  class="title-profil">{% block block3Title %}{% endblock %}</h5>
-            <p><a class="label-profil"> Langues parlées :</a> {{ profile.language|languages_display }}</p>
+            <p><a class="label-profil"> Langues parlées :</a> {% multi_display profile.language "language" %}</p>
             <p><a class="label-profil"> Niveau d'étude :</a> {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
-            <p><a class="label-profil"> Diplôme :</a> {% if profile.diploma %}{{ profile.get_diploma_display }}{% else %}--{% endif %}</p>
+            <p><a class="label-profil"> Diplôme :</a> {% multi_display profile.diploma "diploma" %}</p>
             <p>
                 <a class="label-profil"> Type d'expérience :</a>
                 {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}

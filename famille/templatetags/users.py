@@ -55,24 +55,29 @@ def get_language_icon(user, value):
         return FLAG_FOLDER % value
 
 
-@register.filter(name='language_display')
-def get_language_display(value):
-    """
-    Retrieve the language display test from integer.
-    """
-    return data.LANGUAGES_DICT.get(value, u"")
+display_dicts = {
+    "language": data.LANGUAGES_DICT,
+    "type_garde": data.TYPES_GARDE_DICT,
+    "diploma": data.DIPLOMA_DICT
+}
 
+@register.simple_tag(name="multi_display")
+def get_multi_display(value, name):
+    """
+    Retrieve the display for a multi value field.
 
-@register.filter(name='languages_display')
-def get_languages_display(value):
+    :param value:    the value to display
+    :param name:     the name of the field
     """
-    Retrieve the language display test from integer.
-    """
+    if name not in display_dicts:
+        return "--"
+    data_dict = display_dicts[name]
     value = value or ""
-    disp = []
-    for language in value.split(","):
-        language_display = get_language_display(language)
-        if language_display:
-            disp.append(language_display)
+    disps = []
 
-    return u", ".join(disp) or "--"
+    for v in value.split(","):
+        disp = data_dict.get(v, "")
+        if disp:
+            disps.append(disp)
+
+    return u", ".join(disps) or "--"

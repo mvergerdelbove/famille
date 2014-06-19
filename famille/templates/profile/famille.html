@@ -22,7 +22,7 @@
         </p>
     </div>
     <div class="form-group">
-        <p><a class="label-profil"> Type de garde :</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+        <p><a class="label-profil"> Type de garde :</a> {% multi_display profile.type_garde "type_garde" %}</p>
     </div>
     <div class="form-group">
         <p><a class="label-profil"> Tarif souhaité :</a> {{ profile.tarif|display_tarif }} €/h</p>
