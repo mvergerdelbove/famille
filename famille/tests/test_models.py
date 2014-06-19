@@ -406,12 +406,12 @@ class RatingTestCase(TestCase):
         rating = models.FamilleRatings(user=self.famille)
         self.assertEqual(rating.average, 0)
 
-        rating.reliability = 4
+        rating.a = 4
         self.assertEqual(rating.average, 1)
 
-        rating.amability = 2
-        rating.serious = 1
-        rating.ponctuality = 3
+        rating.b = 2
+        rating.c = 1
+        rating.d = 3
         self.assertEqual(rating.average, 2.5)
 
     def test_user_nb_ratings(self):
@@ -423,12 +423,12 @@ class RatingTestCase(TestCase):
     def test_user_rating(self):
         self.assertEqual(self.famille.total_rating, 0)
         models.FamilleRatings(
-            user=self.famille, reliability=4, amability=2,
-            serious=1, ponctuality=3
+            user=self.famille, a=4, b=2,
+            c=1, d=3
         ).save()
         models.FamilleRatings(
-            user=self.famille, reliability=1, amability=3,
-            serious=5, ponctuality=0
+            user=self.famille, a=1, b=3,
+            d=5, c=0
         ).save()
         self.assertEqual(self.famille.total_rating, 2.375)
 
