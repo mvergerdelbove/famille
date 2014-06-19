@@ -5,31 +5,27 @@ from south.v2 import DataMigration
 from django.db import models
 
 class Migration(DataMigration):
+
     forwards_data = {
-        "mat": "0",
-        "bep": "1",
-        "comp": "3",
-        "cap": "2",
-        "qual": "4",
-        "deeje": "5",
-        "bafa": "6",
-        "other": "7",
+        "zero": "0",
+        "un": "1",
+        "trois": "2",
+        "sept": "3",
+        "sept+": "4",
+        "handi": "5",
     }
     backwards_data = {
-        "0": "mat",
-        "1": "bep",
-        "3": "comp",
-        "2": "cap",
-        "4": "qual",
-        "5": "deeje",
-        "6": "bafa",
-        "7": "other",
+        "0": "zero",
+        "1": "trois",
+        "2": "sept",
+        "3": "sept+",
+        "4": "handi",
     }
 
     @staticmethod
     def _convert_obj_field(obj, data):
-        if obj.diploma:
-            obj.diploma = data.get(obj.diploma)
+        if obj.experience_type:
+            obj.experience_type = data.get(obj.experience_type)
             obj.save()
 
     def forwards(self, orm):
@@ -116,7 +112,7 @@ class Migration(DataMigration):
             'diploma': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '100'}),
             'enfant_malade': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'experience_type': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'experience_type': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'experience_year': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'geolocation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['famille.Geolocation']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
@@ -205,7 +201,7 @@ class Migration(DataMigration):
             'diploma': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '100'}),
             'enfant_malade': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'experience_type': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'experience_type': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'experience_year': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'geolocation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['famille.Geolocation']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),

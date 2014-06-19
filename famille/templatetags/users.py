@@ -58,8 +58,18 @@ def get_language_icon(user, value):
 display_dicts = {
     "language": data.LANGUAGES_DICT,
     "type_garde": data.TYPES_GARDE_DICT,
-    "diploma": data.DIPLOMA_DICT
+    "diploma": data.DIPLOMA_DICT,
+    "experience_type": data.EXP_TYPES_DICT
 }
+
+
+@register.filter(name='language_display')
+def get_language_display(value):
+    """
+    Retrieve the language display test from integer.
+    """
+    return data.LANGUAGES_DICT.get(value, u"")
+
 
 @register.simple_tag(name="multi_display")
 def get_multi_display(value, name):

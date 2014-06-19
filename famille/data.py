@@ -70,3 +70,14 @@ DIPLOMA = (
 )
 
 DIPLOMA_DICT = dict(DIPLOMA)
+
+EXP_TYPES = (
+    ("0", u"Pas d’expérience dans la garde d’enfants"),
+    ("1", u"Avec les bébés (0 à 1 an)"),
+    ("2", u"Avec les petits enfants (1 à 3 an)"),
+    ("3", u"Avec les jeunes enfants (3 à 7 ans)"),
+    ("4", u"Avec les enfants (plus de 7 ans)"),
+    ("5", u"Avec les enfants handicapés"),
+)
+
+EXP_TYPES_DICT = dict(EXP_TYPES)

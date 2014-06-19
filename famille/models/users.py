@@ -442,14 +442,6 @@ class Criteria(UserInfo):
         ("+5", u"Bac +5"),
         ("other", u"Autre")
     )
-    EXP_TYPES = (
-        ("zero", u"Pas d’expérience dans la garde d’enfants"),
-        ("un", u"Avec les bébés (0 à 1 an)"),
-        ("trois", u"Avec les petits enfants (1 à 3 an)"),
-        ("sept", u"Avec les jeunes enfants (3 à 7 ans)"),
-        ("sept+", u"Avec les enfants (plus de 7 ans)"),
-        ("handi", u"Avec les enfants handicapés"),
-    )
     EXP_YEARS = (
         ("un", u"Moins d’un an"),
         ("trois", u"Entre 1 et 3 ans"),
@@ -460,7 +452,7 @@ class Criteria(UserInfo):
     type_garde = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
     diploma = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
-    experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
+    experience_type = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     experience_year = models.CharField(blank=True, null=True, max_length=10, choices=EXP_YEARS)
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)

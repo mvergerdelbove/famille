@@ -78,8 +78,7 @@
             <p><a class="label-profil"> Niveau d'étude :</a> {% if profile.studies %}{{ profile.get_studies_display }}{% else %}--{% endif %}</p>
             <p><a class="label-profil"> Diplôme :</a> {% multi_display profile.diploma "diploma" %}</p>
             <p>
-                <a class="label-profil"> Type d'expérience :</a>
-                {% if profile.experience_type %}{{ profile.get_experience_type_display }}{% else %}--{% endif %}
+                <a class="label-profil"> Type d'expérience :</a> {% multi_display profile.experience_type "experience_type" %}
             </p>
             <p><a class="label-profil"> Nombre d’années d’expériences :</a> {% if profile.experience_year %}{{ profile.get_experience_year_display }}{% else %}--{% endif %}</p>
             {% endblock %}

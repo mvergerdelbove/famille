@@ -211,6 +211,7 @@ class FamilleForm(ForeignKeyForm, UserForm):
 class CriteriaForm(forms.ModelForm):
     language = CommaSeparatedMultipleChoiceField(choices=data.LANGUAGES, required=False)
     diploma = CommaSeparatedMultipleChoiceField(choices=data.DIPLOMA, required=False)
+    experience_type = CommaSeparatedMultipleChoiceField(choices=data.EXP_TYPES, required=False)
     tarif = CommaSeparatedRangeField(
         label=u"Tarif horaire (€/h)",
         widget=RangeWidget(
@@ -486,7 +487,7 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     experience_type = forms.MultipleChoiceField(
-        label=u"Type d'expérience", choices=Criteria.EXP_TYPES, required=False,
+        label=u"Type d'expérience", choices=data.EXP_TYPES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     experience_year = forms.MultipleChoiceField(

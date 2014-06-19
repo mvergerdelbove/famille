@@ -100,7 +100,7 @@ class SearchResource(object):
     ]
     FIELD_DENIED_BASIC = ["email", "tel"]
 
-    commaseparated_fields = ["type_garde", "diploma"]
+    commaseparated_fields = ["type_garde", "diploma", "experience_type"]
 
     class Meta:
         allowed_methods = ["get", ]

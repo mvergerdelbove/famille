@@ -1,52 +1,27 @@
 # -*- coding: utf-8 -*-
 from south.utils import datetime_utils as datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
-    forwards_data = {
-        "mat": "0",
-        "bep": "1",
-        "comp": "3",
-        "cap": "2",
-        "qual": "4",
-        "deeje": "5",
-        "bafa": "6",
-        "other": "7",
-    }
-    backwards_data = {
-        "0": "mat",
-        "1": "bep",
-        "3": "comp",
-        "2": "cap",
-        "4": "qual",
-        "5": "deeje",
-        "6": "bafa",
-        "7": "other",
-    }
 
-    @staticmethod
-    def _convert_obj_field(obj, data):
-        if obj.diploma:
-            obj.diploma = data.get(obj.diploma)
-            obj.save()
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        Famille = orm["famille.Famille"]
-        Prestataire = orm["famille.Prestataire"]
-        for o in Famille.objects.all():
-            self._convert_obj_field(o, self.forwards_data)
-        for o in Prestataire.objects.all():
-            self._convert_obj_field(o, self.forwards_data)
+
+        # Changing field 'Prestataire.experience_type'
+        db.alter_column(u'famille_prestataire', 'experience_type', self.gf('django.db.models.fields.CommaSeparatedIntegerField')(max_length=50, null=True))
+
+        # Changing field 'Famille.experience_type'
+        db.alter_column(u'famille_famille', 'experience_type', self.gf('django.db.models.fields.CommaSeparatedIntegerField')(max_length=50, null=True))
 
     def backwards(self, orm):
-        Famille = orm["Famille"]
-        Prestataire = orm["Prestataire"]
-        for o in Famille.objects.all():
-            self._convert_obj_field(o, self.backwards_data)
-        for o in Prestataire.objects.all():
-            self._convert_obj_field(o, self.backwards_data)
+
+        # Changing field 'Prestataire.experience_type'
+        db.alter_column(u'famille_prestataire', 'experience_type', self.gf('django.db.models.fields.CharField')(max_length=10, null=True))
+
+        # Changing field 'Famille.experience_type'
+        db.alter_column(u'famille_famille', 'experience_type', self.gf('django.db.models.fields.CharField')(max_length=10, null=True))
 
     models = {
         u'auth.group': {
@@ -116,7 +91,7 @@ class Migration(DataMigration):
             'diploma': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '100'}),
             'enfant_malade': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'experience_type': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'experience_type': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'experience_year': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'geolocation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['famille.Geolocation']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
@@ -205,7 +180,7 @@ class Migration(DataMigration):
             'diploma': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '100'}),
             'enfant_malade': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'experience_type': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'experience_type': ('django.db.models.fields.CommaSeparatedIntegerField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'experience_year': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'geolocation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['famille.Geolocation']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
@@ -416,4 +391,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['famille']
-    symmetrical = True
