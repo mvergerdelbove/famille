@@ -52,7 +52,7 @@ class BasePlanning(BaseModel):
     """
     A planning entry.
     """
-    DISPLAY_TPL = u"Les %s, %s à partir du %s"
+    DISPLAY_TPL = u"Les %s%s, %s à partir du %s"
     FREQUENCY = {
         "ponct": "Ponctuel",
         "hebdo": "Toutes les semaines",
@@ -72,9 +72,11 @@ class BasePlanning(BaseModel):
         Display the planning as a whole sentence.
         """
         days = u", ".join(day.name for day in self.weekday.all())
+        hours = u", ".join(schedule.name.lower() for schedule in self.schedule.all())
         freq = self.get_frequency_display().lower() if self.frequency == "hebdo" else u"ponctuellement"
         date = self.start_date.strftime("%d/%m/%Y")
-        return self.DISPLAY_TPL % (days, freq, date)
+        hours = " (%s)" % hours if hours else ""
+        return self.DISPLAY_TPL % (days, hours, freq, date)
 
 
 class FamillePlanning(BasePlanning):

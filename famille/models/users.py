@@ -432,27 +432,6 @@ class UserInfo(BaseModel):
 
 
 class Criteria(UserInfo):
-    TYPES_GARDE = (
-        ("plein", u"Garde à temps plein"),
-        ("partiel", u"Garde à temps partiel"),
-        ("soir", u"Garde en soirée"),
-        ("part", u"Garde partagée"),
-        ("ecole", u"Sortie d'école"),
-        ("vacances", u"Vacances scolaires"),
-        ("decal", u"Garde à horaires décalés"),
-        ("nuit", u"Garde de nuit"),
-        ("urgences", u"Garde d'urgence"),
-    )
-    DIPLOMA = {
-        "mat": u"Agrément d’Assistante Maternelle",
-        "bep": u"BEP carrières sanitaires et sociales",
-        "cap": u"CAP Petite enfance",
-        "comp": u"Un certificat de compétence professionnelle petite enfance",
-        "qual": u"Un certificat de qualification professionnelle petite enfance",
-        "deeje": u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)",
-        "bafa": u"Bafa",
-        "other": u"Autre",
-    }
     STUDIES = (
         ("brevet", u"Brevet"),
         ("bac", u"Bac"),
@@ -463,14 +442,6 @@ class Criteria(UserInfo):
         ("+5", u"Bac +5"),
         ("other", u"Autre")
     )
-    EXP_TYPES = (
-        ("zero", u"Pas d’expérience dans la garde d’enfants"),
-        ("un", u"Avec les bébés (0 à 1 an)"),
-        ("trois", u"Avec les petits enfants (1 à 3 an)"),
-        ("sept", u"Avec les jeunes enfants (3 à 7 ans)"),
-        ("sept+", u"Avec les enfants (plus de 7 ans)"),
-        ("handi", u"Avec les enfants handicapés"),
-    )
     EXP_YEARS = (
         ("un", u"Moins d’un an"),
         ("trois", u"Entre 1 et 3 ans"),
@@ -478,10 +449,10 @@ class Criteria(UserInfo):
         ("six+", u"Plus de 6 ans"),
     )
 
-    type_garde = models.CharField(blank=True, null=True, max_length=10, choices=TYPES_GARDE)
+    type_garde = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     studies = models.CharField(blank=True, null=True, max_length=10, choices=STUDIES)
-    diploma = models.CharField(blank=True, null=True, max_length=10, choices=DIPLOMA.items())
-    experience_type = models.CharField(blank=True, null=True, max_length=10, choices=EXP_TYPES)
+    diploma = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
+    experience_type = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=50)
     experience_year = models.CharField(blank=True, null=True, max_length=10, choices=EXP_YEARS)
     menage = models.BooleanField(blank=True, default=False)
     repassage = models.BooleanField(blank=True, default=False)
@@ -494,6 +465,7 @@ class Criteria(UserInfo):
     enfant_malade = models.BooleanField(blank=True, default=False)
     tarif = models.CharField(blank=True, default="%s,%s" % settings.TARIF_RANGE, max_length=10)
     description = models.CharField(blank=True, null=True, max_length=400)
+    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         abstract = True
@@ -530,7 +502,6 @@ class Prestataire(Criteria):
     nationality = models.CharField(max_length=70, null=True, blank=True)
     type = models.CharField(max_length=40, choices=TYPES, null=True, blank=False)
     other_type = models.CharField(max_length=50, null=True, blank=True)  # FIXME: broken in the front?
-    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
     resume = extra_fields.ContentTypeRestrictedFileField(
         upload_to=extra_fields.upload_to_timestamp("resume"), blank=True, null=True,
         content_types=DOCUMENT_TYPES.values(), extensions=DOCUMENT_TYPES.keys(),
@@ -579,7 +550,6 @@ class Famille(Criteria):
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
     type_attente_famille = models.CharField(blank=True, null=True, max_length=15, choices=TYPE_ATTENTES_FAMILLE)
-    language = models.CommaSeparatedIntegerField(blank=True, null=True, max_length=100)
 
     class Meta:
         app_label = 'famille'

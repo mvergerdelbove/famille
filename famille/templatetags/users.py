@@ -1,6 +1,6 @@
 from django import template
 
-from famille.forms import LANGUAGES_DICT
+from famille import data
 
 
 register = template.Library()
@@ -27,18 +27,19 @@ def get_badge_icon(user, name):
 
 
 @register.filter(name='badge_icon_garde')
-def get_badge_icon_garde(user, name):
+def get_badge_icon_garde(user, value):
     """
     Retrieve the badge icon url according to the value
     of the type of garde.
 
     :param user:     the user
-    :param name:     the name of the parameter
+    :param value:     the value of the parameter
     """
-    if name != user.type_garde:
-        name = "no-%s" % name
+    garde = user.type_garde or ""
+    if value not in garde:
+        value = "no-%s" % value
 
-    return BADGE_FOLDER % name
+    return BADGE_FOLDER % value
 
 
 @register.filter(name='language_icon')
@@ -55,24 +56,39 @@ def get_language_icon(user, value):
         return FLAG_FOLDER % value
 
 
+display_dicts = {
+    "language": data.LANGUAGES_DICT,
+    "type_garde": data.TYPES_GARDE_DICT,
+    "diploma": data.DIPLOMA_DICT,
+    "experience_type": data.EXP_TYPES_DICT
+}
+
+
 @register.filter(name='language_display')
 def get_language_display(value):
     """
     Retrieve the language display test from integer.
     """
-    return LANGUAGES_DICT.get(value, u"")
+    return data.LANGUAGES_DICT.get(value, u"")
 
 
-@register.filter(name='languages_display')
-def get_languages_display(value):
+@register.simple_tag(name="multi_display")
+def get_multi_display(value, name):
     """
-    Retrieve the language display test from integer.
+    Retrieve the display for a multi value field.
+
+    :param value:    the value to display
+    :param name:     the name of the field
     """
+    if name not in display_dicts:
+        return "--"
+    data_dict = display_dicts[name]
     value = value or ""
-    disp = []
-    for language in value.split(","):
-        language_display = get_language_display(language)
-        if language_display:
-            disp.append(language_display)
+    disps = []
 
-    return u", ".join(disp) or "--"
+    for v in value.split(","):
+        disp = data_dict.get(v, "")
+        if disp:
+            disps.append(disp)
+
+    return u", ".join(disps) or "--"

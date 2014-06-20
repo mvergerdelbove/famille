@@ -406,12 +406,12 @@ class RatingTestCase(TestCase):
         rating = models.FamilleRatings(user=self.famille)
         self.assertEqual(rating.average, 0)
 
-        rating.reliability = 4
+        rating.a = 4
         self.assertEqual(rating.average, 1)
 
-        rating.amability = 2
-        rating.serious = 1
-        rating.ponctuality = 3
+        rating.b = 2
+        rating.c = 1
+        rating.d = 3
         self.assertEqual(rating.average, 2.5)
 
     def test_user_nb_ratings(self):
@@ -423,12 +423,12 @@ class RatingTestCase(TestCase):
     def test_user_rating(self):
         self.assertEqual(self.famille.total_rating, 0)
         models.FamilleRatings(
-            user=self.famille, reliability=4, amability=2,
-            serious=1, ponctuality=3
+            user=self.famille, a=4, b=2,
+            c=1, d=3
         ).save()
         models.FamilleRatings(
-            user=self.famille, reliability=1, amability=3,
-            serious=5, ponctuality=0
+            user=self.famille, a=1, b=3,
+            d=5, c=0
         ).save()
         self.assertEqual(self.famille.total_rating, 2.375)
 
@@ -502,9 +502,14 @@ class PlanningTestCase(TestCase):
         self.planning.start_date = datetime(year=1991, month=7, day=12)
         self.lundi = planning.Weekday(name="Lundi")
         self.mardi = planning.Weekday(name="Mardi")
+        self.matin = planning.Schedule(name="Le matin")
+        self.soir = planning.Schedule(name="Le soir")
         self.lundi.save()
         self.mardi.save()
+        self.matin.save()
+        self.soir.save()
         self.planning.weekday.add(self.lundi)
+        self.planning.schedule.add(self.matin)
 
     def tearDown(self):
         self.planning.delete()
@@ -512,20 +517,27 @@ class PlanningTestCase(TestCase):
         self.user1.delete()
         self.lundi.delete()
         self.mardi.delete()
+        self.matin.delete()
+        self.soir.delete()
 
     def test_display_one_day_no_freq(self):
-        expected = u"Les Lundi, ponctuellement à partir du 12/07/1991"
+        expected = u"Les Lundi (le matin), ponctuellement à partir du 12/07/1991"
         self.assertEqual(self.planning.display, expected)
 
     def test_display_several_days_no_freq(self):
         self.planning.weekday.add(self.mardi)
-        expected = u"Les Lundi, Mardi, ponctuellement à partir du 12/07/1991"
+        expected = u"Les Lundi, Mardi (le matin), ponctuellement à partir du 12/07/1991"
         self.assertEqual(self.planning.display, expected)
 
     def test_display_several_days_freq(self):
         self.planning.weekday.add(self.mardi)
         self.planning.frequency = "hebdo"
-        expected = u"Les Lundi, Mardi, toutes les semaines à partir du 12/07/1991"
+        expected = u"Les Lundi, Mardi (le matin), toutes les semaines à partir du 12/07/1991"
+        self.assertEqual(self.planning.display, expected)
+
+    def test_display_one_day_no_freq_several_hours(self):
+        self.planning.schedule.add(self.soir)
+        expected = u"Les Lundi (le matin, le soir), ponctuellement à partir du 12/07/1991"
         self.assertEqual(self.planning.display, expected)
 
 

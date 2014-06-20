@@ -7,6 +7,7 @@ from django.core import validators
 from django.utils.functional import lazy
 from localflavor.fr.forms import FRPhoneNumberField
 
+from famille import data
 from famille.models import (
     Famille, Prestataire, Enfant, FamillePlanning,
     Reference, PrestatairePlanning, UserInfo, FamilleRatings,
@@ -207,49 +208,10 @@ class FamilleForm(ForeignKeyForm, UserForm):
         }
 
 
-LANGUAGES = [
-    ["0", u"Anglais"],
-    ["1", u"Arabe"],
-    ["2", u"Chinois"],
-    ["3", u"Espagnol"],
-    ["4", u"Français"],
-    ["5", u"Russe"],
-    ["6", u"Albanais"],
-    ["7", u"Allemand"],
-    ["8", u"Arménien"],
-    ["9", u"Aymara"],
-    ["10", u"Bengalî"],
-    ["11", u"Catalan"],
-    ["12", u"Coréen"],
-    ["13", u"Croate"],
-    ["14", u"Danois"],
-    ["15", u"Finnois"],
-    ["16", u"Guarani"],
-    ["17", u"Grec"],
-    ["18", u"Hongrois"],
-    ["19", u"Italien"],
-    ["20", u"Kiswahili"],
-    ["21", u"Malais"],
-    ["22", u"Mongol"],
-    ["23", u"Néerlandais"],
-    ["24", u"Ourdou"],
-    ["25", u"Persan"],
-    ["26", u"Portugais"],
-    ["27", u"Quechua"],
-    ["28", u"Roumain"],
-    ["29", u"Samoan"],
-    ["30", u"Serbe"],
-    ["31", u"Sesotho"],
-    ["32", u"Slovaque"],
-    ["33", u"Slovène"],
-    ["34", u"Suédois"],
-    ["35", u"Tamoul"],
-    ["36", u"Turc"]
-]
-LANGUAGES_DICT = dict(LANGUAGES)
-
 class CriteriaForm(forms.ModelForm):
-    language = CommaSeparatedMultipleChoiceField(choices=LANGUAGES, required=False)
+    language = CommaSeparatedMultipleChoiceField(choices=data.LANGUAGES, required=False)
+    diploma = CommaSeparatedMultipleChoiceField(choices=data.DIPLOMA, required=False)
+    experience_type = CommaSeparatedMultipleChoiceField(choices=data.EXP_TYPES, required=False)
     tarif = CommaSeparatedRangeField(
         label=u"Tarif horaire (€/h)",
         widget=RangeWidget(
@@ -273,9 +235,9 @@ class CriteriaForm(forms.ModelForm):
             "experience_type": u"Type d’expérience",
             "experience_year": u"Nombre d’années d’experiences",
             "studies": u"Niveau d'étude",
-            "enfant_malade": u"Garde d'enfant malade",
-            "cuisine": "Cuisine",
-            "animaux": "Prend soin des animaux"
+            "enfant_malade": u"Garde d'enfants handicapés",
+            "cuisine": u"Cuisine",
+            "animaux": u"Prend soin des animaux"
         }
         fields = labels.keys()
         widgets = {
@@ -283,21 +245,23 @@ class CriteriaForm(forms.ModelForm):
                 attrs={
                     'rows': '5',
                 }
-            )
+            ),
         }
 
 
 class FamilleCriteriaForm(CriteriaForm):
+    type_garde = CommaSeparatedMultipleChoiceField(choices=data.TYPES_GARDE, required=False)
     class Meta(CriteriaForm.Meta):
         model = Famille
         labels = dict(
-            CriteriaForm.Meta.labels, type_presta="Type de prestataire",
-            type_garde="Type de garde"
+            CriteriaForm.Meta.labels, type_presta="Type de prestataire", type_garde="Type de garde"
         )
         fields = labels.keys()
 
 
 class PrestataireForm(UserForm):
+    type_garde = CommaSeparatedMultipleChoiceField(choices=data.TYPES_GARDE, required=False)
+
     class Meta(UserForm.Meta):
         model = Prestataire
         fields = UserForm.Meta.fields + ("type", "birthday", "other_type", "nationality", "type_garde")
@@ -469,7 +433,7 @@ class BaseSearchForm(forms.Form):
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     type_garde = forms.MultipleChoiceField(
-        label="Type de garde", choices=Prestataire.TYPES_GARDE, required=False,
+        label="Type de garde", choices=data.TYPES_GARDE, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
 
@@ -510,7 +474,7 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.Select(attrs={"data-api": "exact"})  # FIXME: data-placeholder don't work
     )
     language = forms.MultipleChoiceField(
-        label=u"Langue(s) parlée(s)", choices=LANGUAGES, required=False,
+        label=u"Langue(s) parlée(s)", choices=data.LANGUAGES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     # BOX 3
@@ -519,11 +483,11 @@ class PrestataireSearchForm(BaseSearchForm):
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     diploma = forms.MultipleChoiceField(
-        label=u"Diplômes liés à la garde d'enfant", choices=Prestataire.DIPLOMA.items(), required=False,
+        label=u"Diplômes liés à la garde d'enfant", choices=data.DIPLOMA, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     experience_type = forms.MultipleChoiceField(
-        label=u"Type d'expérience", choices=Criteria.EXP_TYPES, required=False,
+        label=u"Type d'expérience", choices=data.EXP_TYPES, required=False,
         widget=forms.SelectMultiple(attrs={"data-api": "in"})
     )
     experience_year = forms.MultipleChoiceField(
@@ -615,17 +579,17 @@ class RatingBaseForm(forms.ModelForm):
 
     class Meta:
         labels = {
-            "reliability": u"Fiabilité",
-            "amability": u"Amabilité / Relationnel",
-            "serious": u"Sérieux",
-            "ponctuality": u"Ponctualité"
+            "a": u"Fiabilité",
+            "b": u"Relationnel",
+            "c": u"Professionnalisme",
+            "d": u"Flexibilité"
         }
         fields = labels.keys()
         widgets = {
-            "reliability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "amability": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "serious": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
-            "ponctuality": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"})
+            "a": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "b": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "c": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"}),
+            "d": RatingWidget(attrs={"star_class": "star-control", "class": "rating-score"})
         }
 
 

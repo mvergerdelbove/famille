@@ -10,10 +10,10 @@ __all__ = [
 
 class BaseRatings(BaseModel):
 
-    reliability = models.PositiveSmallIntegerField(default=0, blank=True)
-    amability = models.PositiveSmallIntegerField(default=0, blank=True)
-    serious = models.PositiveSmallIntegerField(default=0, blank=True)
-    ponctuality = models.PositiveSmallIntegerField(default=0, blank=True)
+    a = models.PositiveSmallIntegerField(default=0, blank=True)
+    b = models.PositiveSmallIntegerField(default=0, blank=True)
+    c = models.PositiveSmallIntegerField(default=0, blank=True)
+    d = models.PositiveSmallIntegerField(default=0, blank=True)
     by = models.CharField(max_length=50, null=True)
 
     class Meta:
@@ -27,7 +27,7 @@ class BaseRatings(BaseModel):
         """
         Return the average rating.
         """
-        return (self.reliability + self.amability + self.serious + self.ponctuality) / 4.0
+        return (self.a + self.b + self.c + self.d) / 4.0
 
     @classmethod
     def user_has_voted_for(cls, voter, user):

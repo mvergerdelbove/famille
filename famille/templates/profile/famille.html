@@ -1,5 +1,8 @@
 {% extends "profile/base.html" %}
+{% load staticfiles %}
+{% load static %}
 {% load helpers %}
+{% load users %}
 
 {% block subtitle %}
 {% with nb_enfants=profile.enfants.all.count %}
@@ -19,7 +22,7 @@
         </p>
     </div>
     <div class="form-group">
-        <p><a class="label-profil"> Type de garde :</a> {% if profile.type_garde %}{{ profile.get_type_garde_display }}{% else %}--{% endif %}</p>
+        <p><a class="label-profil"> Type de garde :</a> {% multi_display profile.type_garde "type_garde" %}</p>
     </div>
     <div class="form-group">
         <p><a class="label-profil"> Tarif souhaité :</a> {{ profile.tarif|display_tarif }} €/h</p>
@@ -41,7 +44,87 @@
 
 {% block block3Title %}<span class="glyphicon glyphicon-check"></span> Mes besoins{% endblock %}
 
-{% block block4Title %}<span class="glyphicon glyphicon-plus"></span> Les p'tits plus recherchés{% endblock %}
+{% block contentBlock4 %}  <!-- petits plus -->
+            <h5  class="title-profil"><span class="glyphicon glyphicon-plus"></span> Les p'tits plus recherchés</h5>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'repassage' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Repassage
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'menage' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Ménage
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'non_fumeur' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Non fumeur
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'cuisine' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Cuisine
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-little">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'enfant_malade' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Expérience avec les enfants handicapés
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'animaux' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Amis des animaux
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img src="{% static profile|badge_icon:'psc1' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Formation aux premiers secours
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img class=none"" src="{% static profile|badge_icon:'devoirs' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Aide aux devoirs
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-little">
+                <div class="col-md-3 text-center">
+                    <div class="row">
+                        <img class=none"" src="{% static profile|badge_icon:'permis' %}" width="60px">
+                    </div>
+                    <div class="row">
+                        Permis voiture
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
 
 {% block block5Title %}<span class="glyphicon glyphicon-comment"></span> Plus de détails sur notre famille{% endblock %}
 

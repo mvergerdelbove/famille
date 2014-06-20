@@ -32,25 +32,25 @@
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
                                      data-original-title="Je cherche quelqu'un en dernière minute">
-                                    <img src="{% static result|badge_icon_garde:'urgences'%}" width="90%;">
+                                    <img src="{% static result|badge_icon_garde:'8'%}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip" data-original-title="Je cherche quelqu'un pour des gardes de nuit">
-                                    <img src="{% static result|badge_icon_garde:'nuit'%}" width="90%;">
+                                    <img src="{% static result|badge_icon_garde:'7'%}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip" data-original-title="Je recherche une garde partagée">
-                                    <img src="{% static result|badge_icon_garde:'part'%}" width="90%;">
+                                    <img src="{% static result|badge_icon_garde:'3'%}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
                                      data-original-title="J'ai besoin qu'on aille chercher mes enfants aux sorties d'école">
-                                    <img class="none" src="{% static result|badge_icon_garde:'ecole' %}" width="90%;">
+                                    <img class="none" src="{% static result|badge_icon_garde:'4' %}" width="90%;">
                                 </div>
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
                                      data-original-title="Je recherche quelqu’un pour garder mes enfants sur des horaires décalés (tôt le matin, tard le soir).">
-                                    <img class="none" src="{% static result|badge_icon_garde:'decal' %}" width="90%;">
+                                    <img class="none" src="{% static result|badge_icon_garde:'6' %}" width="90%;">
                                 </div>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                                 <div class="badges-lfo link tooltip-link"
                                      data-toggle="tooltip"
                                      data-original-title="Je cherche quelqu’un qui a de l’expérience avec les bébés">
-                                    {% if result.experience_type != 'zero' %}
+                                    {% if result.experience_type|contains:'1' %}
                                     <img src="{% static 'img/badges/bebe.png' %}" width="90%;">
                                     {% else %}
                                     <img src="{% static 'img/badges/no-bebe.png' %}" width="90%;">
