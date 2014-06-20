@@ -27,18 +27,19 @@ def get_badge_icon(user, name):
 
 
 @register.filter(name='badge_icon_garde')
-def get_badge_icon_garde(user, name):
+def get_badge_icon_garde(user, value):
     """
     Retrieve the badge icon url according to the value
     of the type of garde.
 
     :param user:     the user
-    :param name:     the name of the parameter
+    :param value:     the value of the parameter
     """
-    if name != user.type_garde:
-        name = "no-%s" % name
+    garde = user.type_garde or ""
+    if value not in garde:
+        value = "no-%s" % value
 
-    return BADGE_FOLDER % name
+    return BADGE_FOLDER % value
 
 
 @register.filter(name='language_icon')

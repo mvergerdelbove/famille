@@ -35,3 +35,11 @@ class TemplateTagsTestCase(TestCase):
         self.assertFalse(helpers.contains(None, "toto"))
         self.assertFalse(helpers.contains("zjioze", "t"))
         self.assertTrue(helpers.contains("zjioze", "z"))
+
+    def test_get_badge_icon_garde(self):
+        obj = models.Prestataire()
+        self.assertEquals(users.get_badge_icon_garde(obj, "1"), "img/badges/no-1.png")
+        obj.type_garde = "1"
+        self.assertEquals(users.get_badge_icon_garde(obj, "1"), "img/badges/1.png")
+        obj.type_garde = "1,3,6"
+        self.assertEquals(users.get_badge_icon_garde(obj, "3"), "img/badges/3.png")
