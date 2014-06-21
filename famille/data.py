@@ -47,12 +47,12 @@ LANGUAGES_DICT = dict(LANGUAGES)
 TYPES_GARDE = (
     ("0", u"Garde à temps plein"),
     ("1", u"Garde à temps partiel"),
-    ("2", u"Garde en soirée"),
+    ("2", u"Garde de nuit"),
     ("3", u"Garde partagée"),
     ("4", u"Sortie d'école"),
     ("5", u"Vacances scolaires"),
     ("6", u"Garde à horaires décalés"),
-    ("7", u"Garde de nuit"),
+    ("7", u"Garde en soirée"),
     ("8", u"Garde d'urgence"),
 )
 
