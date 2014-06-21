@@ -48,8 +48,6 @@ class ModelsTestCase(TestCase):
         self.prestataire_fav.save()
         self.keygroup = KeyGroup(name='activate_account', generator="sha1-hex")
         self.keygroup.save()
-        self._old_MIN_VISIBILITY_SCORE = settings.MIN_VISIBILITY_SCORE
-        settings.MIN_VISIBILITY_SCORE = 0.9
 
     def tearDown(self):
         User.objects.all().delete()
@@ -59,7 +57,6 @@ class ModelsTestCase(TestCase):
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
         self.keygroup.delete()
-        settings.MIN_VISIBILITY_SCORE = self._old_MIN_VISIBILITY_SCORE
 
     def test_simple_id(self):
         self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
@@ -365,18 +362,20 @@ class ModelsTestCase(TestCase):
 
     def test_visibility_score_is_enough_zero(self):
         p = models.Prestataire()
+        p.MIN_VISIBILITY_SCORE = 0.9
         self.assertFalse(p.visibility_score_is_enough)
 
     def test_visibility_score_is_not_enough(self):
         p = models.Prestataire(type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris")
+        p.MIN_VISIBILITY_SCORE = 0.9
         self.assertFalse(p.visibility_score_is_enough)
 
     def test_visibility_score_is_enough(self):
-        settings.MIN_VISIBILITY_SCORE = 0.9
         p = models.Prestataire(
             type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris",
             postal_code="75017", birthday=datetime.now(), profile_pic="/dumbfile.txt"
         )
+        p.MIN_VISIBILITY_SCORE = 0.9
         self.assertTrue(p.visibility_score_is_enough)
 
 
