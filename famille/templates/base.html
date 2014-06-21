@@ -13,6 +13,7 @@
     <meta><!-- TODO keywords --></meta>
     {% block extrahead %}{% endblock %}
     <title>Une vie de famille {% block title %}{% endblock %}</title>
+    {% include "helpers/analytics.html" %}
 </head>
 
 <body class="{% block body-class %}{% endblock %}" {% block bodyattrs %}{% endblock %}>
