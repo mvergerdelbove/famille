@@ -119,6 +119,18 @@
     background-color: #6CB292;
     font-weight: bold;
 }
+
+.white-transp{
+    background-color: rgba(255, 255, 255, 0.4);
+    padding:2%;
+}
+
+.white-transp img{
+    background-color: rgba(255, 255, 255, 0.9);
+    border: solid 1px #DFDFDF;
+    padding:2%; 
+}
+
 /* boutons personnalisés */
 
 /*.border-tool{border:solid 1px #CFCFCF;}*/
