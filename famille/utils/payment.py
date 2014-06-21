@@ -49,7 +49,7 @@ PRODUCTS = {
     "prestataire": [
         {
             "amount": "5.00",
-            "item_title": "Forfait",
+            "item_title": "Tranquillité",
             "item_frequence": u"pour toute l'année",
             "item_name": u"Abonnement Illimité pendant un an",
             "item_number": PREMIUM_IDS["12p"],
