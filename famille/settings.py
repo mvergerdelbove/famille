@@ -132,6 +132,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+MIN_VISIBILITY_SCORE = 0.9
+
 bools = {
     "True": True,
     "False": False

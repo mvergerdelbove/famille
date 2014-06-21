@@ -156,11 +156,15 @@ class UserInfo(BaseModel):
     """
     FREE_PLAN_LIMIT = datetime(2014, 7, 1, tzinfo=utc)
     FREE_PLAN_EXPIRATION = None
-
     PLANS = {
         "premium": "premium",
         "basic": "basic"
     }
+    MANDATORY_FIELDS_FOR_VISIBILITY = [
+        "name", "first_name", "street", "postal_code", "city", "profile_pic"
+    ]
+    MIN_VISIBILITY_SCORE = 0
+
     user = models.OneToOneField(User)
     geolocation = models.OneToOneField(Geolocation, blank=True, null=True)
     ipn = models.OneToOneField(PayPalIPN, blank=True, null=True)
@@ -284,6 +288,27 @@ class UserInfo(BaseModel):
     @property
     def encoded(self):
         return encode_recipient(self)
+
+    @property
+    def visibility_score(self):
+        """
+        Compute the visibility score of the user.
+        If less than a certain value, the user won't show up
+        in the result.
+        """
+        score = 0
+        for field in self.MANDATORY_FIELDS_FOR_VISIBILITY:
+            if getattr(self, field):
+                score += 1
+        return float(score) / len(self.MANDATORY_FIELDS_FOR_VISIBILITY)
+
+    @property
+    def visibility_score_is_enough(self):
+        """
+        Return True if the visibility score is superior to
+        self.MIN_VISIBILITY_SCORE.
+        """
+        return self.visibility_score >= self.MIN_VISIBILITY_SCORE
 
     # FIXME: can be async
     def geolocate(self):
@@ -497,6 +522,8 @@ class Prestataire(Criteria):
         "18-": u"Moins de 18 ans",
         "18+": u"Plus de 18 ans"
     }
+    MANDATORY_FIELDS_FOR_VISIBILITY = UserInfo.MANDATORY_FIELDS_FOR_VISIBILITY + ["birthday", "type"]
+    MIN_VISIBILITY_SCORE = float(settings.MIN_VISIBILITY_SCORE)
 
     birthday = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=70, null=True, blank=True)

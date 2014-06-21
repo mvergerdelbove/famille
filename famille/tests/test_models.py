@@ -48,6 +48,8 @@ class ModelsTestCase(TestCase):
         self.prestataire_fav.save()
         self.keygroup = KeyGroup(name='activate_account', generator="sha1-hex")
         self.keygroup.save()
+        self._old_MIN_VISIBILITY_SCORE = settings.MIN_VISIBILITY_SCORE
+        settings.MIN_VISIBILITY_SCORE = 0.9
 
     def tearDown(self):
         User.objects.all().delete()
@@ -57,6 +59,7 @@ class ModelsTestCase(TestCase):
         FamilleFavorite.objects.all().delete()
         PrestataireFavorite.objects.all().delete()
         self.keygroup.delete()
+        settings.MIN_VISIBILITY_SCORE = self._old_MIN_VISIBILITY_SCORE
 
     def test_simple_id(self):
         self.assertEqual(self.famille.simple_id, "famille__%s" % self.famille.pk)
@@ -351,6 +354,30 @@ class ModelsTestCase(TestCase):
         self.assertEquals(f.plan, "premium")
         self.assertEquals(f.plan_expires_at.replace(tzinfo=None), datetime(2500, 1, 1))
         self.assertFalse(send.called)
+
+    def test_visibility_score_empty(self):
+        p = models.Prestataire()
+        self.assertEquals(p.visibility_score, 0)
+
+    def test_visibility_score_not_empty(self):
+        p = models.Prestataire(type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris")
+        self.assertEquals(p.visibility_score, 0.625)
+
+    def test_visibility_score_is_enough_zero(self):
+        p = models.Prestataire()
+        self.assertFalse(p.visibility_score_is_enough)
+
+    def test_visibility_score_is_not_enough(self):
+        p = models.Prestataire(type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris")
+        self.assertFalse(p.visibility_score_is_enough)
+
+    def test_visibility_score_is_enough(self):
+        settings.MIN_VISIBILITY_SCORE = 0.9
+        p = models.Prestataire(
+            type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris",
+            postal_code="75017", birthday=datetime.now(), profile_pic="/dumbfile.txt"
+        )
+        self.assertTrue(p.visibility_score_is_enough)
 
 
 class GeolocationTestCase(TestCase):
