@@ -66,7 +66,7 @@ DIPLOMA = (
     ("4", u"Un certificat de qualification professionnelle petite enfance"),
     ("5", u"Diplôme d'Etat d'éducateur de jeunes enfants (DEEJE)"),
     ("6", u"Bafa"),
-    ("7", u"Autre diplôme lié à la garde d'enfance"),
+    ("7", u"Autre diplôme lié à la garde d'enfants"),
 )
 
 DIPLOMA_DICT = dict(DIPLOMA)
