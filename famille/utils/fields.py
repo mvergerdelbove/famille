@@ -6,7 +6,7 @@ from django.forms import forms, MultiValueField, CharField, MultipleChoiceField,
 from django.template.defaultfilters import filesizeformat
 
 from famille.utils.python import generate_timestamp
-from famille.utils.widgets import RangeWidget
+from famille.utils.widgets import RangeWidget, CommaSeparatedMultipleChoiceWidget
 
 
 class ContentTypeRestrictedFileField(FileField):
@@ -120,6 +120,8 @@ class LazyMultipleChoiceField(MultipleChoiceField):
 
 
 class CommaSeparatedMultipleChoiceField(MultipleChoiceField):
+
+    widget = CommaSeparatedMultipleChoiceWidget
 
     def clean(self, data):
         """

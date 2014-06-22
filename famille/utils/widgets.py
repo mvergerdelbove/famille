@@ -52,3 +52,14 @@ class RangeWidget(widgets.TextInput):
         attrs["data-slider-tooltip-template"]= u"de {0} à {1} €"
 
         return super(RangeWidget, self).render(name, value, attrs)
+
+
+class CommaSeparatedMultipleChoiceWidget(widgets.SelectMultiple):
+
+    def render(self, name, value, attrs=None, choices=()):
+        """
+        Override render to cast value to list.
+        """
+        value = value or ""
+        value = value.split(",")
+        return super(CommaSeparatedMultipleChoiceWidget, self).render(name, value, attrs, choices)
