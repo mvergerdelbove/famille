@@ -19,6 +19,9 @@
                              width="50%;" alt="Photo de profil">
                         {% endif %}
                     </div>
+                    <div class="row">
+                        {% languages_html result.language %}
+                    </div>
                     {% block belowPic %}{% endblock %}
                 </div>
                 <div class="col-md-7">

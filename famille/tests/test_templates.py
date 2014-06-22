@@ -43,3 +43,8 @@ class TemplateTagsTestCase(TestCase):
         self.assertEquals(users.get_badge_icon_garde(obj, "1"), "img/badges/1.png")
         obj.type_garde = "1,3,6"
         self.assertEquals(users.get_badge_icon_garde(obj, "3"), "img/badges/3.png")
+
+    def test_get_languages_html(self):
+        self.assertEquals(users.get_languages_html(None), "")
+        self.assertIn(users.FLAG_FOLDER % "26", users.get_languages_html("26,27"))
+        self.assertIn(users.FLAG_FOLDER % "27", users.get_languages_html("26,27"))

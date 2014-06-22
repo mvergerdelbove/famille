@@ -42,6 +42,32 @@ def get_badge_icon_garde(user, value):
     return BADGE_FOLDER % value
 
 
+LANGUAGES_TPL = """
+<div class="col-md-3 col-md-offset-1 little-padding">
+    <img src="%s" width="100%%;"
+        data-toggle="tooltip" data-original-title="%s"/>
+</div>
+"""
+
+@register.simple_tag(name="languages_html")
+def get_languages_html(languages):
+    """
+    Display the HTML for languages.
+    """
+    if not languages:
+        return ""
+
+    html = ""
+    languages = languages or ""
+    languages = languages.split(",")
+    for l in languages:
+        src = FLAG_FOLDER % l
+        disp = get_language_display(l)
+        html += LANGUAGES_TPL % (src, disp)
+
+    return html
+
+
 @register.filter(name='language_icon')
 def get_language_icon(user, value):
     """

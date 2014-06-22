@@ -4,18 +4,6 @@
 {% load helpers %}
 {% load users %}
 
- {% block belowPic %}
- <div class="row">
-     {% for l in "12345678" %}
-         {% if result|language_icon:l %}
-         <div class="col-md-3 col-md-offset-1 little-padding">
-             <img src="{% static result|language_icon:l %}" width="100%;"
-                  data-toggle="tooltip" data-original-title="{{ l|language_display }}"/>
-         </div>
-         {% endif %}
-     {% endfor %}
- </div>
- {% endblock %}
 
 {% block subtitleBlock %}
 {% with nb_enfants=result.enfants.all.count %}
