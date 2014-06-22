@@ -79,9 +79,9 @@
     .profil-pict {
         position: absolute;
         z-index: 99;
-        left: 27%;
-        top:15%;
-        max-height: 37%;
+        left: 35.7px;
+        top:25.5px;
+        max-height: 62px;
     }
 }
 .tool-category h3{
