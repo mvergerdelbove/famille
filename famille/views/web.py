@@ -80,7 +80,9 @@ def search(request):
     if data.get("postal_code"):
         objects = objects.filter(Q(postal_code=data["postal_code"]) | Q(city=data["postal_code"]))
     objects = objects.order_by("-updated_at")
-    total_search_results = objects.count()
+    objects = [obj for obj in objects if obj.visibility_score_is_enough]
+
+    total_search_results = len(objects)
     nb_search_results = min(settings.NB_SEARCH_RESULTS, total_search_results)
     objects = objects[:nb_search_results]
     result_template = get_result_template_from_user(request, search_type)

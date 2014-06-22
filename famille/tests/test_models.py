@@ -352,6 +352,32 @@ class ModelsTestCase(TestCase):
         self.assertEquals(f.plan_expires_at.replace(tzinfo=None), datetime(2500, 1, 1))
         self.assertFalse(send.called)
 
+    def test_visibility_score_empty(self):
+        p = models.Prestataire()
+        self.assertEquals(p.visibility_score, 0)
+
+    def test_visibility_score_not_empty(self):
+        p = models.Prestataire(type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris")
+        self.assertEquals(p.visibility_score, 0.625)
+
+    def test_visibility_score_is_enough_zero(self):
+        p = models.Prestataire()
+        p.MIN_VISIBILITY_SCORE = 0.9
+        self.assertFalse(p.visibility_score_is_enough)
+
+    def test_visibility_score_is_not_enough(self):
+        p = models.Prestataire(type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris")
+        p.MIN_VISIBILITY_SCORE = 0.9
+        self.assertFalse(p.visibility_score_is_enough)
+
+    def test_visibility_score_is_enough(self):
+        p = models.Prestataire(
+            type="baby", name="To", first_name="Tou", street="Rue des Moines", city="Paris",
+            postal_code="75017", birthday=datetime.now(), profile_pic="/dumbfile.txt"
+        )
+        p.MIN_VISIBILITY_SCORE = 0.9
+        self.assertTrue(p.visibility_score_is_enough)
+
 
 class GeolocationTestCase(TestCase):
 

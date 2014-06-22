@@ -164,6 +164,8 @@ class SearchResource(object):
         user = self.__request.user
         del self.__request
 
+        object_list = [obj for obj in object_list if obj.visibility_score_is_enough]
+
         if tarif and len(tarif.split(",")) == 2:
            object_list = self.filter_tarif(tarif.split(","), object_list)
 

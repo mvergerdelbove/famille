@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 from django import template
+from django.conf import settings
 
 from famille.forms import RatingFamilleForm, RatingPrestataireForm
 from famille.models import (
@@ -136,3 +137,11 @@ def contains(value, arg):
     value = value or ""
     arg = arg or ""
     return arg in value
+
+
+@register.assignment_tag(name="production")
+def production():
+    """
+    Return True if env == production.
+    """
+    return settings.ENV == "production"
