@@ -7,7 +7,7 @@ register = template.Library()
 
 
 BADGE_FOLDER = "img/badges/%s.png"
-FLAG_FOLDER = "img/flag/%s.png"
+FLAG_FOLDER = "static/img/flag/%s.png"
 
 
 @register.filter(name='badge_icon')
