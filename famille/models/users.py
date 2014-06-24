@@ -523,7 +523,7 @@ class Prestataire(Criteria):
         "18+": u"Plus de 18 ans"
     }
     MANDATORY_FIELDS_FOR_VISIBILITY = UserInfo.MANDATORY_FIELDS_FOR_VISIBILITY + ["birthday", "type"]
-    MIN_VISIBILITY_SCORE = float(settings.MIN_VISIBILITY_SCORE)
+    MIN_VISIBILITY_SCORE = float(settings.PRESTATAIRE_MIN_VISIBILITY_SCORE)
 
     birthday = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=70, null=True, blank=True)
@@ -573,6 +573,7 @@ class Famille(Criteria):
         ("other", u"Autre")
     )
     PAYMENT_PREFIX = "f"
+    MIN_VISIBILITY_SCORE = float(settings.FAMILLE_MIN_VISIBILITY_SCORE)
 
     type = models.CharField(blank=True, null=True, max_length=10, choices=TYPE_FAMILLE.items())
     type_presta = models.CharField(blank=True, null=True, max_length=10, choices=Prestataire.TYPES)
