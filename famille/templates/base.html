@@ -135,6 +135,14 @@
 </div>
   {% endblock %}
   {% block content %}{% endblock %}<br/>
+<footer class="footer col-md-12">
+        <p class="text-center text-light">UNE VIE DE FAMILLE &reg; 2014, Tous droits réservés -
+        SIRET : 79900489000015 - code NAF : 9609Z</p>              
+        <p class="text-center text-light">Mail: {{ contact.mail }} - 
+        Numéro de téléphone: {{ contact.phone }}</p>
+        <p class="text-center text-light">CNIL : 1765433V0 - 
+        <a target="_blank" href="{% get_media_prefix %}miscellaneous/CGU.pdf">conditions générales d'utilisation</a></p>
+</footer>
   <script src="{% static "lib/jquery/dist/jquery.min.js" %}"></script>
   <script src="{% static "lib/jquery.cookie/jquery.cookie.js" %}"></script>
   <script src="{% static "lib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
