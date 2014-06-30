@@ -72,6 +72,7 @@
             </div>
             {% block form %}{% endblock %}
     </div>
+
     <div class="col-md-6 col-md-offset-1 margin-top-r">
         <div class="row">
             <div class="col-md-4">
@@ -105,6 +106,18 @@
                 </ul>
             </div>
         </div>
+        {% if total_search_results < 10 %}
+        <div class="well col-md-12">
+          <div class="col-md-9">
+              <b>Vous ne trouvez pas de résultat proche de chez vous ? </b><br>
+              Pour garder notre esprit de confiance et de proximité, "Une vie de famille" se développe progressivement dans chaque ville en partenariat avec les acteurs locaux.
+              Faites nous connaitre vos attentes pour accélérer le développement dans votre ville.
+          </div>
+          <div class="col-md-3 text-center">
+              <img class="margin-top-r" src="{% static "img/dev-local.png" %}" width="100%">
+          </div>
+        </div>
+        {% endif %}
         <div class="row">
             <div class="col-md-12">
                 <div class="no-results" {% if total_search_results %}style="display:none;"{% endif %}>

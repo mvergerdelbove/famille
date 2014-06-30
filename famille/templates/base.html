@@ -127,7 +127,7 @@
 
               <p class="text-center text-light">UNE VIE DE FAMILLE &reg; 2014, Tous droits réservés</p>
               <p class="text-center text-light">Mail: {{ contact.mail }}</p>
-              <p class="text-center text-light">Siège social: {{ contact.address }}</p>
+              <p class="text-center text-light">{{ contact.address }}</p>
               <p class="text-center text-light">Numéro de téléphone: {{ contact.phone }}</p>
           </div>
       </div>
@@ -142,6 +142,7 @@
         Numéro de téléphone: {{ contact.phone }}</p>
         <p class="text-center text-light">CNIL : 1765433V0 - 
         <a target="_blank" href="{% get_media_prefix %}miscellaneous/CGU.pdf">conditions générales d'utilisation</a></p>
+        <p class="text-center text-light">{{ contact.address }}</p>
 </footer>
   <script src="{% static "lib/jquery/dist/jquery.min.js" %}"></script>
   <script src="{% static "lib/jquery.cookie/jquery.cookie.js" %}"></script>
